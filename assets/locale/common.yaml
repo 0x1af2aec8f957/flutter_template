@@ -1,0 +1,92 @@
+zh_CN:
+  title: 测试demo
+  scrollStatus:
+    - 正在加载
+    - 数据加载失败
+    - 数据加载完毕
+    - 未知加载状态
+  noDtataText: 暂无相关数据
+  tipTitles:
+    - 提示
+  actions:
+    - 确认
+    - 取消
+  buttons:
+    - 返回
+  httpTips:
+    - 请登录
+    - 未知的服务器错误
+  customErrorMessages:
+    - 只能处理发送数据为Map类型的数据
+    - 不支持的方法调用
+  dialogStatusText:
+    - 请稍后...
+en_US:
+  title: 测试demo
+  scrollStatus:
+    - 正在加载
+    - 数据加载失败
+    - 数据加载完毕
+    - 未知加载状态
+  noDtataText: 暂无相关数据
+  tipTitles:
+    - 提示
+  actions:
+    - 确认
+    - 取消
+  buttons:
+    - 返回
+  httpTips:
+    - 请登录
+    - 未知的服务器错误
+  customErrorMessages:
+    - 只能处理发送数据为Map类型的数据
+    - 不支持的方法调用
+  dialogStatusText:
+    - 请稍后...
+zh_TW:
+  title: 测试demo
+  scrollStatus:
+    - 正在加载
+    - 数据加载失败
+    - 数据加载完毕
+    - 未知加载状态
+  noDtataText: 暂无相关数据
+  tipTitles:
+    - 提示
+  actions:
+    - 确认
+    - 取消
+  buttons:
+    - 返回
+  httpTips:
+    - 请登录
+    - 未知的服务器错误
+  customErrorMessages:
+    - 只能处理发送数据为Map类型的数据
+    - 不支持的方法调用
+  dialogStatusText:
+    - 请稍后...
+ko_KR:
+  title: 测试demo
+  scrollStatus:
+    - 正在加载
+    - 数据加载失败
+    - 数据加载完毕
+    - 未知加载状态
+  noDtataText: 暂无相关数据
+  tipTitles:
+    - 提示
+  actions:
+    - 确认
+    - 取消
+  buttons:
+    - 返回
+  httpTips:
+    - 请登录
+    - 未知的服务器错误
+  customErrorMessages:
+    - 只能处理发送数据为Map类型的数据
+    - 不支持的方法调用
+  dialogStatusText:
+    - 请稍后...
