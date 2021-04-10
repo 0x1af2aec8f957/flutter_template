@@ -165,10 +165,10 @@ flutter devices # 通过该命令查看你的桌面设备是否出现在列表�
 
 > 模板中存在常用的方法封装，可直接使用。
 
-> 模板结构同[vue-template](http://192.168.100.214:5580/quanchuan/vue-template)一样，包含国际化等配置文件、路由解析及使用方法均一致。
+> 模板结构同[vue-template](https://github.com/0x1af2aec8f957/vue-template)一样，包含国际化等配置文件、路由解析及使用方法均一致。
 
 ```bash
-git clone ssh://git@192.168.100.214:5522/quanchuan/flutter-template.git flutter_template # 需要重命名至flutter_template命名空间才能符合规范
+git clone git@github.com:0x1af2aec8f957/flutter-template.git flutter_template # 需要重命名至flutter_template命名空间才能符合规范
 flutter create . # 创建android、ios原生仓库目录，模板中某些示例需要文件、http网络等权限的支持，请分别在文件`AndroidManifest.xml`及`Info.plist`中配置权限
 flutter pub get # 安装依赖
 flutter run # 运行项目，需要设备支持(可通过`flutter devices`获取设备列表)
