@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CustomFlatButton extends MaterialButton{
-  final bool isLoading; // 是否展示loading
+typedef _ReturnPromise = Future<dynamic> Function();
+typedef _DynamicCallback = dynamic Function();
 
-  const CustomFlatButton({
+// ignore: must_be_immutable
+class CustomFlatButton extends MaterialButton{
+  bool isLoading; // 是否展示loading
+
+  CustomFlatButton({
     Key key,
     this.isLoading = false,
-    @required VoidCallback onPressed,
-    VoidCallback onLongPress,
+    @required _DynamicCallback onPressed,
+    _DynamicCallback onLongPress,
     ValueChanged<bool> onHighlightChanged,
     MouseCursor mouseCursor,
     ButtonTextTheme textTheme,
@@ -33,6 +37,7 @@ class CustomFlatButton extends MaterialButton{
     double minWidth = 0,
 }) : assert(clipBehavior != null),
         assert(autoFocus != null),
+        // assert(isLoading != null || onPressed is _ReturnPromise || onLongPress is _ReturnPromise), // loading或点击函数中返回的是Future类型
         super(
         key: key,
         height: minHeight,
@@ -61,13 +66,26 @@ class CustomFlatButton extends MaterialButton{
         child: child,
       );
 
+  VoidCallback generateClickFunc(_DynamicCallback handFunc) { // 生成点击事件
+    if (handFunc is _ReturnPromise) { // 传入的函数是一个Future类型会自动关闭loading
+
+      return () { // 返回包装处理loading后的函数
+        isLoading = true; // 打开loading
+        handFunc().whenComplete(() => isLoading = false /* 关闭loading */);
+      };
+    }
+
+    // 同步函数，不处理loading
+    return handFunc;
+  }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final ButtonThemeData buttonTheme = ButtonTheme.of(context);
     return RawMaterialButton(
-      onPressed: isLoading ? null : onPressed,
-      onLongPress: isLoading ? null : onLongPress,
+      onPressed: isLoading ? null : generateClickFunc(onPressed),
+      onLongPress: isLoading ? null : generateClickFunc(onLongPress),
       onHighlightChanged: onHighlightChanged,
       mouseCursor: mouseCursor,
       fillColor: buttonTheme.getFillColor(this),
