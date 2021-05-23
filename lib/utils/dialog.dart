@@ -59,7 +59,9 @@ abstract class Talk {
   }
 
   static void snackBar(String text, {SnackBarAction action, Duration duration}) { // 底部提示信息
-
+    ScaffoldMessenger.of(globalContext)
+      ..removeCurrentSnackBar() // 移除上一次的snackBar
+      ..showSnackBar(SnackBar(content: Text(text), duration: duration, action: action));
   }
 
   static void loading([String text]) {
