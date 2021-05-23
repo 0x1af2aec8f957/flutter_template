@@ -97,12 +97,12 @@ abstract class Talk {
               offstage: isCancel,
               child: FlatButton(
                 child: Text("取消"),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(false),
               ),
             ),*/
             if (isCancel) FlatButton(
               child: Text("取消"),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () => Navigator.of(context).pop(false),
             ),
             FlatButton(
               child: Text("确认"),
