@@ -57,6 +57,7 @@ class _App extends State<App> {
           localizationsDelegates: [
             // 本地化的代理类
             GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             // 翻译逻辑
             _localeOverrideDelegate,
