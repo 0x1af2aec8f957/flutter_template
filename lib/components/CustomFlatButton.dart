@@ -71,7 +71,7 @@ class CustomFlatButton extends MaterialButton{
 
       return () { // 返回包装处理loading后的函数
         isLoading = true; // 打开loading
-        handFunc().whenComplete(() => isLoading = false /* 关闭loading */);
+        handFunc()?.whenComplete(() => isLoading = false /* 关闭loading */);
       };
     }
 
