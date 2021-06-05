@@ -103,7 +103,7 @@ class _CustomScrollBar extends State<CustomScrollBar> with _LoadingState{
     ];
 
     return ListView(
-      physics: widget.physics ?? BouncingScrollPhysics(), // 回弹动效
+      physics: widget.physics ?? AlwaysScrollableScrollPhysics(), // 回弹动效（保持任何时候都能滚动）
       shrinkWrap: widget.shrinkWrap,
       children: listViewChildren,
       controller: controller,
