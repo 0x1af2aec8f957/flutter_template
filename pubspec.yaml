@@ -42,6 +42,13 @@ dependencies:
   # fluro: ^1.6.3 # 路由管理工具[替代官方路由]
   provider: ^4.3.2+2 # 状态管理[实现基类: InheritedWidget]
   # rxdart: ^0.24.0 # 状态管理[实现基类: Stream]
+  # mqtt_client: ^8.2.0 # mqtt推送
+  device_info: ^2.0.2 # 设备信息
+  # url_launcher: ^6.0.3 # 吊起外部资源[支持电话、短信等]
+  # qr_flutter: ^4.0.0 # 生成二维码
+  # scan: ^1.4.3 # 扫描二维码
+  # image_gallery_saver: 1.5.0 # 保存图片到相册
+  # jpush_flutter: ^2.0.9 # 激光推送
 
 dev_dependencies:
   flutter_test:
