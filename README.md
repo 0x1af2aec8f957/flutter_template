@@ -176,7 +176,7 @@ flutter run # 运行项目，需要设备支持(可通过`flutter devices`获取
 
 #### 无法摆脱的意外
 
-在Android上执行`flutter build apk`，在当前仓库上传时的最新`flutter`版本有致命的`BUG`，但官方尚未修复。
+###### 在Android上执行`flutter build apk`，在当前仓库上传时的最新`flutter`版本有致命的`BUG`，但官方尚未修复。
 
 ```bash
 This application cannot tree shake icons fonts. It has non-constant instances of IconData at the following locations:
@@ -186,4 +186,20 @@ This application cannot tree shake icons fonts. It has non-constant instances of
 通过增加选项`--no-tree-shake-icons`获得临时解决方案(这将不会分析iconFontData的数据)。
 ```bash
 flutter build apk --no-tree-shake-icons
+```
+
+###### 在Android上执行`flutter build apk`后，存在错误信息: `No implementation found for method getAll on channel plugins.flutter.io/shared_preferences`，该错误在`DEBUG`模式下并不会出现。
+> 有关该问题的讨论：[GitHub·flutter](https://github.com/flutter/flutter/issues/65334)  
+```bash
+flutter build apk --no-shrink # 打包apk
+flutter build appbundle --no-shrink # 打包appbundle
+```
+该问题是`image_picker`插件与`shared_preferences`插件引发的冲突错误，导致`shared_preferences`无法升级，将`image_picker`版本升级到最新的版本即可解决该问题。
+
+###### 使用`jarsigner(jks)`对`Build`后的`build/app/outputs/apk/release/app-release.apk`进行签名时，遇到错误: `jarsigner: unable to sign jar: java.util.zip.ZipException: invalid entry compressed size (expected 463 but got 465 bytes)`。
+> 注意`flutter`输出的`release`包均为签名过后的。
+
+```bash
+zip -d foo.apk META-INF/\* # 删除已有签名 -> https://stackoverflow.com/questions/5089042/jarsigner-unable-to-sign-jar-java-util-zip-zipexception-invalid-entry-compres/30722523#30722523
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore example.jks example.apk example # 再次签名
 ```
