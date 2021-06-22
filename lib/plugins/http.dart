@@ -37,7 +37,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   MainInterceptors({ this.basePath });
 
   @override
-  Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async{
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async{
     // print("REQUEST[${options?.method}] => PATH: ${options?.path}");
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final packageInfo = await AppConfig.packageInfo;
@@ -49,11 +49,11 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
 
     options.baseUrl += basePath;
 
-    return super.onRequest(options, handler);
+    return handler.next(options);
   }
 
   @override
-  Future onResponse(Response response, ResponseInterceptorHandler handler) async{
+  Future<void> onResponse(Response response, ResponseInterceptorHandler handler) async{
     // print("RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final data = response.data;
@@ -62,14 +62,14 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
       case 400000: // 去登录
         prefs.remove('token');
         Router.replace('login');
-        return Future.error(DioError(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions));
+        return handler.reject(DioError(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions));
       case 0: // 正常
         response.data = data['data']; // 仅需要业务数据字段
-        return Future.value(response);
+        return handler.resolve(response);
     /* case '100007': // 账户已经存在
         return super.onError(data['msg'] ?? '账户已经存在'); */
       default:
-        return Future.error(DioError(error: data['msg'] ?? '未知的服务器错误', type: DioErrorType.response, requestOptions: response.requestOptions));
+        return handler.reject(DioError(error: data['msg'] ?? '未知的服务器错误', type: DioErrorType.response, requestOptions: response.requestOptions));
     }
   }
 
@@ -77,7 +77,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   void onError(DioError err, ErrorInterceptorHandler handler) {
     // print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
     Talk.toast(err.message);
-    return super.onError(err, handler);
+    return handler.reject(err);
   }
 }
 
@@ -87,7 +87,7 @@ class CacheInterceptor extends Interceptor { // 接口缓存拦截器
   final _cache = Map<Uri, Response>();
 
   @override
-  Future onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler){
     bool isCache = true; // 是否缓存
 
     if (options.data != null) isCache = false; // 请求中包含有数据不可缓存
@@ -96,20 +96,22 @@ class CacheInterceptor extends Interceptor { // 接口缓存拦截器
     final extra = options.extra;
     final Response response = _cache[options.uri];
 
-    if (extra["refresh"] == true) return options; // 接口配置参数为最高优先级
+    if (extra["refresh"] == true) return handler.next(options); // 接口配置参数为最高优先级
 
-    return isCache ?  /* 提供单独的刷新 */ response : options;
+    return isCache ?  /* 提供单独的刷新 */ handler.next(response.requestOptions) : handler.next(options);
   }
 
   @override
-  Future onResponse(Response response, ResponseInterceptorHandler handler) async {
+  void onResponse(Response response, ResponseInterceptorHandler handler){
     // TODO:必要的缓存才能缓存，非必要需要排除
     _cache[response.requestOptions.uri] = response;
+    return handler.next(response);
   }
 
   @override
-  Future onError(DioError err, ErrorInterceptorHandler handler) async {
+  void onError(DioError err, ErrorInterceptorHandler handler) async {
     print('onError: $err');
+    return handler.reject(err);
   }
 }
 
