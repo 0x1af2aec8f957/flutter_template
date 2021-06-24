@@ -62,14 +62,14 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
       case 400000: // 去登录
         prefs.remove('token');
         Router.replace('login');
-        return handler.reject(DioError(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions));
+        return handler.reject(DioError(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions), true);
       case 0: // 正常
         response.data = data['data']; // 仅需要业务数据字段
-        return handler.resolve(response);
+        return handler.next(response);
     /* case '100007': // 账户已经存在
         return super.onError(data['msg'] ?? '账户已经存在'); */
       default:
-        return handler.reject(DioError(error: data['msg'] ?? '未知的服务器错误', type: DioErrorType.response, requestOptions: response.requestOptions));
+        return handler.reject(DioError(error: data['msg'] ?? '未知的服务器错误', type: DioErrorType.response, requestOptions: response.requestOptions), true);
     }
   }
 
