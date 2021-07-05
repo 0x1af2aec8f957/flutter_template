@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.3 # cupertinoIcons
   webview_flutter: ^2.0.8 # webView
-  calculate: ^0.0.8 # double类计算支持
+  calculate: ^0.0.9 # double类计算支持
   cached_network_image: ^2.2.0+1 #图片缓存
   path_provider: ^2.0.2 # 获取应用程序目录
   dio: ^4.0.0 # http支持
