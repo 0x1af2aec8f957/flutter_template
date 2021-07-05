@@ -203,3 +203,10 @@ flutter build appbundle --no-shrink # 打包appbundle
 zip -d foo.apk META-INF/\* # 删除已有签名 -> https://stackoverflow.com/questions/5089042/jarsigner-unable-to-sign-jar-java-util-zip-zipexception-invalid-entry-compres/30722523#30722523
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore example.jks example.apk example # 再次签名
 ```
+
+###### 手动删除`Dart`缓存包后，导致依赖始终无法安装成功。
+> [dart缓存机制](https://dart.dev/tutorials/libraries/shared-pkgs#install-the-package-dependencies)会缓存你安装过的每一个包，手动删除后会导致无法被再次重新缓存。需要重新定位下载该缓存包才能解决问题。
+
+```bash
+pub cache repair # 执行cache repair命令重新激活缓存包
+```
