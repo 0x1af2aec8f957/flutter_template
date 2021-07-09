@@ -14,8 +14,8 @@ final _navigatorKey = AppConfig.navigatorKey;
 class RouterObserver extends NavigatorObserver {
   // 对路由的鉴权拦截，可在此处理[官方路由表不可使用onGenerateRoute钩子]
 
-  RouterObserver(){ // 为原生提供界面控制
-    methodChannel.setMethodCallHandler((MethodCall call) {
+  RouterObserver(){
+    methodChannel.setMethodCallHandler((MethodCall call) { // 为原生提供界面控制
       final String method = call.method;
       final Map arguments = call.arguments;
       final String name = arguments['name']; // 页面
@@ -52,6 +52,19 @@ class RouterObserver extends NavigatorObserver {
           return Future.value(I18n.$t('common', 'customErrorMessages[1]'));
       }
     });
+
+    if (AppConfig.isProduction){ // 在生产环境，将覆盖 ErrorWidget 向屏幕输出错误的信息
+      ErrorWidget.builder = (FlutterErrorDetails flutterErrorDetails) => Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            elevation: 1,
+            title: Text('Program exception'),
+            centerTitle: true,
+          ),
+          body: Center(
+              child: Text('Please exit and open again')
+          ));
+    }
   }
 
   @override
