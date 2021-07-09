@@ -42,7 +42,7 @@ dependencies:
   # fluro: ^1.6.3 # 路由管理工具[替代官方路由]
   provider: ^5.0.0 # 状态管理[实现基类: InheritedWidget]
   # rxdart: ^0.27.1 # 状态管理[实现基类: Stream]
-  # mqtt_client: ^8.2.0 # mqtt推送
+  mqtt_client: ^8.2.0 # mqtt推送
   device_info: ^2.0.2 # 设备信息
   # url_launcher: ^6.0.7 # 吊起外部资源[支持电话、短信等]
   # qr_flutter: ^4.0.0 # 生成二维码
