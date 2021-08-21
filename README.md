@@ -176,7 +176,7 @@ flutter run # 运行项目，需要设备支持(可通过`flutter devices`获取
 
 #### 无法摆脱的意外
 
-###### 在Android上执行`flutter build apk`，在当前仓库上传时的最新`flutter`版本有致命的`BUG`，但官方尚未修复。
+###### 在Android上执行`flutter build apk`或`flutter build ipa`，在当前仓库上传时的最新`flutter`版本有致命的`BUG`，但官方尚未修复。
 
 ```bash
 This application cannot tree shake icons fonts. It has non-constant instances of IconData at the following locations:
@@ -185,7 +185,8 @@ This application cannot tree shake icons fonts. It has non-constant instances of
 
 通过增加选项`--no-tree-shake-icons`获得临时解决方案(这将不会分析iconFontData的数据)。
 ```bash
-flutter build apk --no-tree-shake-icons
+flutter build apk --no-tree-shake-icons #Android打包
+flutter build ipa --no-tree-shake-icons #Ios打包
 ```
 
 ###### 在Android上执行`flutter build apk`后，存在错误信息: `No implementation found for method getAll on channel plugins.flutter.io/shared_preferences`，该错误在`DEBUG`模式下并不会出现。
