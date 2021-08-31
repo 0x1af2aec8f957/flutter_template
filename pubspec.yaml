@@ -48,7 +48,7 @@ dependencies:
   # qr_flutter: ^4.0.0 # 生成二维码
   # scan: ^1.4.3 # 扫描二维码
   # image_gallery_saver: 1.5.0 # 保存图片到相册
-  # jpush_flutter: ^2.0.9 # 激光推送
+  jpush_flutter: ^2.0.9 # 激光推送
   # image_picker: 0.8.0+4 # 图库
 
 dev_dependencies:

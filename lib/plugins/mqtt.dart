@@ -171,7 +171,7 @@ class _MQTTService {
     _buf.addAll(Utf8Encoder().convert(message));
     builder.addBuffer(_buf);
 
-    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload); // builder.payload也是可用的
+    client.publishMessage(topic, MqttQos.exactlyOnce, builder.payload); // builder.payload也是可用的
   }
 
   // 添加订阅
