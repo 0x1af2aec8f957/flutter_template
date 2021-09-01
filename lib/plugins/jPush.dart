@@ -149,8 +149,18 @@ class _JPush{
   /// @param {Notification} notification
   ///
   Future<String> sendLocalNotification(auroraPush.LocalNotification localNotification) {
-    if (AppConfig.platform == 'IOS') localNotification.fireTime.add(Duration(milliseconds: 100)); // iOS需要延迟100ms，link: https://github.com/jpush/jpush-react-native/issues/422#issuecomment-407681784
-    return instance.sendLocalNotification(localNotification);
+    final fireTime = localNotification.fireTime.add(Duration(milliseconds: AppConfig.platform == 'IOS' ? 100 : 0)); // iOS需要延迟100ms，link: https://github.com/jpush/jpush-react-native/issues/422#issuecomment-407681784
+    return instance.sendLocalNotification(auroraPush.LocalNotification(
+        buildId: localNotification.buildId,
+        id: localNotification.id,
+        title: localNotification.title,
+        content: localNotification.content,
+        extra: localNotification.extra,
+        fireTime: fireTime,
+        badge: localNotification.badge,
+        soundName: localNotification.soundName,
+        subtitle: localNotification.subtitle
+    ));
   }
 
   /// 调用此 API 检测通知授权状态是否打开
