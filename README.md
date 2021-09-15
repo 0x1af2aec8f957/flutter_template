@@ -211,3 +211,18 @@ jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore example.jks exa
 ```bash
 pub cache repair # 执行cache repair命令重新激活缓存包
 ```
+
+###### ios设备更新系统后真机运行出现`连接超时`的情况。
+> 问题出在 设备(更新后)和Xcode 之间，有关该[issue](https://github.com/flutter/flutter/issues/72161#issuecomment-916288252)的详细信息，请查看官方解释说明。
+
+```bash
+Launching lib/main.dart on ios_device in debug mode...
+Automatically signing iOS for device deployment using specified development team in Xcode project: XXXXXXXXXX
+Running pod install...                                              3.3s
+Running Xcode build...                                                  
+ └─Compiling, linking and signing...                        25.8s
+Xcode build done.                                           56.9s
+iOS Observatory not discovered after 30 seconds. This is taking much longer than expected...
+Installing and launching...                                        80.7s
+Error launching application on ios_device.
+```
