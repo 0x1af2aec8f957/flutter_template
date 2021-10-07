@@ -215,6 +215,8 @@ pub cache repair # 执行cache repair命令重新激活缓存包
 ###### ios设备更新系统后真机运行出现`连接超时`的情况。
 > 问题出在 设备(更新后)和Xcode 之间，有关该[issue](https://github.com/flutter/flutter/issues/72161#issuecomment-916288252)的详细信息，请查看官方解释说明。
 
+目前唯一尝试成功的方法就是，需要等待`xcode`更新支持设备升级的系统后才可以成功连接。
+
 ```bash
 Launching lib/main.dart on ios_device in debug mode...
 Automatically signing iOS for device deployment using specified development team in Xcode project: XXXXXXXXXX
@@ -225,4 +227,46 @@ Xcode build done.                                           56.9s
 iOS Observatory not discovered after 30 seconds. This is taking much longer than expected...
 Installing and launching...                                        80.7s
 Error launching application on ios_device.
+```
+
+###### `ios-build`期间，在使用某些支持`ios版本过低`的安装包后，总是提示版本或版本范围与设置的目标值不一致的问题。
+
+解决方案如下:
+1. 使用`xcode`打开 `@workDir/ios` 文件夹，选中 `Runner->PROJECT->Runner->Build Settings->Deployment->IOS Deployment Target IOS X.Y.Z`(X.Y.Z为当钱包依赖包中最高的所需构建版本)
+2. 打开 `ios/Flutter/AppFrameworkInfo.plist` 设置 `MinimumOSVersion` 为 `X.Y.Z`(X.Y.Z为当钱包依赖包中最高的所需构建版本)
+3. 打开 `ios/Podfile` 取消带有注释的 `#platform :ios, '9.0'`,将`9.0`改成`X.Y.Z`(X.Y.Z为当钱包依赖包中最高的所需构建版本)
+4. 确保 `ios/Podfile` 文件中 `post_install do |installer|`代码块包含以下代码:
+    ```bash
+      post_install do |installer|
+      installer.pods_project.targets.each do |target|
+        flutter_additional_ios_build_settings(target)
+          target.build_configurations.each do |config|
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '9.0' # 这里是必须的，请将9.0改为`X.Y.Z`(X.Y.Z为当钱包依赖包中最高的所需构建版本)
+          end
+        end
+      end
+    ```
+5. 在工作目录中运行命令`flutter clean && rm ios/Podfile.lock pubspec.lock && rm -rf ios/Pods ios/Runner.xcworkspace`即可。
+
+然后重新运行程序即可解决该问题。
+
+```bash
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'gRPC-C++-gRPCCertificates-Cpp' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'GoogleAppMeasurement' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'FirebaseAuth' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'GoogleUtilities' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'vibration' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'nanopb' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'BoringSSL-GRPC' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'gRPC-Core' from project 'Pods')
+warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
+9.0 to 14.0.99. (in target 'gRPC-C++' from project 'Pods')
 ```

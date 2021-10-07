@@ -10,6 +10,7 @@ import './setup/config.dart';
 import './setup/lang.dart';
 import './setup/router.dart';
 import './theme/index.dart';
+import './components/NetWorkState.dart';
 import './setup/providers.dart';
 import './models/global.dart';
 
@@ -81,23 +82,26 @@ class _App extends State<App> {
               return MainLocalizations.of(context).getValue('common', 'title');
             },
             theme: CustomTheme.light,
-            builder: (context, child) => Scaffold(
-              // Global GestureDetector that will dismiss the keyboard
-              body: GestureDetector( // 处理安卓键盘收起问题
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  final FocusScopeNode currentFocus = FocusScope.of(context);
-                  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                    FocusManager.instance.primaryFocus.unfocus();
-                  }
-                },
-                child: child,
+            builder: (context, child) => NetworkState(
+              child: Scaffold(
+                // Global GestureDetector that will dismiss the keyboard
+                body: GestureDetector( // 处理安卓键盘收起问题
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    final FocusScopeNode currentFocus = FocusScope.of(context);
+                    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                      FocusManager.instance.primaryFocus.unfocus();
+                    }
+                  },
+                  child: child,
+                ),
               ),
             ),
           ),
         ));
   }
 
+  @override
   void initState() {
     super.initState();
 
