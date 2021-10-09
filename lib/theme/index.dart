@@ -50,7 +50,7 @@ abstract class CustomTheme {
     // MaterialTapTargetSize materialTapTargetSize, // 配置某些Material部件的命中测试大小
     // PageTransitionsTheme pageTransitionsTheme,
     appBarTheme: AppBarTheme(
-      systemOverlayStyle: SystemUiOverlayStyle.light,
+      systemOverlayStyle: SystemUiOverlayStyle.dark, // 状态栏的文字颜色（需要跟应用主题颜色相反）
       color: Colors.white,
       elevation: 0,
       iconTheme: IconThemeData(color: const Color(0xFF41414C), opacity: 1, size: 12),
