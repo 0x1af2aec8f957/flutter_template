@@ -249,7 +249,7 @@ class CustomRouteDelegate extends RouterDelegate<String> with PopNavigatorRouter
     return MaterialPageRoute(
         builder: routes[_name],
         settings: _settings,
-        maintainState: false // 主屏幕不展示给用户时，禁止销毁路由小部件结构树的数据
+        maintainState: true // 影响路由的push、pop等操作，开启时将在内存中维护路由状态，关闭时将只保留路由中第一个和最后一个页面的状态，这会导致执行pop操作时父级页面会始终刷新(在future的回调中context将不可用会发生变更)
     );
   }
 
