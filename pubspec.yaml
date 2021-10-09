@@ -50,6 +50,7 @@ dependencies:
   # image_gallery_saver: 1.6.9 # 保存图片到相册
   jpush_flutter: ^2.1.5 # 激光推送
   connectivity_plus: ^1.1.0 # 网络链接状态
+  # wakelock: ^0.5.3+3 # App常亮显示
   # image_picker: 0.8.4+2 # 图库
 
 dev_dependencies:
