@@ -16,7 +16,7 @@ class SafeInspectStack extends StatefulWidget{
 }
 
 class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObserver {
-  AppLifecycleState appLifecycleState; // 应用程序激活状态
+  AppLifecycleState appLifecycleState = AppLifecycleState.resumed; // 应用程序激活状态
 
   bool get isAppLifecycleKeepResumed => appLifecycleState == AppLifecycleState.resumed; // 应用是否处于前台运行
 
