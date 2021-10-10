@@ -75,6 +75,7 @@ abstract class AppUpgrade {
     String packageMd5, // 包MD5值
   }) async {
     final bool canUpdate = await inspectCanUpdate(version); // 需要升级（远程发布的版本比本地版本高）
+    final Version remoteVersion = Version.parse(version);
 
     if(hasUpdateToast && !canUpdate){
       Talk.toast('没有新版本');
@@ -99,12 +100,15 @@ abstract class AppUpgrade {
     @required String link, // 下载链接
     @required isForce // 是否强制升级
   }) async {
-    final PackageInfo localeInfo = await AppConfig.packageInfo; // 应用包信息
+    // final PackageInfo localeInfo = await AppConfig.packageInfo; // 应用包信息
+    final Version remoteInfo = Version.parse(version);
+    final int remoteBuildNumber = int.tryParse(remoteInfo.build.first) ?? 0;
+    final String remoteVersionName = (version ?? remoteInfo.canonicalizedVersion).replaceAll(RegExp(r'\+\d*'), '');
 
     FlutterXUpdate.updateByInfo(updateEntity: UpdateEntity(
       hasUpdate: await inspectCanUpdate(version),
-      versionCode: int.tryParse(localeInfo.buildNumber),
-      versionName: version,
+      versionCode: remoteBuildNumber,
+      versionName: '$remoteVersionName($remoteBuildNumber)',
       updateContent: content,
       downloadUrl: link,
       isForce: isForce,
@@ -119,6 +123,11 @@ abstract class AppUpgrade {
     @required isForce // 是否强制升级
   }) async {
     if (!await inspectCanUpdate(version)) return false; // 不需要升级
+
+    // final PackageInfo localeInfo = await AppConfig.packageInfo; // 应用包信息
+    final Version remoteInfo = Version.parse(version);
+    final int remoteBuildNumber = int.tryParse(remoteInfo.build.first) ?? 0;
+    final String remoteVersionName = (version ?? remoteInfo.canonicalizedVersion).replaceAll(RegExp(r'\+\d*'), '');
 
     return showDialog<bool>(
       context: globalContext,
@@ -155,7 +164,7 @@ abstract class AppUpgrade {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                '是否升级到$version版本？',
+                                '是否升级到$remoteVersionName($remoteBuildNumber)版本？',
                                 style: TextStyle(fontSize: 18, color: Colors.grey[900], decoration: TextDecoration.none,),
                                 textAlign: TextAlign.left,
                               ),
