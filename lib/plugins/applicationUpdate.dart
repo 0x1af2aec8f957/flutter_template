@@ -63,7 +63,7 @@ abstract class AppUpgrade {
 
   static Future<bool> inspectCanUpdate(String version) async { // 检查应用是否需要更新
     final PackageInfo localeInfo = await AppConfig.packageInfo; // 应用包信息
-    return Version.prioritize(Version.parse(version), Version.parse(localeInfo.version)) == 1; // 需要升级（远程发布的版本比本地版本高）
+    return Version.prioritize(Version.parse(version), Version.parse('${localeInfo.version}+${localeInfo.buildNumber}')) == 1; // 需要升级（远程发布的版本比本地版本高）
   }
 
   static Future<void> checkUpdate(version /* 远程版本 */, { // 检查版本并更新
