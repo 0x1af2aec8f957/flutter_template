@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.0.2 # 获取应用程序目录
   dio: ^4.0.0 # http支持
   shared_preferences: ^2.0.6 # 数据持久化存储
-  package_info: ^2.0.2 # 应用程序包的信息
+  package_info_plus: ^1.3.0 # 应用程序包描述信息
   yaml: ^3.1.0 # yml文件内容解析器
   file: ^6.1.2 # 内存文件系统
   # cipher2: ^0.3.5 # aes-128-cbc加密[由于版本关系在Android X设备无法使用]
@@ -44,7 +44,7 @@ dependencies:
   # rxdart: ^0.27.1 # 状态管理[实现基类: Stream]
   mqtt_client: ^9.6.1 # mqtt推送
   device_info: ^2.0.2 # 设备信息
-  # url_launcher: ^6.0.7 # 吊起外部资源[支持电话、短信等]
+  url_launcher: ^6.0.12 # 吊起外部资源[支持电话、短信等]
   # qr_flutter: ^4.0.0 # 生成二维码
   # scan: ^1.4.3 # 扫描二维码
   # image_gallery_saver: 1.6.9 # 保存图片到相册
@@ -52,6 +52,8 @@ dependencies:
   connectivity_plus: ^1.1.0 # 网络链接状态
   # wakelock: ^0.5.3+3 # App常亮显示
   # image_picker: 0.8.4+2 # 图库
+  flutter_xupdate: ^2.0.1 # Android应用内升级
+  pub_semver: ^2.1.0 # 版本约束检查
 
 dev_dependencies:
   flutter_test:
