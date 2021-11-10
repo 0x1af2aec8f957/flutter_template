@@ -270,3 +270,13 @@ warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, b
 warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, but the range of supported deployment target versions is
 9.0 to 14.0.99. (in target 'gRPC-C++' from project 'Pods')
 ```
+
+###### `ios-build`期间，在使用某些支持`ios版本过低`的安装包后，总是提示版本或版本范围与设置的目标值不一致的问题。
+
+错误信息：
+```bash
+...from JCore ...arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+[解决方案](https://developer.apple.com/forums/thread/660864):
+使用`xcode`打开`ios`目录，选中Pods, 在右侧的`TARGETS`中找到`JCore`，在右侧的`Build Settings`中将`EXCLUDED_ARCHS`设置为`arm64`.
