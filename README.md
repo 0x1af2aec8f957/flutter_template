@@ -271,7 +271,7 @@ warning: The iOS deployment target 'IPHONEOS_DEPLOYMENT_TARGET' is set to 8.0, b
 9.0 to 14.0.99. (in target 'gRPC-C++' from project 'Pods')
 ```
 
-###### `ios-build`期间，在使用某些支持`ios版本过低`的安装包后，总是提示版本或版本范围与设置的目标值不一致的问题。
+###### `JCore`不支持`arm64`架构，导致无法在模拟器运行应用。
 
 错误信息：
 ```bash
