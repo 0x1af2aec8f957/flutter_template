@@ -19,6 +19,7 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
   AppLifecycleState appLifecycleState = AppLifecycleState.resumed; // 应用程序激活状态
 
   bool get isAppLifecycleKeepResumed => appLifecycleState == AppLifecycleState.resumed; // 应用是否处于前台运行
+  bool isShow = false; // 是否展示 安全审查 弹出层
 
   @override
   void initState() {
@@ -34,9 +35,14 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState _state) {
-    setState(() {
-      appLifecycleState = _state;
-    });
+    if (_state == AppLifecycleState.resumed) {
+      setState(() => isShow = false);
+      return;
+    }
+    if (_state == AppLifecycleState.paused) {
+      setState(() => isShow = true);
+      return;
+    }
     /* switch (_state) {
       case AppLifecycleState.inactive: // 应用处于切换状态、分屏状态、画中画、电话呼叫时
         break;
@@ -56,7 +62,7 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
     return Stack(
         children: [
           widget.child,
-          if (!isAppLifecycleKeepResumed) Positioned(
+          if (isShow) Positioned(
               bottom: 0,
               left: 0,
               right: 0,
