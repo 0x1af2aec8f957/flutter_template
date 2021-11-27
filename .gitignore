@@ -38,6 +38,8 @@ ios/
 pubspec.lock
 # Web related
 lib/generated_plugin_registrant.dart
+ios/build
+ios/.symlinks
 ios/Podfile.lock
 
 # Exceptions to above rules.
