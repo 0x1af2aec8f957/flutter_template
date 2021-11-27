@@ -19,7 +19,6 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
   AppLifecycleState appLifecycleState = AppLifecycleState.resumed; // 应用程序激活状态
 
   bool get isAppLifecycleKeepResumed => appLifecycleState == AppLifecycleState.resumed; // 应用是否处于前台运行
-  bool isShow = false; // 是否展示 安全审查 弹出层
 
   @override
   void initState() {
@@ -35,14 +34,9 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState _state) {
-    if (_state == AppLifecycleState.resumed) {
-      setState(() => isShow = false);
-      return;
-    }
-    if (_state == AppLifecycleState.paused) {
-      setState(() => isShow = true);
-      return;
-    }
+    setState(() {
+      appLifecycleState = _state;
+    });
     /* switch (_state) {
       case AppLifecycleState.inactive: // 应用处于切换状态、分屏状态、画中画、电话呼叫时
         break;
@@ -62,7 +56,7 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
     return Stack(
         children: [
           widget.child,
-          if (isShow) Positioned(
+          if (!isAppLifecycleKeepResumed) Positioned(
               bottom: 0,
               left: 0,
               right: 0,
@@ -85,13 +79,13 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
                           width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.symmetric(vertical: 20),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            boxShadow: [BoxShadow(
-                              color: Colors.grey[300], // 颜色
-                              offset: Offset(0, -1), // 偏移量
-                              blurRadius: 10, // 阴影模糊
-                              spreadRadius: 3 // 阴影扩散
-                            )]
+                              color: Colors.white,
+                              boxShadow: [BoxShadow(
+                                  color: Colors.grey[300], // 颜色
+                                  offset: Offset(0, -1), // 偏移量
+                                  blurRadius: 10, // 阴影模糊
+                                  spreadRadius: 3 // 阴影扩散
+                              )]
                           ),
                           child: Text(
                             '${snapshot.data.appName} 正在保护你的资产安全',
