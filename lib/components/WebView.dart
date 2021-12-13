@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,8 @@ class CustomWebView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView(); // android使用混合webview,解决键盘异常问题
+
     return WebView(
         initialUrl: url, // URL链接
         onWebViewCreated: (WebViewController __controller){
