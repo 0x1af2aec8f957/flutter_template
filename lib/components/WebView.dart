@@ -6,6 +6,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../plugins/jockey.dart';
 
+// NOTE: 使用CookieManager().clearCookies()在外部清理webview的cookie，在iOS设备上直接使用WebView.platform.clearCookies()会引发注册异常导致清理失败
 typedef NavigationDecision _NavigationDelegate(NavigationRequest request, Type nextMethodType);
 
 class CustomWebView extends StatelessWidget{
