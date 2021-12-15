@@ -57,7 +57,7 @@ abstract class Jockey{
   }
 
   static Future<String> send(String type,{ Map<String, dynamic> payload, _JockeyCallback complete}){
-    return controller?.evaluateJavascript(
+    return controller?.runJavascript(
       '''
         (function (methods, payload){
           if (methods.length < 1) return false;
