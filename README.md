@@ -288,3 +288,16 @@ clang: error: linker command failed with exit code 1 (use -v to see invocation)
 ```
 [解决方案](https://developer.apple.com/forums/thread/660864):
 使用`xcode`打开`ios`目录，选中Pods, 在右侧的`TARGETS`中找到`JCore`，在右侧的`Build Settings`中将`EXCLUDED_ARCHS`设置为`arm64`.
+
+###### `Image.network`无法正常完成加载HTTPS图像地址。
+
+错误信息：
+```bash
+Connection closed before full header was received, uri = https://picsum.photos/id/237/200/300
+```
+[解决方案](https://github.com/flutter/flutter/issues/33240#issuecomment-655656090):
+```bash
+const String originImageUrl = 'https://picsum.photos/id/237/200/300';
+final String imageUrl = Uri.parse(originImageUrl).replace(scheme: 'http').toString(); // 将https替换成http
+const imageWidget = Image.network(imageUrl);
+```
