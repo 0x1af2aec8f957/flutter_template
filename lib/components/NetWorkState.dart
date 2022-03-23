@@ -44,7 +44,7 @@ class _NetworkState extends State<NetworkState>{
     super.initState();
 
     connectSubscription = connectivity.onConnectivityChanged.listen(updateConnectionStatus); // 订阅网络状态变化事件
-    inspectConnectionStatus(); // 首次检查网络状态
+    if (!Platform.isAndroid /* 安卓会走两次 */) inspectConnectionStatus(); // 首次检查网络状态
   }
 
   @override
