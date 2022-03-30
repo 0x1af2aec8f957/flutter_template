@@ -2,13 +2,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../plugins/jockey.dart';
+import '../utils/common.dart';
 
-// NOTE: 使用CookieManager().clearCookies()在外部清理webview的cookie，在iOS设备上直接使用WebView.platform.clearCookies()会引发注册异常导致清理失败
 typedef NavigationDecision _NavigationDelegate(NavigationRequest request, Type nextMethodType);
 typedef PageDOMContentChangeCallback = void Function(JavascriptMessage message);
+typedef PageSystemOverlayStyleChange = void Function(Color color, SystemUiOverlayStyle systemOverlayStyle);
 
 class CustomWebView extends StatefulWidget{
   final String url;
@@ -27,7 +29,9 @@ class CustomWebView extends StatefulWidget{
   final String userAgent;
   final AutoMediaPlaybackPolicy initialMediaPlaybackPolicy;
 
+  // 自定义扩展事件，不需要依赖对接WEB才能完成的操作
   final PageDOMContentChangeCallback onPageDOMContentChangeCallback; // 页面DOM发生变更执行
+  final PageSystemOverlayStyleChange onPageSystemOverlayStyleChange; // DOM主题色发生变更执行
 
   const CustomWebView({
     Key key,
@@ -48,6 +52,7 @@ class CustomWebView extends StatefulWidget{
     this.onWebViewCreated,
 
     this.onPageDOMContentChangeCallback,
+    this.onPageSystemOverlayStyleChange,
   }): super(key: key);
 
 
@@ -64,7 +69,7 @@ class _CustomWebView extends State<CustomWebView>{
 
     return WebView(
         initialUrl: widget.url, // URL链接
-        onWebViewCreated: (WebViewController __controller) { // webView创建完成执行的事件
+        onWebViewCreated: (WebViewController __controller){ // webView创建完成执行的事件
           setState(() {
              _controller = __controller; // 保存 WebViewController
            });
@@ -72,7 +77,7 @@ class _CustomWebView extends State<CustomWebView>{
           Jockey.init(__controller); // 初始化WebViewController控制器
           if (widget.onWebViewCreated != null) widget.onWebViewCreated(__controller); // 支持外部使用该钩子
         },
-        javascriptChannels: [ // 给javaScript提供的事件列表
+        javascriptChannels: [
           ...widget.hasJavaScriptMethods ?? false ? Jockey.javaScriptMethods : const <JavascriptChannel>[],
           ...widget.javascriptChannels ?? const <JavascriptChannel>[],
           /// 给 webview 提供额外的私有事件（或私有api）, 与flutter的互动会放在 WebView.onPageFinished 中完成
@@ -81,8 +86,16 @@ class _CustomWebView extends State<CustomWebView>{
               onMessageReceived: (JavascriptMessage message){
                 if (widget.onPageDOMContentChangeCallback != null) widget.onPageDOMContentChangeCallback(message);
               }
-          )
-        ].toSet(),
+          ),
+          JavascriptChannel(
+              name: '_SystemOverlayStyleChange', // DOM主题色发生变化
+              onMessageReceived: (JavascriptMessage message){
+                final Color _themeColor = HexColor(message.message);
+                final SystemUiOverlayStyle _systemOverlayStyle = _themeColor.computeLuminance() < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+                if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange(_themeColor, _systemOverlayStyle);
+              }
+          ),
+        ].toSet(), // 给javaScript提供的事件列表
         gestureRecognizers: widget.gestureRecognizers,
         javascriptMode: widget.javascriptMode, // 是否支持JavaScript
         navigationDelegate: (NavigationRequest request) { // url劫持、拦截
@@ -104,17 +117,22 @@ class _CustomWebView extends State<CustomWebView>{
         onProgress: widget.onProgress, // 页面加载中
         onPageFinished: (String _url) { // 页面加载完成 
           _controller.runJavascript(""" // 给 webview 提供监听 DOM 元素变化的能力
+              /// DOM变化监听
               const ___observer = new MutationObserver(function(mutationList){
                 if (typeof window._DOMContentChange !== 'undefined') window._DOMContentChange.postMessage(JSON.stringify(mutationList||[]));
               });
               ___observer.observe(document.body, { childList: true, attributes: true, subtree: true });
-              window.addEventListener('beforeunload', function(event){
+              window.addEventListener('beforeunload', function(event){ // 用户离开前
                 ___observer.disconnect();
                 // Cancel the event as stated by the standard.
                 event.preventDefault();
                 // Chrome requires returnValue to be set.
                 event.returnValue = '';
               });
+
+              /// DOM主题色监听
+              const ___el = Array.from(document.getElementsByTagName('head')).shift().querySelector("[name='theme-color']");
+              if (___el !== null && typeof ___el !== 'undefined' && typeof window._SystemOverlayStyleChange !== 'undefined') window._SystemOverlayStyleChange.postMessage(___el.getAttribute('content'));
           """);
 
           if (widget.onPageFinished != null) widget.onPageFinished(_url);
