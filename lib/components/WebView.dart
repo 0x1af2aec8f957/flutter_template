@@ -84,15 +84,17 @@ class _CustomWebView extends State<CustomWebView>{
           JavascriptChannel(
               name: '_DOMContentChange', // html-dom发生变化
               onMessageReceived: (JavascriptMessage message){
-                if (widget.onPageDOMContentChangeCallback != null) widget.onPageDOMContentChangeCallback(message);
+                if (widget.onPageDOMContentChangeCallback == null) return;
+                widget.onPageDOMContentChangeCallback(message);
               }
           ),
           JavascriptChannel(
               name: '_SystemOverlayStyleChange', // DOM主题色发生变化
               onMessageReceived: (JavascriptMessage message){
+                if (widget.onPageSystemOverlayStyleChange == null) return; // 如果不存在 onPageSystemOverlayStyleChange 则不进行后续计算。
                 final Color _themeColor = HexColor(message.message);
                 final SystemUiOverlayStyle _systemOverlayStyle = _themeColor.computeLuminance() < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
-                if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange(_themeColor, _systemOverlayStyle);
+                widget.onPageSystemOverlayStyleChange(_themeColor, _systemOverlayStyle);
               }
           ),
         ].toSet(), // 给javaScript提供的事件列表

@@ -68,7 +68,7 @@ abstract class AppUpgrade {
 
   static Future<void> checkUpdate(version /* 远程版本 */, { // 检查版本并更新
     @required String link, // 下载链接
-    String content = '修复已知BUG，优化应用体验', // 升级内容
+    String content = '修复已知BUG，优化交互体验', // 升级内容
     bool isForce = false, // 是否强制更新
     bool hasUpdateToast = false, // 是否使用弹框提示错误
     int packageSize, // 包大小
@@ -77,7 +77,7 @@ abstract class AppUpgrade {
     final bool canUpdate = await inspectCanUpdate(version); // 需要升级（远程发布的版本比本地版本高）
     final Version remoteVersion = Version.parse(version);
 
-    if(hasUpdateToast && !canUpdate){
+    if(hasUpdateToast && !canUpdate) {
       Talk.toast('没有新版本');
       return;
     }
@@ -87,7 +87,7 @@ abstract class AppUpgrade {
       return;
     }
 
-    if (Platform.isIOS && await canLaunch(link)){ // ios更新及更新提示
+    if (Platform.isIOS && await canLaunch(link)) { // ios更新及更新提示
       iosUpdate(version, link: link, isForce: isForce, content: content);
       return;
     }
@@ -213,7 +213,8 @@ abstract class AppUpgrade {
                         )
                     )
                 );
-              }),
+              }
+            ),
         );
       },
     );

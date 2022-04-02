@@ -5,7 +5,7 @@ abstract class DateFormat {
     return DateTime.fromMillisecondsSinceEpoch(int.parse(_formattedString ?? 0));
   }
 
-  static DateTime toDate(int _millisecondsSinceEpoch){
+  static DateTime toDate (int _millisecondsSinceEpoch){
     return DateTime.fromMillisecondsSinceEpoch(_millisecondsSinceEpoch ?? 0);
   }
 
