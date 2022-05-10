@@ -1,5 +1,8 @@
 # flutter-template
 
+[时间组件国际化·标准](https://www.unicode.org/reports/tr35/tr35-dates.html#Date_Field_Symbol_Table)  
+[版本组件·标准](https://semver.org/spec/v2.0.0-rc.1.html)
+
 #### 目录结构
 
 ```bash
