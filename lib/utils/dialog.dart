@@ -95,16 +95,16 @@ abstract class Talk {
           actions: <Widget>[
             /*Offstage( // 需要隐藏后维护状态，请使用Visibility
               offstage: isCancel,
-              child: FlatButton(
+              child: TextButton(
                 child: Text("取消"),
                 onPressed: () => Navigator.of(context).pop(false),
               ),
             ),*/
-            if (isCancel) FlatButton(
+            if (isCancel) TextButton(
               child: Text("取消"),
               onPressed: () => Navigator.of(context).pop(false),
             ),
-            FlatButton(
+            TextButton(
               child: Text("确认"),
               onPressed: () {
                 // 执行删除操作

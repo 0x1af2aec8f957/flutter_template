@@ -30,8 +30,8 @@ class _FormTest extends State<FormTest>{
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         child: Form(
-          key: _formKey, //设置globalKey，用于后面获取FormState
-          autovalidate: true, //开启自动校验
+          key: _formKey, // 设置globalKey，用于后面获取FormState
+          autovalidateMode: AutovalidateMode.always, // 开启自动校验
           child: Column(
             children: <Widget>[
               TextFormField(
@@ -71,13 +71,19 @@ class _FormTest extends State<FormTest>{
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: RaisedButton(
-                        padding: EdgeInsets.all(15.0),
-                        child: Text("登录"),
-                        color: Theme
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme
                             .of(context)
                             .primaryColor,
-                        textColor: Colors.white,
+                          minimumSize: Size(88, 36),
+                          padding: EdgeInsets.all(15.0),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(2)),
+                          ),
+                          textStyle: TextStyle(color: Colors.white),
+                        ),
+                        child: Text("登录"),
                         onPressed: () {
                           //在这里不能通过此方式获取FormState，context不对
                           //print(Form.of(context));

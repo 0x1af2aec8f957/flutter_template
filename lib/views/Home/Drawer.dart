@@ -19,9 +19,9 @@ class LeftDrawer extends StatelessWidget {
               padding: EdgeInsets.only(top: 90.0),
               child: Column(
                   children: <Widget>[
-                    FlatButton(
+                    TextButton(
                         child: Text('示例'),
-                        textColor: Colors.blue,
+                        style: TextButton.styleFrom(textStyle: const TextStyle(color: Colors.blue)),
                         onPressed: () => Navigator.of(context).pushNamed("example")
                     ),
                     Row(
@@ -31,9 +31,9 @@ class LeftDrawer extends StatelessWidget {
                           fit: BoxFit.contain, // otherwise the logo will be tiny
                           child: const FlutterLogo(),
                         ),
-                        FlatButton(
+                        TextButton(
                             child: Text('关于'),
-                            textColor: Colors.blue,
+                            style: TextButton.styleFrom(textStyle: const TextStyle(color: Colors.blue)),
                             onPressed: () {
                               //导航到新路由
                               // Navigator.pushNamed(context, "about", arguments: <String, String>{'info': 'about'});

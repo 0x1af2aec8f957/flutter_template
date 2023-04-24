@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show SystemUiOverlayStyle;
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class CustomTheme {
   static ThemeData light = ThemeData( // 深色
@@ -28,6 +29,7 @@ abstract class CustomTheme {
       cursorColor: Colors.black, // 文本框中光标的颜色，如TextField
       selectionHandleColor: Colors.black,  // 用于调整当前选定的文本部分的句柄的颜色。
     ),
+    fontFamily: GoogleFonts.lato().fontFamily,
     backgroundColor: Color(0xFFECECED), // 与主色形成对比的颜色，例如用作进度条的剩余部分。
     dialogBackgroundColor: Colors.white, // Dialog 元素的背景颜色
     indicatorColor: const Color(0xFF27C08B), // 选项卡中选定的选项卡指示器的颜色。

@@ -32,13 +32,13 @@ class _Example extends /*StatelessWidget*/ State<Example> {
             title: new Text("提示"),
             content: new Text("无相关路由"),
             actions: <Widget>[
-              new FlatButton(
+              new TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
                 child: new Text("确认"),
               ),
-              new FlatButton(
+              new TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

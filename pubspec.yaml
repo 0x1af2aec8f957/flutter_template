@@ -54,6 +54,7 @@ dependencies:
   # image_picker: 0.8.4+2 # 图库
   flutter_xupdate: ^2.0.1 # Android应用内升级
   pub_semver: ^2.1.0 # 版本约束检查
+  google_fonts: ^4.0.3
 
 dev_dependencies:
   flutter_test:

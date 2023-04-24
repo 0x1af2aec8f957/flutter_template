@@ -29,7 +29,7 @@ class CustomSliderLess extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Stack(
-      overflow: Overflow.visible,
+      clipBehavior: Clip.none,
       children: [
         Positioned(
           top: 0,
@@ -49,7 +49,7 @@ class CustomSliderLess extends StatelessWidget{
                       color: activeTrackColor
                   ),
                   child: Stack(
-                    overflow: Overflow.visible,
+                    clipBehavior: Clip.none,
                     children: [
                       Positioned(
                         right: 0,

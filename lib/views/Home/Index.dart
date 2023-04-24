@@ -67,9 +67,9 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
       drawer: LeftDrawer(), //抽屉
       bottomNavigationBar: BottomNavigationBar( // 底部导航
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('首页')),
-          BottomNavigationBarItem(icon: Icon(Icons.book), title: Text('其它')),
-          BottomNavigationBarItem(icon: Icon(Icons.android), title: Text('其它')),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '首页'),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: '其它'),
+          BottomNavigationBarItem(icon: Icon(Icons.android), label: '其它'),
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.blue,
