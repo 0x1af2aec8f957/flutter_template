@@ -55,6 +55,7 @@ dependencies:
   flutter_xupdate: ^2.0.1 # Android应用内升级
   pub_semver: ^2.1.0 # 版本约束检查
   google_fonts: ^4.0.3
+  shelf_proxy: ^1.0.4
 
 dev_dependencies:
   flutter_test:
