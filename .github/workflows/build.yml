@@ -1,0 +1,70 @@
+name: APP打包 # 工作流名称
+
+on:
+  push: # 当 push 到 main 分支，或者创建以 v 开头的 tag 时触发
+    paths-ignore: # 忽略触发工作流的文件
+      - 'README.md'
+    branches:
+      - test # 推送更改到 main 分支时触发
+    tags:
+      - v* # 创建以 v 开头的 tag 时触发
+
+env: # 环境变量
+  REGISTRY: ghcr.io # Github Packages 的 host 地址
+  IMAGE_NAME: ${{ github.repository }} # 镜像名称
+
+jobs: # 工作流程
+  build:
+    runs-on: macos-latest
+    permissions: # GITHUB_TOKEN 设置时授予的操作权限
+      contents: write
+      discussions: write
+    steps: # 工作流运行步骤
+      - name: 切换分支
+        uses: actions/checkout@v3 # 参考分支，doc: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#example-using-versioned-actions
+
+      - name: 配置 JAVA 环境
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+          
+      - name: 构建 ANDROID 应用
+        id: flutter-build-android
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          # flutter-version: '3.10.5'
+      - run: |
+          flutter create --platforms=android .
+          flutter pub get
+          flutter test
+          flutter build apk --release
+
+      - name: 构建 IOS 应用
+        id: flutter-build-ios
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          # flutter-version: '3.10.5'
+          architecture: x64
+      - run: |
+          flutter create --platforms=ios .
+          flutter pub get
+          flutter test
+          flutter build ios --release --no-codesign
+          cd ./build/ios/iphoneos
+          mkdir -p ./Payload
+          mv ./Runner.app ./Payload
+          zip -r ./app-release.ipa ./Payload
+
+      - name: 上传文件到 Github Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/') # 只有 tag 触发时才执行
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref || github.sha }}
+          # body_path: ${{ github.workspace }}-CHANGELOG.txt
+          files: |
+            ./build/ios/iphoneos/app-release.ipa
+            ./build/app/outputs/flutter-apk/app-release.apk
