@@ -5,7 +5,7 @@ on:
     paths-ignore: # 忽略触发工作流的文件
       - 'README.md'
     branches:
-      - test # 推送更改到 main 分支时触发
+      - main # 推送更改到 main 分支时触发
     tags:
       - v* # 创建以 v 开头的 tag 时触发
 
