@@ -29,29 +29,20 @@ jobs: # 工作流程
           distribution: 'zulu'
           java-version: '11'
           
-      - name: 构建 ANDROID 应用
-        id: flutter-build-android
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          # flutter-version: '3.10.5'
-      - run: |
-          flutter create --platforms=android .
-          flutter pub get
-          flutter test
-          flutter build apk --release
-
-      - name: 构建 IOS 应用
-        id: flutter-build-ios
+      - name: 构建 ANDROID+IOS 应用
+        id: flutter-build-android-ios
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           # flutter-version: '3.10.5'
           architecture: x64
-      - run: |
-          flutter create --platforms=ios .
+      - run: | # 创建平台代码，并获取依赖、测试语法
+          flutter create --platforms=android,ios .
           flutter pub get
           flutter test
+      - run: | # 构建 Android
+          flutter build apk --release
+      - run: | # 构建 IOS
           flutter build ios --release --no-codesign
           cd ./build/ios/iphoneos
           mkdir -p ./Payload
