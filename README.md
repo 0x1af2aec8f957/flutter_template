@@ -184,8 +184,12 @@ flutter run # 运行项目，需要设备支持(可通过`flutter devices`获取
 通过增加选项`--obfuscate`获得混淆二进制文件，通过增加选项`--split-debug-info`显著减小[代码大小](https://docs.flutter.dev/perf/app-size)。
 ```bash
 flutter build apk --obfuscate --release --split-debug-info=build/app/outputs/symbols #Android打包
-flutter build ipa --obfuscate --release --split-debug-info=build/app/outputs/symbols #Ios打包
+flutter build ipa --obfuscate --release --split-debug-info=build/ios/symbols #Ios打包
 ```
+
+###### `flutter build ios --release`生成的`Archive`会比`flutter build ipa --release`大数倍（通常会大~10倍）
+
+> 这与`LLVM bitcode`的工作方式有关，有关该问题的解释：[GitHub·flutter](https://github.com/flutter/flutter/issues/47101#issuecomment-567522077)  
 
 ###### 在Android上执行`flutter build apk`或`flutter build ipa`，在当前仓库上传时的最新`flutter`版本有致命的`BUG`，但官方尚未修复。
 
