@@ -127,7 +127,8 @@ class SmallProgram implements ProgramType{
         .addMiddleware(apiProxyHandler) // 代理请求
         .addHandler(createStaticHandler(path.join((await programDir).path), defaultDocument: 'index.html')); // 静态文件中间件
 
-    return io.serve(handler, host, port).then((HttpServer _server) {
+    return io.serve(handler, host, port, shared: true).then((HttpServer _server) {
+      _server.idleTimeout = null; // doc: https://api.dart.dev/stable/3.0.6/dart-io/HttpServer/idleTimeout.html
       server = _server; // 服务对象保存
       final Uri serverAddress = Uri( // 小程序服务运行服务地址
         scheme: 'http',
