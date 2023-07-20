@@ -102,10 +102,10 @@ class SmallProgram { // isolate 启动参数
     final tmpFile = File(path.join(dir.path, '${name}.tmp.zip')); // 临时文件
 
     
-    final snackToast = ScaffoldMessenger.of(globalContext).showSnackBar(SnackBar(content: StatefulBuilder(builder: (_context, _setState){ // 更新提示信息
+    final snackToast = Talk.snackBar(StatefulBuilder(builder: (_context, _setState){ // 更新提示信息
       updateSnackBar = _setState;
       return Text('正在下载更新包：${_progress}%');
-    },), duration: Duration(days: 1)));
+    },), duration: Duration(days: 1));
 
     await _http.downloadUri(_remoteZipFileAddress, tmpFile.path, onReceiveProgress: (int _count, int _total) { // 下载更新资源包
       print('正在下载更新包：$_count/$_total');

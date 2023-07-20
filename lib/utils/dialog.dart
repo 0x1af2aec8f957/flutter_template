@@ -58,10 +58,10 @@ abstract class Talk {
     Future.delayed(Duration(seconds: duration ?? 2), () => entry?.remove());
   }
 
-  static void snackBar(String text, {SnackBarAction action, Duration duration}) { // 底部提示信息
-    ScaffoldMessenger.of(globalContext)
-      ..removeCurrentSnackBar() // 移除上一次的snackBar
-      ..showSnackBar(SnackBar(content: Text(text), duration: duration, action: action));
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {SnackBarAction action, Duration duration}) { // 底部提示信息
+    final instance = ScaffoldMessenger.of(globalContext)
+      ..removeCurrentSnackBar(); // 移除上一次的snackBar
+    return instance.showSnackBar(SnackBar(content: content, duration: duration, action: action));
   }
 
   static void loading([String text]) {

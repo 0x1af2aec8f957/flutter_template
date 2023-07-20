@@ -88,7 +88,7 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
                               )]
                           ),
                           child: Text(
-                            '${snapshot.data.appName} 正在保护你的资产安全',
+                            '${snapshot.data.appName} 正在运行',
                             textAlign: TextAlign.center,
                             style: TextStyle(color: Colors.grey[600], fontSize: 20, decoration: TextDecoration.none),
                           ),
