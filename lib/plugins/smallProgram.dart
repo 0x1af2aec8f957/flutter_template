@@ -146,7 +146,7 @@ class SmallProgram { // isolate 启动参数
       .addHandler(routes) // 代理访问处理器
     ;
 
-    return await io.serve(handler, host, port).then((HttpServer _server){
+    return await io.serve(handler, host, port, shared: true /* 在需要销毁上一个服务，马上创建下一个相同的服务时必须要开启 */).then((HttpServer _server){
       _server.idleTimeout = null; // 服务空闲超时时间：https://api.dart.dev/stable/3.0.6/dart-io/HttpServer/idleTimeout.html
       print('小程序服务运行在：${_server.address.address}:${_server.port}');
       return _server;
