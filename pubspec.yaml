@@ -56,6 +56,7 @@ dependencies:
   pub_semver: ^2.1.0 # 版本约束检查
   google_fonts: ^4.0.3
   shelf_proxy: ^1.0.4
+  shelf_router: ^1.1.4
 
 dev_dependencies:
   flutter_test:
