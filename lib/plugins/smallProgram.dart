@@ -1,6 +1,7 @@
 /// H5小程序
+/// NOTE: 手机端运行服务需要配合 WidgetsBindingObserver 使用，有关该问题的讨论：https://github.com/dart-lang/shelf/issues/322#issuecomment-1639830046
 import 'dart:io';
-import 'dart:isolate';
+// import 'dart:isolate';
 import 'package:dio/dio.dart';
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +29,7 @@ class SmallProgram { // isolate 启动参数
   final bool hasLocalBundle; // 是否有本地资源包
   Future<bool> get isStaticAssetsValid async => File(path.join((await staticAssetsDirectory).path, 'index.html')).existsSync(); // 小程序静态资源是否有效，必须要包含一个入口文件：index.html
   final Future<bool> Function(File localZipFile, void Function(Uri url) updateRemoteZipFileAddress) shouldUpdate; // 是否需要更新, NOTE: 如果需要更新，则必需要调用 updateRemoteZipFileAddress 方法更新远程资源包地址
+  final Future<void> Function(Uri url) onUpdated; // 更新成功后的回调
   Future<Directory> get applicationDirectory => getApplicationDocumentsDirectory(); // 应用程序包目录(沙盒目录，读写无需单独的权限申请)，该文件夹一定存在
   Future<Directory> get downloadsDirectory => applicationDirectory.then((_dir) { // 小程序下载目录
     final dir = Directory(path.join(_dir.path, 'downloads')); // 下载目录
@@ -65,6 +67,7 @@ class SmallProgram { // isolate 启动参数
     this.port = 8089,
     @required this.shouldUpdate,
     this.hasLocalBundle = false,
+    this.onUpdated,
   });
 
   Future<void> handleDecompression([isRemoveOldDir = true]) async {
@@ -129,7 +132,8 @@ class SmallProgram { // isolate 启动参数
   }
 
   Future<HttpServer> runServer() async {
-    if (await shouldUpdate(await localZipFile, (Uri url) => _remoteZipFileAddress = url)) await updateLocalZipFile(); // 如果需要更新，则更新资源包
+    final isNeedUpdate = await shouldUpdate(await localZipFile, (Uri url) => _remoteZipFileAddress = url); // 是否需要更新
+    if (isNeedUpdate) await updateLocalZipFile(); // 如果需要更新，则更新资源包（这里每次都会先执行，webview默认会缓存资源，如果要解决缓存问题可以在此处调用：controller.clearCache()）
     if (!await isStaticAssetsValid) await handleDecompression(); // 如果静态资源无效（在更新之后仍然无效），则解压资源包
 
     final staticDirectory = await staticAssetsDirectory;
@@ -149,6 +153,7 @@ class SmallProgram { // isolate 启动参数
     return await io.serve(handler, host, port, shared: true /* 在需要销毁上一个服务，马上创建下一个相同的服务时必须要开启 */).then((HttpServer _server){
       _server.idleTimeout = null; // 服务空闲超时时间：https://api.dart.dev/stable/3.0.6/dart-io/HttpServer/idleTimeout.html
       print('小程序服务运行在：${_server.address.address}:${_server.port}');
+      if (isNeedUpdate && onUpdated != null) onUpdated(Uri(scheme: 'http', host: _server.address.host, port: _server.port));
       return _server;
     });
   }
