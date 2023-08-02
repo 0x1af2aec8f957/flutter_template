@@ -189,8 +189,8 @@ flutter build ipa --obfuscate --release --split-debug-info=build/ios/symbols #Io
 
 ###### `flutter build ios --release`生成的`Archive`会比`flutter build ipa --release`大数倍（通常会大~10倍）
 
-> 这与`LLVM bitcode`的工作方式有关，有关该问题的解释：[GitHub·flutter](https://github.com/flutter/flutter/issues/47101#issuecomment-567522077)
-> [Flutter·3.3.x](https://github.com/flutter/flutter/wiki/Creating-an-iOS-Bitcode-enabled-app)是支持`IOS Bitcode`的最后一个稳定版本，后续的版本将不会有该问题。
+> 这与`LLVM bitcode`的工作方式有关，有关该问题的解释：[GitHub·flutter](https://github.com/flutter/flutter/issues/47101#issuecomment-567522077)  
+> [Flutter·3.3.x](https://github.com/flutter/flutter/wiki/Creating-an-iOS-Bitcode-enabled-app)是支持`IOS Bitcode`的最后一个稳定版本，后续的版本将不会有该问题。  
 ```bash
 # 由于某些原因无法升级flutter版本，可以使用xrun手动剔除bitcode
 cd @workDir/Runner.app/Frameworks/Flutter.framework
