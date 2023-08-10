@@ -18,7 +18,7 @@ final BaseOptions options = BaseOptions(// 单次请求的配置[Options]，可�
     'platform': AppConfig.platform, // 平台
   },
   // path: '', // 请求路径，如果 `path` 以 "http(s)"开始, 则 `baseURL` 会被忽略； 否则将会和baseUrl拼接出完整的的url. 已废弃，options有效。
-  contentType: Headers.formUrlEncodedContentType, // 请求的Content-Type，默认值是"application/json; charset=utf-8"
+  contentType: Headers.jsonContentType, // 请求的Content-Type，默认值是"application/json; charset=utf-8"
   responseType: ResponseType.json, // 期望以那种格式(方式)接受响应数据
   // responseType: ResponseType.plain, // 签名专用
   validateStatus: /*ValidateStatus*/(status) => status == 200,
