@@ -118,7 +118,7 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
       (controller.platform as WebKitWebViewController)
         ..setInspectable(true) // ios debug
         ..setAllowsBackForwardNavigationGestures(true); // 允许手势返回
-      WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},); // 允许自动播放
+      WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true); // 允许自动及内联播放
     }
   }
 
