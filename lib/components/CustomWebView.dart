@@ -5,6 +5,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:image/image.dart' as image;
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -136,7 +138,13 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
         body: SafeArea(
           child: isLoading
             ? Center(child: CircularProgressIndicator())
-            : WebViewWidget(controller: controller,),
+            : WebViewWidget(
+                controller: controller,
+                // 允许长按复制文本
+                gestureRecognizers: [
+                  Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()),
+                ].toSet(),
+            ),
         ),
       ),
     );
