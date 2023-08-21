@@ -314,3 +314,10 @@ const String originImageUrl = 'https://picsum.photos/id/237/200/300';
 final String imageUrl = Uri.parse(originImageUrl).replace(scheme: 'http').toString(); // 将https替换成http
 const imageWidget = Image.network(imageUrl);
 ```
+
+##### `flutter-webview`中`input type="file"`，iOS设备上拍照闪退：
+> 需要在`info.plist`中添加对应的相机权限
+```conf
+<key>NSCameraUsageDescription</key>
+<string>$(PRODUCT_NAME) camera description.</string>
+```
