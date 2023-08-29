@@ -321,3 +321,27 @@ const imageWidget = Image.network(imageUrl);
 <key>NSCameraUsageDescription</key>
 <string>$(PRODUCT_NAME) camera description.</string>
 ```
+
+##### `flutter build xcarchive --no-tree-shake-icons --release --obfuscate --release --split-debug-info=build/app/outputs/symbols`报错：
+```error
+Showing Recent Messages
+rsync error: some files could not be transferred (code 23) at /AppleInternal/Library/BuildRoots/d9889869-120b-11ee-b796-7a03568b17ac/Library/Caches/com.apple.xbs/Sources/rsync/rsync/main.c(996) [sender=2.6.9]
+```
+['解决方案'](https://developer.apple.com/forums/thread/725230?answerId=746897022#746897022)
+```bash
+# @workDir/ios/Pods/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh
+# 将 source="$(readlink "${source}")" 替换为 source="$(readlink -f "${source}")"
+...
+  if [ -L "${source}" ]; then
+    echo "Symlinked..."
+    source="$(readlink -f "${source}")"
+  fi
+...
+```
+
+##### `flutter run ios -d xxx`警告：
+> 该警告会导致App启动非常缓慢。
+```error
+(lldb) warning: libobjc.A.dylib is being read from process memory. This indicates that LLDB could not find the on-disk shared cache for this device. This will likely reduce debugging performance.
+```
+[解决方案](https://github.com/flutter/flutter/issues/126588#issuecomment-1545825673)
