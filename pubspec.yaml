@@ -44,7 +44,7 @@ dependencies:
   provider: ^6.0.1 # 状态管理[实现基类: InheritedWidget]
   # rxdart: ^0.27.1 # 状态管理[实现基类: Stream]
   mqtt_client: ^10.0.0 # mqtt推送
-  device_info: ^2.0.2 # 设备信息
+  device_info_plus: ^9.0.3 # 设备信息
   url_launcher: ^6.1.12 # 吊起外部资源[支持电话、短信等]
   # qr_flutter: ^4.0.0 # 生成二维码
   # scan: ^1.4.3 # 扫描二维码
