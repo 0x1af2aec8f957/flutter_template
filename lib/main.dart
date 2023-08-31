@@ -41,10 +41,6 @@ class _App extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // 设置状态栏颜色
-    ));
-
     // ScreenUtil.init(context, width: 357, height: 667); // 设计图大小
 
     return NotificationListener<ChangeLocale>(
