@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 // import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/noteScript/flutter_screenutil
