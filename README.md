@@ -346,7 +346,7 @@ rsync error: some files could not be transferred (code 23) at /AppleInternal/Lib
 ```
 [解决方案](https://github.com/flutter/flutter/issues/126588#issuecomment-1545825673)
 
-##### 由于依赖项未更新导致的`Command PhaseScriptExecution failed with a nonzero exit code`：
+##### `flutter run ios --release`由于依赖项未更新导致的`Command PhaseScriptExecution failed with a nonzero exit code`：
 1. Delete your Podfile.lock (I like to use the command '-rm -rf Podfile.lock' on the terminal for this)
 2. Delete your Pods folder (I like to use the command '-rm -rf Pods' in the terminal for this)
 3. Delete your .xcworkspace
