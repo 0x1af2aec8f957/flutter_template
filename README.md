@@ -352,3 +352,32 @@ rsync error: some files could not be transferred (code 23) at /AppleInternal/Lib
 3. Delete your .xcworkspace
 4. Pod install
 5. Clear your project into XCode> Product> Clean Build Folder
+
+##### 将flutter从2.X升级到3.X报错：
+```error
+[!] Invalid `Podfile` file: undefined method `exists?' for File:Class.
+
+ #  from /Volumes/Work/kapok/kapok-app/ios/Podfile:34
+ #  -------------------------------------------
+ #    pod 'Firebase/Analytics'
+ >    flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+ #  end
+ #  -------------------------------------------
+```
+解决方案：
+```bash
+# 修改flutter-sdk中的文件，适配Ruby最新语法
+# flutter/packages/flutter_tools/bin/pod_helper.rb
+def flutter_parse_plugins_file(file, platform)
+  file_path = File.expand_path(file)
+  return [] unless File.exist? file_path # 原来的代码：return [] unless File.exists? file_path
+
+  dependencies_file = File.read(file)
+  dependencies_hash = JSON.parse(dependencies_file)
+
+  # dependencies_hash.dig('plugins', 'ios') not available until Ruby 2.3
+  return [] unless dependencies_hash.has_key?('plugins')
+  return [] unless dependencies_hash['plugins'].has_key?('ios')
+  dependencies_hash['plugins'][platform] || []
+end
+```
