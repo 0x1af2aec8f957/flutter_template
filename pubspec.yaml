@@ -59,6 +59,7 @@ dependencies:
   image: ^4.0.17
   shelf_proxy: ^1.0.4
   shelf_router: ^1.1.4
+  belatuk_range_header: ^6.0.0
 
 dev_dependencies:
   flutter_test:
