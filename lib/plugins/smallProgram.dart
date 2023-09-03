@@ -203,14 +203,14 @@ class SmallProgram { // isolate 启动参数
         print('关联的缓存头文件路径：${header.path}');
         final rangeHeader = RangeHeader.parse(requestHeaders['range'] ?? 'bytes=0-');
         final rangeHeaderStart = rangeHeader.items.last.start;
-        final rangeHeaderEnd = rangeHeader.items.last.end == -1 ? body.length : rangeHeader.items.last.end;
+        final rangeHeaderEnd = rangeHeader.items.last.end == -1 ? body.length - 1 : rangeHeader.items.last.end;
 
         if (rangeHeader.rangeUnit != 'bytes') return shelf.Response.badRequest(body: 'rangeUnit 仅支持 bytes');
         if (rangeHeader.items.length > 1) return shelf.Response.badRequest(body: '不支持 Multipart ranges');
 
-        headers['content-length'] = (rangeHeaderEnd - rangeHeaderStart - 1).toString(); // 添加 Content-Length 响应头
+        headers['content-length'] = (rangeHeaderEnd - rangeHeaderStart).toString(); // 添加 Content-Length 响应头
         headers['accept-ranges'] = rangeHeader.rangeUnit!; // 添加 Accept-Ranges 响应头
-        headers['content-range'] = '${rangeHeader.rangeUnit} ${rangeHeaderStart}-${rangeHeaderEnd - 1}/${body.length}'; // 添加 Content-Range 响应头
+        headers['content-range'] = '${rangeHeader.rangeUnit} ${rangeHeaderStart}-${rangeHeaderEnd}/${body.length}'; // 添加 Content-Range 响应头
         return shelf.Response(isStreamMediaMimeTypes ? 206/* 安卓设备 range 请求返回 200 会导致无法正常播放 */ : 200, body: body.sublist(rangeHeaderStart, rangeHeaderEnd), headers: headers);
       }
 
