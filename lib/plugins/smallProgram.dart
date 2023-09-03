@@ -222,8 +222,8 @@ class SmallProgram { // isolate 启动参数
       // requestHeaders.remove('range');
 
       return Future.sync(() => innerHandler(request.change(headers: requestHeaders))).then((response) async {
-        final _requestCacheControls = request.headersAll['Cache-Control'] ?? []; // 实际请求指令集
-        final _responseCacheControls = response.headersAll['Cache-Control'] ?? []; // 实际响应指令集
+        final _requestCacheControls = request.headersAll['cache-control'] ?? []; // 实际请求指令集
+        final _responseCacheControls = response.headersAll['cache-control'] ?? []; // 实际响应指令集
         final isCache = responseCacheControls.any(_responseCacheControls.contains) || requestCacheControls.any(_requestCacheControls.contains); // 是否需要缓存
 
         if (!isCache) return response; // 如果不需要缓存，则直接返回
