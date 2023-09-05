@@ -153,7 +153,8 @@ class MainTransformer extends BackgroundTransformer { // 主要的转换器,在�
 }
 
 class Http {
-  final Dio _dio = Dio(options);
+  static late final original = Dio(); // 原始的 dio 实例
+  late final Dio _dio = Dio(options);
   late String basePath; // 基准路径
 
   Http({ required String basePath }){
