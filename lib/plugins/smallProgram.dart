@@ -153,6 +153,7 @@ class SmallProgram { // isolate 启动参数
     final routes = router.Router(notFoundHandler: createStaticHandler(staticDirectory.path, defaultDocument: 'index.html')) // 模拟 connect-history-api-fallback 中间件。
       ..all('/api/<ignored|.*>', proxyHandler(serverAddress)) // 代理 /api 中间件
       ..all('/image/<ignored|.*>', proxyHandler(serverAddress)) // 代理 /image 中间件
+      // ..get('/video.mp4', (shelf.Request request) => rootBundle.load('assets/video.mp4').then((value) => shelf.Response(200, body: value.buffer.asUint8List(), headers: {'content-type': 'video/mp4'}))) // 视频文件
     ;
 
     final handler = const shelf
@@ -190,7 +191,7 @@ class SmallProgram { // isolate 启动参数
         await _http.downloadUri(
           request.requestedUri.replace(scheme: serverAddress.scheme, host: serverAddress.host, port: serverAddress.port),
           file.path,
-        ).then((value) {value.headers.map;
+        ).then((value) {
           print('缓存主体文件下载完成[midea-size -> ${file.readAsBytesSync().length}]：${file.path}');
         });
       }
