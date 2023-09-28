@@ -22,7 +22,9 @@ class CustomWebView extends StatefulWidget {
 class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
   DateTime? lastPopTime; // 上次点击返回键的时间
   bool isLoading = true; // 是否正在加载中
-  final WebViewController controller = WebViewController();
+  final WebViewController controller = WebViewController(
+    WebViewPlatform.instance is WebKitWebViewPlatform ? WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true/* 允许自动及内联播放 */) : const PlatformWebViewControllerCreationParams()
+  );
   final _picker = ImagePicker();
 
 Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
@@ -116,11 +118,9 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
     }
 
     if (controller.platform is WebKitWebViewController) {
-      // WebKitWebViewControllerCreationParams();
       (controller.platform as WebKitWebViewController)
         ..setInspectable(true) // ios debug
         ..setAllowsBackForwardNavigationGestures(true); // 允许手势返回
-      WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true); // 允许自动及内联播放
     }
   }
 
