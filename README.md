@@ -381,3 +381,6 @@ def flutter_parse_plugins_file(file, platform)
   dependencies_hash['plugins'][platform] || []
 end
 ```
+
+##### 帮助
+[Buy me a coffee](https://www.buymeacoffee.com/0x1af2aec8f957)
