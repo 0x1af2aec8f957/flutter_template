@@ -22,44 +22,53 @@ dependencies:
     sdk: flutter
   flutter_localizations: # flutter国际化
     sdk: flutter
-  cupertino_icons: ^1.0.3 # cupertinoIcons
-  webview_flutter: ^4.2.2 # webView
-  # calculate: ^0.0.11 # double类计算支持
-  cached_network_image: ^3.1.0 #图片缓存
-  path_provider: ^2.0.15 # 获取应用程序目录
-  dio: ^5.3.2 # http支持
-  shared_preferences: ^2.0.6 # 数据持久化存储
+  cupertino_icons: ^1.0.6 # cupertinoIcons
+  webview_flutter: ^4.4.1 # webView
+  # decimal: ^2.3.3 # double类计算支持
+  cached_network_image: ^3.3.0 #图片缓存
+  path_provider: ^2.1.1 # 获取应用程序目录
+  dio: ^5.3.3 # http支持
+  shared_preferences: ^2.2.2 # 数据持久化存储
   package_info_plus: ^3.1.2 # 应用程序包描述信息
-  yaml: ^3.1.0 # yml文件内容解析器
-  file: ^6.1.4 # 内存文件系统
+  yaml: ^3.1.2 # yml文件内容解析器
+  file: ^7.0.0 # 内存文件系统
   # cipher2: ^0.3.5 # aes-128-cbc加密[由于版本关系在Android X设备无法使用]
-  # pointycastle: ^1.0.2 # 加密基础库
-  encrypt: ^5.0.1 # aes-128-cbc加密
-  archive: ^3.1.5 # 解压缩
-  permission_handler: ^10.4.3 # 动态权限申请[android]
-  shelf: ^1.1.4 # Web服务器
-  shelf_static: ^1.1.0 # shelf静态资源中间件
-  # bot_toast: ^3.0.0 # 全局的弹框
-  # fluro: ^1.6.3 # 路由管理工具[替代官方路由]
-  provider: ^6.0.1 # 状态管理[实现基类: InheritedWidget]
-  # rxdart: ^0.27.1 # 状态管理[实现基类: Stream]
-  mqtt_client: ^10.0.0 # mqtt推送
-  device_info_plus: ^9.0.3 # 设备信息
-  url_launcher: ^6.1.12 # 吊起外部资源[支持电话、短信等]
-  # qr_flutter: ^4.0.0 # 生成二维码
-  # scan: ^1.4.3 # 扫描二维码
-  # image_gallery_saver: 1.6.9 # 保存图片到相册
-  jpush_flutter: ^2.4.7 # 激光推送
-  connectivity_plus: ^4.0.2 # 网络链接状态
-  # wakelock: ^0.5.3+3 # App常亮显示
-  image_picker: ^1.0.1 # 图库
+  # pointycastle: ^3.7.3 # 加密基础库
+  encrypt: ^5.0.3 # aes-128-cbc加密
+  archive: ^3.4.6 # 解压缩
+  permission_handler: ^11.0.1 # 动态权限申请[android]
+  shelf: ^1.4.1 # Web服务器
+  shelf_static: ^1.1.2 # shelf静态资源中间件
+  # overlay_support: ^2.1.0 # 顶部通知
+  # bot_toast: ^4.1.3 # 全局的弹框
+  # fluro: ^2.0.5 # 路由管理工具[替代官方路由]
+  provider: ^6.0.5 # 状态管理[实现基类: InheritedWidget]
+  # rxdart: ^0.27.7 # 状态管理[实现基类: Stream]
+  pinput: ^3.0.1 # 自动填充短信验证码
+  # mqtt_client: ^10.0.0 # mqtt推送
+  device_info_plus: ^9.1.0 # 设备信息
+  url_launcher: ^6.2.1 # 吊起外部资源[支持电话、短信等]
+  # qr_flutter: ^4.1.0 # 生成二维码
+  # scan: ^1.6.0 # 扫描二维码
+  # image_gallery_saver: ^2.0.3 # 保存图片到相册
+  # jpush_flutter: ^2.5.0 # 激光推送
+  connectivity_plus: ^5.0.1 # 网络链接状态
+  # wakelock: ^0.6.2 # App常亮显示
+  # image_cropper: ^5.0.0 # 图片裁剪
+  image_picker: ^1.0.4 # 图库
   flutter_xupdate: ^3.0.0 # Android应用内升级
-  pub_semver: ^2.1.0 # 版本约束检查
-  google_fonts: ^4.0.4
-  image: ^4.0.17
+  flutter_html: 3.0.0-beta.2 # html渲染成widget
+  # local_auth: ^2.1.7 #指紋/面部
+  pub_semver: ^2.1.4 # 版本约束检查
+  # google_fonts: ^6.1.0
+  image: ^4.1.3
+  lottie: ^2.7.0 # 解析并渲染 Adob​​e After Effects 动画
+  safe_device: ^1.1.4 # 检测设备安全
+  share_plus: ^7.2.1 # 分享应用
   shelf_proxy: ^1.0.4
   shelf_router: ^1.1.4
-  belatuk_range_header: ^6.0.0
+  belatuk_range_header: ^6.1.0
+  # uni_links: ^0.5.1 # schema 协议
 
 dev_dependencies:
   flutter_test:
