@@ -44,7 +44,7 @@ dependencies:
   # fluro: ^2.0.5 # 路由管理工具[替代官方路由]
   provider: ^6.0.5 # 状态管理[实现基类: InheritedWidget]
   # rxdart: ^0.27.7 # 状态管理[实现基类: Stream]
-  pinput: ^3.0.1 # 自动填充短信验证码
+  # pinput: ^3.0.1 # 自动填充短信验证码（自带输入框）
   # mqtt_client: ^10.0.0 # mqtt推送
   device_info_plus: ^9.1.0 # 设备信息
   url_launcher: ^6.2.1 # 吊起外部资源[支持电话、短信等]
