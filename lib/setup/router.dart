@@ -306,11 +306,11 @@ class CustomRouteDelegate extends RouterDelegate<String> with PopNavigatorRouter
 class CustomInformationRouteParser extends RouteInformationParser<String> {
   @override
   Future<String> parseRouteInformation(RouteInformation routeInformation) {
-    return SynchronousFuture(routeInformation.location!);
+    return SynchronousFuture(Uri.decodeComponent(routeInformation.uri.toString()));
   }
 
   @override
   RouteInformation restoreRouteInformation(String configuration) {
-    return RouteInformation(location: configuration);
+    return RouteInformation(uri: Uri.parse(configuration));
   }
 }
