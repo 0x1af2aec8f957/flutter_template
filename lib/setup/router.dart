@@ -240,7 +240,7 @@ class CustomRouteDelegate extends RouterDelegate<String> with PopNavigatorRouter
     arguments.addAll(routeObject.queryParameters); // 添加url参数
     if (_arguments != null) arguments['arguments'] = _arguments; // 添加flutter路由的参数
     final RouteSettings _settings = RouteSettings(name: name, arguments: arguments);
-    final String _name = _settings.name!;
+    final String? _name = _settings.name;
 
     if(!routes.containsKey(_name)) return null;
     return MaterialPageRoute(
