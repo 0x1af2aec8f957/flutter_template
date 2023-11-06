@@ -140,9 +140,8 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
             ? Center(child: CircularProgressIndicator())
             : WebViewWidget(
                 controller: controller,
-                // 允许长按复制文本
                 gestureRecognizers: [
-                  Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()),
+                  Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()), // 允许长按复制文本
                 ].toSet(),
             ),
         ),
