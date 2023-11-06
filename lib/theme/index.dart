@@ -59,7 +59,9 @@ abstract class CustomTheme {
         toolbarTextStyle: TextStyle(fontSize: 18, color: const Color(0xFF41414c), fontWeight: FontWeight.w500),
         titleTextStyle: TextStyle(fontSize: 18, color: const Color(0xFF41414c), fontWeight: FontWeight.w500)
     ), // 用于自定义Appbar的颜色、高度、亮度、iconTheme和textTheme的主题。
-    // BottomAppBarTheme bottomAppBarTheme, // 自定义BottomAppBar的形状、高度和颜色的主题。
+    bottomAppBarTheme: BottomAppBarTheme( // 自定义BottomAppBar的形状、高度和颜色的主题。
+      color: Colors.white, // BottomAppBar的默认颜色
+    ),
     colorScheme: ColorScheme.light().copyWith(
       // secondary: Colors.white, // 小部件的前景色(旋钮、文本、覆盖边缘效果等)。
       primary: const Color(0xFF27C08B),
