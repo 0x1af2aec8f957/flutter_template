@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/noteScript/flutter_screenutil
+// import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
 
 import './setup/config.dart';
 import './setup/lang.dart';
@@ -40,7 +40,7 @@ class _App extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    // ScreenUtil.init(context, width: 357, height: 667); // 设计图大小
+    // final double dpr = View.of(buildContext).devicePixelRatio; // 获取当前设备的像素比
 
     return NotificationListener<ChangeLocale>(
         onNotification: (notification) {
@@ -100,6 +100,7 @@ class _App extends State<App> {
   @override
   void initState() {
     super.initState();
+    // ScreenUtil.init(context, width: 357, height: 667); // 设计图大小
 
     SharedPreferences.getInstance().then((SharedPreferences prefs) {
       final savedLocale = prefs.getString('locale');
