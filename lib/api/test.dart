@@ -1,4 +1,5 @@
 import '../plugins/http.dart';
+import '../interface/test.dart' as model;
 
 final api = Http(basePath: '/api')();
 
@@ -9,5 +10,5 @@ abstract class Test {
   ///  print(r.runtimeType);
   ///  print(r);
   ///  });
-  static Future get test => api.get('/home/banner').then((r) => r.data);
+  static Future<model.Test> get test => api.get('/home/banner').then((result) => model.Test.fromJson(result.data));
 }
