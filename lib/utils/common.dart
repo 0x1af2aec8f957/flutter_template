@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardData;
 
+import '../setup/router.dart';
 import '../utils/dialog.dart';
 
 final methodChannel = MethodChannel('com.template.flutter');
@@ -65,3 +66,8 @@ Future<void> copy(String? text, { isToast = true }){ // 复制到粘贴板
 }
 
 Future<ClipboardData?> paste() => Clipboard.getData(Clipboard.kTextPlain);
+
+Future<void> openSchemaUri(Uri? uri) {
+  if (uri == null) return Future.error('不是从schema协议启动的，停止跳转');
+  return router.push('example');
+}

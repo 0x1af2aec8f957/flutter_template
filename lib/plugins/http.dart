@@ -39,6 +39,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // print("REQUEST[${options?.method}] => PATH: ${options?.path}");
+    final requestUri = Uri.parse(options.baseUrl);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final packageInfo = await AppConfig.packageInfo;
 
@@ -47,7 +48,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
       'version': packageInfo.version, // 版本号
     });
 
-    options.baseUrl += basePath;
+    options.baseUrl = requestUri.replace(pathSegments: [...requestUri.pathSegments, ...Uri.parse(basePath).pathSegments]).toString(); // 拼接基准路径
 
     return handler.next(options);
   }

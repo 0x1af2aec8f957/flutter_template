@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
 
+import '../utils/common.dart';
 import './setup/config.dart';
 import './setup/lang.dart';
 import './setup/router.dart';
@@ -110,6 +111,8 @@ class _App extends State<App> {
         final _savedLocale = savedLocale.split('_');
         changeLocale(Locale(_savedLocale.first, _savedLocale.last));
       }
+
+      // checkSchema(); // 检查是否是由 schema 启动
     });
   }
 
@@ -124,4 +127,18 @@ class _App extends State<App> {
 
     Provider.of<GlobalModel>(navigatorKey.currentState!.overlay!.context, listen: false).initData(); // 语言改变后拉取数据
   }
+
+  /* void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links
+    // schema example: example://example?userId=123
+      try {
+        getInitialUri().then(openSchemaUri); // 打开启动时的 uri
+
+        schemaStream ??= uriLinkStream.listen(openSchemaUri,  onError: (err) { // 监听 schema-uri 并 打开热启动的 schema-uri
+          // Handle exception by warning the user their action did not succeed
+        });
+      } on FormatException {
+        // Talk.toast(I18n.$t('common', 'parseError'));
+        print('schema 协议解析错误');
+      }
+  } */
 }
