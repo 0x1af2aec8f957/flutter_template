@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -11,21 +12,35 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomWebView extends StatefulWidget {
-  final String url;
+import '../utils/common.dart';
 
-  CustomWebView({Key? key, required this.url}) : super(key: key);
+typedef WebViewCreatedCallback = void Function(WebViewController controller); // 创建 WebView 回调
+typedef PageDOMContentChangeCallback = void Function(JavaScriptMessage message); // 页面 DOM 发生变更执行
+typedef PageSystemOverlayStyleChange = void Function(Color color, SystemUiOverlayStyle systemOverlayStyle); // 页面 DOM 主题色发生变更执行
+
+class CustomWebView extends StatefulWidget {
+  final String? url;
+  final WebViewCreatedCallback? onWebViewCreated;
+
+  // 自定义扩展事件，不需要依赖对接WEB才能完成的操作
+  final PageDOMContentChangeCallback? onPageDOMContentChangeCallback; // 页面DOM发生变更执行
+  final PageSystemOverlayStyleChange? onPageSystemOverlayStyleChange; // DOM主题色发生变更执行
+
+  CustomWebView({
+    Key? key,
+    this.url,
+    this.onWebViewCreated,
+    this.onPageDOMContentChangeCallback,
+    this.onPageSystemOverlayStyleChange,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _CustomWebView();
 }
 class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
-  DateTime? lastPopTime; // 上次点击返回键的时间
-  bool isLoading = true; // 是否正在加载中
-  final WebViewController controller = WebViewController.fromPlatformCreationParams(
-    WebViewPlatform.instance is WebKitWebViewPlatform ? WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true/* 允许自动及内联播放 */) : const PlatformWebViewControllerCreationParams()
-  );
+  final WebViewController controller = WebViewController.fromPlatformCreationParams(WebViewPlatform.instance is WebKitWebViewPlatform ? WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true/* 允许自动及内联播放 */) : const PlatformWebViewControllerCreationParams());
   final _picker = ImagePicker();
+  bool isLoading = true; // 是否正在加载中
 
 Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
     print('AndroidWebViewController.FileSelectorParams.acceptTypes:  ${params.acceptTypes}');
@@ -80,14 +95,30 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
           },
           onPageStarted: (String url) {},
           onPageFinished: (String url) {
+            controller.runJavaScript(""" // 给 webview 提供监听 DOM 元素变化的能力
+                /// DOM变化监听
+                var ___observer = new MutationObserver(function(mutationList){
+                  if (typeof window._DOMContentChange !== 'undefined') window._DOMContentChange.postMessage(JSON.stringify(mutationList||[]));
+                });
+                ___observer.observe(document.body, { childList: true, attributes: true, subtree: true });
+                window.addEventListener('beforeunload', function(event){ // 用户离开前
+                  ___observer.disconnect();
+                  // Cancel the event as stated by the standard.
+                  event.preventDefault();
+                  // Chrome requires returnValue to be set.
+                  event.returnValue = '';
+                });
+
+                /// DOM主题色监听
+                var ___el = Array.from(document.getElementsByTagName('head')).shift().querySelector("[name='theme-color']");
+                if (___el !== null && typeof ___el !== 'undefined' && typeof window._SystemOverlayStyleChange !== 'undefined') window._SystemOverlayStyleChange.postMessage(___el.getAttribute('content'));
+            """);
+
             setState(() {
               isLoading = false;
             });
           },
           onWebResourceError: (WebResourceError error) {
-            // setState(() {
-            //   isLoadFail = true;
-            // });
             print('onWebResourceError: ${error.description}');
           },
           onNavigationRequest: (NavigationRequest request) async {
@@ -104,10 +135,17 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.url))
-      ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
+      ..addJavaScriptChannel('_DOMContentChange', onMessageReceived: (message) { // DOM 变化
+        if (widget.onPageDOMContentChangeCallback != null) widget.onPageDOMContentChangeCallback?.call(message);
+      })
+      ..addJavaScriptChannel('_SystemOverlayStyleChange', onMessageReceived: (message) { // DOM 主题色变化
+        final Color _themeColor = HexColor(message.message);
+        final SystemUiOverlayStyle _systemOverlayStyle = _themeColor.computeLuminance() < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+        if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange?.call(_themeColor, _systemOverlayStyle);
+      })
+      /* ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
         print('收到 test 的消息：${message.message}');
-      });
+      }) */;
 
     if (controller.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true); // android debug
@@ -122,6 +160,9 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
         ..setInspectable(true) // ios debug
         ..setAllowsBackForwardNavigationGestures(true); // 允许手势返回
     }
+
+    if (widget.url != null) controller.loadRequest(Uri.parse(widget.url!)); // 加载网页地址
+    widget.onWebViewCreated?.call(controller);
   }
 
   @override
