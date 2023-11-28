@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../utils/common.dart';
+import '../utils/dialog.dart';
 
 typedef WebViewCreatedCallback = void Function(WebViewController controller); // 创建 WebView 回调
 typedef PageDOMContentChangeCallback = void Function(JavaScriptMessage message); // 页面 DOM 发生变更执行
@@ -167,12 +168,22 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
 
   @override
   Widget build(BuildContext context) { // 用于构建Widget子树
-    return WillPopScope(
-      onWillPop: () => controller.canGoBack().then((isCanBack){
-          if (isCanBack) controller.goBack();
-          if (Navigator.of(context).canPop()) Navigator.of(context).pop();
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool didPop) => didPop ? null : controller.canGoBack().then((isCanBack) {
+          if (isCanBack) { // webview 可以返回
+            controller.goBack();
+            return;
+          }
 
-          return false;
+          if (Navigator.of(context).canPop()) { // 主程序 可以返回
+            Navigator.of(context).pop();
+            return;
+          }
+
+          Talk.alert("确认退出？").then((bool? shouldPop) { // 都无法返回，弹窗确认是否退出应用
+            if (shouldPop ?? false) Navigator.of(context).pop();
+          });
       }),
       child: Scaffold(
         backgroundColor: Colors.white, // CircularProgressIndicator(strokeWidth: 2.5, backgroundColor: color)

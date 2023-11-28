@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
 
 import '../utils/common.dart';
+import '../utils/dialog.dart';
 import './setup/config.dart';
 import './setup/lang.dart';
 import './setup/router.dart';
@@ -49,8 +50,20 @@ class _App extends State<App> {
           changeLocale(notification.locale);
           return true;
         },
-        child: WillPopScope(
-          onWillPop: () => AppConfig.navigatorKey.currentState!.maybePop(),
+        child: PopScope(
+          canPop: false,
+          onPopInvoked: (bool didPop) {
+            if (didPop) return; // 已经返回
+
+            if (Navigator.of(context).canPop()) { // 主程序 可以返回
+              Navigator.of(context).pop();
+              return;
+            }
+
+            Talk.alert("确认退出？").then((bool? shouldPop) { // 都无法返回，弹窗确认是否退出应用
+              if (shouldPop ?? false) Navigator.of(context).pop();
+            });
+          },
           child: MaterialApp.router(
             // navigatorKey: navigatorKey, // 应用外部使用路由跳转
             routeInformationParser: CustomInformationRouteParser(),
