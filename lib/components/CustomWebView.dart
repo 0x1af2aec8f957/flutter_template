@@ -161,7 +161,7 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
         if (options is! Map) return; // 必须传入 可解析为 RequestOptions 的 Map 参数
         if (options['path'] == null || options['baseUrl'] == null) return; // 必须传入 path 或 baseUrl
 
-        Http.original.fetch(RequestOptions().copyWith( // 发起请求
+        Http.original.fetch(RequestOptions( // 发起请求
           path: options['path'] ?? '',
           baseUrl: options['baseUrl'] ?? '',
           method: options['method'] ?? 'GET',
