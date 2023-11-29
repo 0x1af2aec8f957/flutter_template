@@ -1,17 +1,22 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import 'package:image/image.dart' as image;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as image;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dio/dio.dart' show RequestOptions, ResponseType;
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
+import '../plugins/http.dart';
 import '../utils/common.dart';
 import '../utils/dialog.dart';
 
@@ -143,6 +148,29 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
         final Color _themeColor = HexColor(message.message);
         final SystemUiOverlayStyle _systemOverlayStyle = _themeColor.computeLuminance() < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
         if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange?.call(_themeColor, _systemOverlayStyle);
+      })
+      ..addJavaScriptChannel('injectPlatformInfo', onMessageReceived: (message) { // 平台信息 注入
+        final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        deviceInfo.deviceInfo.then((value) => controller.runJavaScript("window._platformInfo='${value.data.toString()}'"));
+      })
+      ..addJavaScriptChannel('injectPackageInfo', onMessageReceived: (message) { // 包信息 注入
+        PackageInfo.fromPlatform().then((value) => controller.runJavaScript("window._packageInfo='${value.toString()}'"));
+      })
+      ..addJavaScriptChannel('fetch', onMessageReceived: (message) { // 跨域请求
+        final options = jsonDecode(message.message); // 解析参数
+        if (options is! Map) return; // 必须传入 可解析为 RequestOptions 的 Map 参数
+        if (options['path'] == null || options['baseUrl'] == null) return; // 必须传入 path 或 baseUrl
+
+        Http.original.fetch(RequestOptions().copyWith( // 发起请求
+          path: options['path'] ?? '',
+          baseUrl: options['baseUrl'] ?? '',
+          method: options['method'] ?? 'GET',
+          data: options['data'] ?? {},
+          queryParameters: options['queryParameters'] ?? {},
+          headers: options['headers'] ?? {},
+          contentType: options['contentType'] ?? 'application/json',
+          responseType: options['responseType'] ?? ResponseType.json,
+        )).then((value) => controller.runJavaScript("window.fetchCallback('${jsonEncode(value.data)}')"));
       })
       /* ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
         print('收到 test 的消息：${message.message}');
