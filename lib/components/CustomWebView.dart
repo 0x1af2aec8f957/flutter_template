@@ -170,7 +170,7 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
           headers: options['headers'] ?? {},
           contentType: options['contentType'] ?? 'application/json',
           responseType: options['responseType'] ?? ResponseType.json,
-        )).then((value) => controller.runJavaScript("window.fetchCallback('${jsonEncode(value.data)}')"));
+        )).then((value) => controller.runJavaScript("window.fetchCallback('${value.data is String ? value.data : jsonEncode(value.data)}')"));
       })
       /* ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
         print('收到 test 的消息：${message.message}');
