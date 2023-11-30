@@ -7,7 +7,7 @@ import '../setup/router.dart' show router;
 import '../utils/dialog.dart';
 import './signer.dart';
 
-// doc: https://github.com/noteScript/dio/blob/master/README-ZH.md
+/// doc: https://github.com/cfug/dio/blob/main/dio/README-ZH.md
 
 final BaseOptions options = BaseOptions(// 单次请求的配置[Options]，可覆盖这里的基础配置
   baseUrl: 'https://www.example.com', //'"https://www.xx.com", // 请求基地址,可以包含子路径
@@ -163,9 +163,9 @@ class Http {
 
     _dio.transformer = MainTransformer(); // 数据转换处理
     _dio.interceptors // 拦截器：执行顺序 -> FIFO
-      ..add(CacheInterceptor()) // 接口缓存
-      ..add(MainInterceptors(basePath: basePath)); // 主要的拦截器
-      
+      ..add(MainInterceptors(basePath: basePath)) // 主要的拦截器
+      ..add(CacheInterceptor()); // 接口缓存
+
     if (!AppConfig.isProduction) _dio.interceptors.add( // debug 模式下运行
         LogInterceptor(responseBody: true, requestHeader: false, responseHeader: false, requestBody: true) // debug模式下打印log
     );
