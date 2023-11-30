@@ -77,7 +77,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     // print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
-    Talk.toast(err.message ?? '未知的网络错误');
+    Talk.toast(err.error?.toString() ?? err.message ?? '未知的网络错误');
     return handler.reject(err);
   }
 }
