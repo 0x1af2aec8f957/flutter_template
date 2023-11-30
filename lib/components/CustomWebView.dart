@@ -10,12 +10,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:dio/dio.dart' show RequestOptions, ResponseType;
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
+import '../setup/config.dart';
 import '../plugins/http.dart';
 import '../utils/common.dart';
 import '../utils/dialog.dart';
@@ -48,7 +47,7 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
   final _picker = ImagePicker();
   bool isLoading = true; // 是否正在加载中
 
-Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
+  Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
     print('AndroidWebViewController.FileSelectorParams.acceptTypes:  ${params.acceptTypes}');
     if (params.acceptTypes.any((type) => type == 'image/*')) {
       final XFile? photo = await _picker.pickImage(
@@ -150,11 +149,10 @@ Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
         if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange?.call(_themeColor, _systemOverlayStyle);
       })
       ..addJavaScriptChannel('injectPlatformInfo', onMessageReceived: (message) { // 平台信息 注入
-        final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        deviceInfo.deviceInfo.then((value) => controller.runJavaScript("window._platformInfo='${value.data.toString()}'"));
+        AppConfig.deviceInfo.deviceInfo.then((value) => controller.runJavaScript("window._platformInfo='${value.data.toString()}'"));
       })
       ..addJavaScriptChannel('injectPackageInfo', onMessageReceived: (message) { // 包信息 注入
-        PackageInfo.fromPlatform().then((value) => controller.runJavaScript("window._packageInfo='${value.toString()}'"));
+        AppConfig.packageInfo.then((value) => controller.runJavaScript("window._packageInfo='${value.toString()}'"));
       })
       ..addJavaScriptChannel('fetch', onMessageReceived: (message) { // 跨域请求
         final options = jsonDecode(message.message); // 解析参数

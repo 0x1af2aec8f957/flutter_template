@@ -82,11 +82,11 @@ class _MQTTService {
     print('MQTT-client正准备尝试连接');
     if (client != null) return; // 已实例化则不再执行实例化
     // 未实例化才开始执行实例化
-    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin(); // 获取设备信息
+    final DeviceInfoPlugin deviceInfoPlugin = AppConfig.deviceInfo; // 获取设备信息
     final Future<String>? fetchIdentifier = // 获取设备唯一标识码
-    AppConfig.platform == 'ANDROID'
+    AppConfig.platform == 'android'
         ? deviceInfoPlugin.androidInfo.then((AndroidDeviceInfo build) => build.androidId) // android
-        : AppConfig.platform == 'IOS'
+        : AppConfig.platform == 'ios'
           ? deviceInfoPlugin.iosInfo.then((IosDeviceInfo build) => build.identifierForVendor) // ios
           : null;
 

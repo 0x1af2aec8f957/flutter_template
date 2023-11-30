@@ -1,26 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-enum PlatformEnv{ // 平台枚举
-  ANDROID,
-  IOS,
-  OTHER,
-}
-
-@immutable
 abstract class AppConfig {
-
-  static String platform = (){ // 平台字符串
-    if (Platform.isAndroid) return 'ANDROID';
-    else if (Platform.isIOS) return 'IOS';
-    return '';
-  }();
+  static String platform = Platform.operatingSystem; // 平台字符串
 
   // Flutter的四种运行模式: https://www.jianshu.com/p/4db65478aaa3
   static bool isProduction = const bool.fromEnvironment("dart.vm.product"); // 运行时环境
 
-  static Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
+  static Future<PackageInfo> packageInfo = PackageInfo.fromPlatform(); // 应用信息
+  static DeviceInfoPlugin deviceInfo = DeviceInfoPlugin(); // 设备信息
   static Locale get local => Localizations.localeOf(navigatorKey.currentState!.overlay!.context); // 当前应用的语言
 
   /// 外部获取context -> Context context = navigatorKey.currentState.overlay.context

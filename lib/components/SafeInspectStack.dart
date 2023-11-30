@@ -2,6 +2,7 @@ import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../setup/config.dart';
 
 /// 应用安全检查
 class SafeInspectStack extends StatefulWidget{
@@ -74,7 +75,7 @@ class _SafeInspectStack extends State<SafeInspectStack> with WidgetsBindingObser
                       widthFactor: 1,
                       heightFactor: 1,
                       child: FutureBuilder<PackageInfo>(
-                        future: PackageInfo.fromPlatform(),
+                        future: AppConfig.packageInfo,
                         builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) => Container(
                           width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.symmetric(vertical: 20),
