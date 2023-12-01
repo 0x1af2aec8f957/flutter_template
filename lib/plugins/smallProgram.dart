@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 // import 'dart:isolate';
-import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
 import 'package:crypto/crypto.dart';
 import 'package:archive/archive.dart';
@@ -19,14 +18,10 @@ import 'package:shelf_proxy/shelf_proxy.dart'; // shelf 代理中间件
 import 'package:belatuk_range_header/belatuk_range_header.dart'; // RangeHeader 解析
 
 import '../../utils/dialog.dart';
+import '../../plugins/http.dart';
 
 typedef CheckCache = bool Function(shelf.Request request); // Type: 检查是否需要缓存
 
-final _http = Dio()
-  ..interceptors.add( // 打印api请求log
-    LogInterceptor(responseBody: true, requestHeader: true, responseHeader: false, requestBody: true)
-  )
-;
 class SmallProgram { // isolate 启动参数
   Uri? _remoteZipFileAddress; // 远程资源包地址
   final String name; // 小程序名称
@@ -121,7 +116,7 @@ class SmallProgram { // isolate 启动参数
       return Text('正在下载更新包：${_progress}%');
     },), duration: Duration(days: 1));
 
-    await _http.downloadUri(_remoteZipFileAddress!, tmpFile.path, onReceiveProgress: (int _count, int _total) { // 下载更新资源包
+    await Http.original.downloadUri(_remoteZipFileAddress!, tmpFile.path, onReceiveProgress: (int _count, int _total) { // 下载更新资源包
       print('正在下载更新包：$_count/$_total');
       updateSnackBar((){ // 更新 UI
         _progress = _total > 0 ? (_count / _total * 100).toInt() : 0;
@@ -188,7 +183,7 @@ class SmallProgram { // isolate 启动参数
       final header = File(path.join(dir.path, '${md5.convert(request.url.toString().codeUnits)}.header')); // 缓存头文件
 
       if (isAgentCache && isStreamMediaMimeTypes && !file.existsSync()) { // TODO 音视频文件 在设置 range='bytes=0-' 的情况下，也不会返回全部内容，需要使用下载获取文件所有内容
-        await _http.downloadUri(
+        await Http.original.downloadUri(
           request.requestedUri.replace(scheme: serverAddress.scheme, host: serverAddress.host, port: serverAddress.port),
           file.path,
         ).then((value) {
