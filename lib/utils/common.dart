@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' show Color;
 import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardData;
 
+import './constant.dart';
 import '../setup/router.dart';
 import '../utils/dialog.dart';
 
@@ -11,13 +12,13 @@ abstract class PrecisionFix {
   static bool _isNumber(String _number) => num.tryParse(_number) != null;
 
   static String fromString(String _number, int? digit) {
-    if (!_isNumber(_number)) return '--';
+    if (!_isNumber(_number)) return numberPlaceholder;
 
     return fromNumber(double.parse(_number), digit ?? 0);
   }
 
   static String fromAllString(String _number, String? _digit) {
-    if (!_isNumber(_number)) return '--';
+    if (!_isNumber(_number)) return numberPlaceholder;
 
     final int digit = _digit == null ? 0 : _digit.split('.').last.length;
     return fromNumber(double.parse(_number), digit);
@@ -26,7 +27,7 @@ abstract class PrecisionFix {
   static int fromDigitString(String? _digit) => _digit == null ? 0 : _digit.split('.').last.length;
 
   static String fromNumber(num _number, int? digit) {
-    if (!_isNumber(_number.toString())) return '--';
+    if (!_isNumber(_number.toString())) return numberPlaceholder;
     assert(digit == null || digit <= 20 && digit >= 0);
 
     final int _fractionDigits = (digit ?? 0) + 1;
@@ -54,7 +55,7 @@ class HexColor extends Color {
   }
 }
 
-String stringFix(String? str) => str ?? '- -'; // 字符串占位符
+String stringFix(String? str) => str ?? stringPlaceholder; // 字符串占位符
 
 Future<void> copy(String? text, { isToast = true }){ // 复制到粘贴板
   if (text != null) return Clipboard

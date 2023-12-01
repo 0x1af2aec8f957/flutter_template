@@ -148,7 +148,7 @@ abstract class Talk {
           contentPadding: EdgeInsets.zero,
           title: Padding(
             padding: const EdgeInsets.all(10),
-            child: Text(text, style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,),
+            child: Text(text, style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
           ),
           subtitle: Column(
             children: [
