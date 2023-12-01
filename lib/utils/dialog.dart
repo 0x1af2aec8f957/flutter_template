@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 
 import '../setup/config.dart';
 
-final BuildContext globalContext = AppConfig.navigatorKey.currentState!.overlay!.context;
+final BuildContext _globalContext = AppConfig.navigatorKey.currentState!.overlay!.context;
 
-@immutable
 abstract class Talk {
-  static void toast(String text, {int? duration}) {
+  static void toast(String text, {int duration = 2}) {
     final insert = AppConfig.navigatorKey.currentState!.overlay!.insert;
     final OverlayEntry entry = OverlayEntry( // OverlayEntry本身使用Stack布局将自身放置在视图最顶层，应当避免再次使用Stack
       builder: /* Widget */(_) => Positioned(
@@ -52,21 +51,21 @@ abstract class Talk {
       ),*/
     );
 
-    // Overlay.of(globalContext).insert(entry);
+    // Overlay.of(_globalContext).insert(entry);
     insert(entry);
 
-    Future.delayed(Duration(seconds: duration ?? 2), () => entry.remove());
+    Future.delayed(Duration(seconds: duration), () => entry.remove());
   }
 
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {SnackBarAction? action, Duration? duration}) { // 底部提示信息
-    final instance = ScaffoldMessenger.of(globalContext)
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {SnackBarAction? action, Duration duration = const Duration(seconds: 4)}) { // 底部提示信息
+    final instance = ScaffoldMessenger.of(_globalContext)
       ..removeCurrentSnackBar(); // 移除上一次的snackBar
-    return instance.showSnackBar(SnackBar(content: content, duration: duration ?? Duration(seconds: 4), action: action));
+    return instance.showSnackBar(SnackBar(content: content, duration: duration, action: action));
   }
 
-  static void loading([String? text]) {
-    showDialog(
-      context: globalContext,
+  static Future<void> loading([String text = "请稍后..."]) {
+    return showDialog<void>(
+      context: _globalContext,
       barrierDismissible: false, //点击遮罩不关闭对话框
       builder: (BuildContext context) {
         return AlertDialog(
@@ -76,7 +75,7 @@ abstract class Talk {
               CircularProgressIndicator(),
               Padding(
                 padding: const EdgeInsets.only(top: 26.0),
-                child: Text(text ?? "请稍后..."),
+                child: Text(text),
               )
             ],
           ),
@@ -85,9 +84,9 @@ abstract class Talk {
     );
   }
 
-  static Future<bool?> alert(String text, {bool isCancel = true, String title = '提示'}) {
+  static Future<bool> alert(String text, {bool isCancel = true, String title = '提示'}) {
     return showDialog<bool>(
-      context: globalContext,
+      context: _globalContext,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -114,6 +113,54 @@ abstract class Talk {
           ],
         );
       },
+    ).then((bool? isConfirm) => isConfirm ?? false);
+  }
+
+  static Future<T?> sheetAction<T>({List<Widget> children = const <Widget>[], bool isCancel = true}) {
+    return showModalBottomSheet<T>(
+      context: _globalContext,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ...children,
+            if (isCancel) Divider(height: 5, thickness: 5, color: Colors.grey),
+            if (isCancel) SafeArea(
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('取消', style: TextStyle(color: Colors.black)),
+              ),
+            ),
+          ],
+        );
+      }
     );
+  }
+
+  static Future<bool> sheetAlert(String text, {bool isCancel = true}) {
+    return sheetAction<bool>(
+      isCancel: isCancel,
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.zero,
+          title: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Text(text, style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,),
+          ),
+          subtitle: Column(
+            children: [
+              Divider(height: 1, thickness: 1, color: Colors.grey.withOpacity(0.2)),
+              TextButton(
+                onPressed: () => Navigator.of(_globalContext).pop(true),
+                child: Text('确定', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+        ),
+      ]
+    ).then((bool? isConfirm) => isConfirm ?? false);
   }
 }
