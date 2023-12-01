@@ -90,6 +90,7 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
     super.initState();
 
     controller
+      ..enableZoom(false)
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
@@ -178,6 +179,7 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
       AndroidWebViewController.enableDebugging(true); // android debug
       // (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
       (controller.platform as AndroidWebViewController)
+        ..setTextZoom(100) // 字体大小不跟随系统变化
         ..setOnShowFileSelector(_androidFilePicker)
         ..setMediaPlaybackRequiresUserGesture(false); // 允许自动播放
     }
