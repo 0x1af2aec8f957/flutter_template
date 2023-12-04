@@ -24,7 +24,10 @@ class Avatar extends StatelessWidget {
       child: Image.network(
         url ?? placeholder,
         width: width,
-        errorBuilder: (context, error, stackTrace) => Icon(Icons.person, size: width),
+        errorBuilder: (context, error, stackTrace) => Container(
+          width: width,
+          child: FittedBox(child: Icon(Icons.person)),
+        )
       ),
     );
   }
