@@ -1,34 +1,32 @@
-import 'dart:math' show Random;
 import 'package:flutter/material.dart';
+
+import './CustomNetworkImage.dart';
 
 class Avatar extends StatelessWidget {
   final String? url;
   final double width;
-  final double radius;
+  final double? radius;
+  final Animation<double>? opacity;
+  final Map<String, String>? headers;
 
   const Avatar({
     Key? key,
     this.url,
     this.width = 50,
-    this.radius = 4,
+    this.radius,
+    this.headers,
+    this.opacity,
   }) : super(key: key);
-
-  get random => Random().nextDouble() * 100;
-
-  get placeholder => "https://picsum.photos/${(width * 3).toInt()}?random=${random}";
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect( // 圆角矩形
-      borderRadius: BorderRadius.circular(radius),
-      child: Image.network(
-        url ?? placeholder,
-        width: width,
-        errorBuilder: (context, error, stackTrace) => Container(
-          width: width,
-          child: FittedBox(child: Icon(Icons.person)),
-        )
-      ),
+    return CustomNetworkImage(
+      url: url,
+      width: width,
+      radius: radius,
+      headers: headers,
+      opacity: opacity,
+      errorWidget: Icon(Icons.person),
     );
   }
 }
