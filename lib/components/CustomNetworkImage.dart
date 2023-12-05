@@ -26,25 +26,29 @@ class CustomNetworkImage extends StatelessWidget {
     this.fit = BoxFit.contain,
   }) : super(key: key);
 
-  get isValidAbsoluteUrl => url != null && Uri.parse(url!).isAbsolute;
   get random => Random().nextDouble() * 100;
+  get isValidAbsoluteUrl => url != null && Uri.parse(url!).isAbsolute;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect( // 圆角矩形
       borderRadius: BorderRadius.circular(radius ?? 4),
-      child: LayoutBuilder(
-        builder: (BuildContext _context, BoxConstraints constraints) {
-          final String placeholder = "https://picsum.photos/${(constraints.biggest.width * 3).toInt()}?random=${random}"; // 随机图像
-          return Image.network(
-            isValidAbsoluteUrl ? url! : placeholder,
-            fit: fit,
-            width: width,
-            headers: headers,
-            opacity: opacity,
-            errorBuilder: errorBuilder,
-          );
-        }
+      child: SizedBox(
+        width: width,
+        child: LayoutBuilder( /// NOTE: 避免使用 IntrinsicWidth 与 IntrinsicHeight，它们的开支非常昂贵，这里得到布局限制信息即可，无需强制限制内部子组件的布局大小。
+          builder: (BuildContext _context, BoxConstraints constraints) { // 支持解析传入宽度为 double.infinity 的图片渲染
+            final double _width = constraints.biggest.width;
+            final String placeholder = "https://picsum.photos/${(_width * 3).toInt()}?random=${random}"; // 随机图片
+            return Image.network(
+              isValidAbsoluteUrl ? url! : placeholder,
+              fit: fit,
+              width: _width,
+              headers: headers,
+              opacity: opacity,
+              errorBuilder: errorBuilder,
+            );
+          }
+        ),
       ),
     );
   }
