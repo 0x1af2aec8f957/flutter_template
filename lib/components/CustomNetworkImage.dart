@@ -8,6 +8,7 @@ class CustomNetworkImage extends StatelessWidget {
   final Widget? errorWidget;
   final Animation<double>? opacity;
   final Map<String, String>? headers;
+  final BoxFit fit;
 
   get errorBuilder => (context, error, stackTrace) => Container( // 图片错误
     width: width,
@@ -22,8 +23,10 @@ class CustomNetworkImage extends StatelessWidget {
     this.headers,
     this.opacity,
     this.errorWidget,
+    this.fit = BoxFit.contain,
   }) : super(key: key);
 
+  get isValidAbsoluteUrl => url != null && Uri.parse(url!).isAbsolute;
   get random => Random().nextDouble() * 100;
 
   get placeholder => "https://picsum.photos/${(width * 3).toInt()}?random=${random}";
@@ -33,7 +36,8 @@ class CustomNetworkImage extends StatelessWidget {
     return ClipRRect( // 圆角矩形
       borderRadius: BorderRadius.circular(radius ?? 4),
       child: Image.network(
-        url ?? placeholder,
+        isValidAbsoluteUrl ? url : placeholder,
+        fit: fit,
         width: width,
         headers: headers,
         opacity: opacity,
