@@ -10,19 +10,25 @@ import '../utils/dialog.dart';
 /// 选择图片需要权限：https://pub.dev/packages/image_picker
 /// 保存图片需要权限：https://pub.dev/packages/image_gallery_saver
 
-enum ActionType {
+enum ActionType { // 图片操作类型
   Photograph, // 拍照
   Album, // 从手机相册选择
   Save, // 保存图片到相册
 }
 
+class ImageActionResult { // 图片操作结果
+  final ActionType type; // 操作类型
+  final String filePath; // 文件路径
+  const ImageActionResult(this.type, this.filePath);
+}
+
 class CustomImageActionButton extends StatelessWidget {
   final Widget? actionWidget;
   final GlobalKey? repaintBoundaryKey;
-  final void Function(String filePath)? onCompleted;
+  final void Function(ImageActionResult imageActionResult)? onCompleted;
   const CustomImageActionButton({Key? key, this.actionWidget = const Icon(Icons.more_horiz), this.repaintBoundaryKey, this.onCompleted}) : super(key: key);
 
-  static Future<String> handleOpenMoreSheet(BuildContext context, [GlobalKey? repaintBoundaryKey]) { // 保存图 需要传入的 repaintBoundaryKey 为 `RepaintBoundary(key: key)` 中的 key
+  static Future<ImageActionResult> handleOpenMoreSheet(BuildContext context, [GlobalKey? repaintBoundaryKey]) { // 保存图 需要传入的 repaintBoundaryKey 为 `RepaintBoundary(key: key)` 中的 key
     return Talk.sheetAction<ActionType>(
       children: [
         TextButton(
@@ -43,7 +49,7 @@ class CustomImageActionButton extends StatelessWidget {
         final ImagePicker picker = ImagePicker();
         return picker.pickImage(source: ImageSource.camera).then((XFile? image) {
           if (image == null) return Future.error('文件不存在');
-          return image.path;
+          return ImageActionResult(value!, image.path);
         });
       }
 
@@ -51,7 +57,7 @@ class CustomImageActionButton extends StatelessWidget {
         final ImagePicker picker = ImagePicker();
         return picker.pickImage(source: ImageSource.gallery).then((XFile? image) {
           if (image == null) return Future.error('文件不存在');
-          return image.path;
+          return ImageActionResult(value!, image.path);
         });
       }
 
@@ -70,7 +76,7 @@ class CustomImageActionButton extends StatelessWidget {
             return result.then((value) {
               if (value?['isSuccess'] != true || value?['filePath'] is! String) return Future.error(value?['errorMessage'] ?? '保存失败');
               Talk.toast('保存成功');
-              return Uri.parse(value['filePath']).path;
+              return ImageActionResult(value!, Uri.parse(value['filePath']).path);
             });
           });
       }
@@ -83,7 +89,7 @@ class CustomImageActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: actionWidget,
-      onTap: () => handleOpenMoreSheet(context, repaintBoundaryKey).then((String filePath) => onCompleted?.call(filePath)),
+      onTap: () => handleOpenMoreSheet(context, repaintBoundaryKey).then((imageActionResult) => onCompleted?.call(imageActionResult)),
     );
   }
 }
