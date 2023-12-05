@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String? url;
-  final double width;
+  final double? width;
   final double? radius;
   final Widget? errorWidget;
   final Animation<double>? opacity;
@@ -18,7 +18,7 @@ class CustomNetworkImage extends StatelessWidget {
   const CustomNetworkImage({
     Key? key,
     this.url,
-    required this.width,
+    this.width,
     this.radius,
     this.headers,
     this.opacity,
@@ -29,19 +29,22 @@ class CustomNetworkImage extends StatelessWidget {
   get isValidAbsoluteUrl => url != null && Uri.parse(url!).isAbsolute;
   get random => Random().nextDouble() * 100;
 
-  get placeholder => "https://picsum.photos/${(width * 3).toInt()}?random=${random}";
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect( // 圆角矩形
       borderRadius: BorderRadius.circular(radius ?? 4),
-      child: Image.network(
-        isValidAbsoluteUrl ? url : placeholder,
-        fit: fit,
-        width: width,
-        headers: headers,
-        opacity: opacity,
-        errorBuilder: errorBuilder,
+      child: LayoutBuilder(
+        builder: (BuildContext _context, BoxConstraints constraints) {
+          final String placeholder = "https://picsum.photos/${(constraints.biggest.width * 3).toInt()}?random=${random}"; // 随机图像
+          return Image.network(
+            isValidAbsoluteUrl ? url! : placeholder,
+            fit: fit,
+            width: width,
+            headers: headers,
+            opacity: opacity,
+            errorBuilder: errorBuilder,
+          );
+        }
       ),
     );
   }
