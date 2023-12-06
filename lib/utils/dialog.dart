@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:bot_toast/bot_toast.dart';
 
 import '../setup/config.dart';
+import '../components/CustomDivider.dart';
 
 final BuildContext _globalContext = AppConfig.navigatorKey.currentState!.overlay!.context;
 
@@ -127,7 +128,7 @@ abstract class Talk {
           mainAxisSize: MainAxisSize.min,
           children: [
             ...children,
-            if (isCancel) Divider(height: 5, thickness: 5, color: Colors.grey),
+            if (isCancel) CustomDivider(height: 5, color: Colors.grey),
             if (isCancel) SafeArea(
               child: TextButton(
                 onPressed: () => Navigator.of(context).pop(),
@@ -152,7 +153,7 @@ abstract class Talk {
           ),
           subtitle: Column(
             children: [
-              Divider(height: 1, thickness: 1, color: Colors.grey.withOpacity(0.2)),
+              CustomDivider(height: 1, color: Colors.grey.withOpacity(0.2)),
               TextButton(
                 onPressed: () => Navigator.of(_globalContext).pop(true),
                 child: Text('确定', style: TextStyle(color: Colors.red)),

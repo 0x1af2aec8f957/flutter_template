@@ -8,6 +8,7 @@ import 'package:pub_semver/pub_semver.dart' show Version;
 
 import '../setup/config.dart';
 import '../utils/dialog.dart';
+import '../components/CustomDivider.dart';
 
 class _AppInfo { // doc: https://raw.githubusercontent.com/xuexiangjys/flutter_xupdate/master/example/lib/app_info.dart
   final bool hasUpdate;
@@ -233,7 +234,7 @@ abstract class AppUpgrade {
                                   textAlign: TextAlign.left,
                                 )
                             ),
-                            Divider(height: 1, color: Colors.grey[600]?.withOpacity(0.5)),
+                            CustomDivider(height: 1, color: Colors.grey[600]?.withOpacity(0.5)),
                             Container(
                               margin: const EdgeInsets.only(bottom: 6.0),
                               child: IntrinsicHeight( // 使垂直分割线正常展示
@@ -250,7 +251,7 @@ abstract class AppUpgrade {
                                         onPressed: Navigator.of(globalContext).pop, //关闭对话框
                                       ),
                                     ),
-                                    if (!isForce) VerticalDivider(color: Colors.grey[600]?.withOpacity(0.5), width: 1, indent: 10, endIndent: 10,),
+                                    if (!isForce) CustomVerticalDivider(color: Colors.grey[600]?.withOpacity(0.5), width: 1, indent: 10),
                                     Expanded(
                                       child: TextButton(
                                         child: Text(
