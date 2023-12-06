@@ -48,8 +48,8 @@ dependencies:
   # mqtt_client: ^10.0.0 # mqtt推送
   device_info_plus: ^9.1.0 # 设备信息
   url_launcher: ^6.2.1 # 吊起外部资源[支持电话、短信等]
-  # qr_flutter: ^4.1.0 # 生成二维码
-  # scan: ^1.6.0 # 扫描二维码
+  qr_flutter: ^4.1.0 # 生成二维码
+  scan: ^1.6.0 # 扫描二维码
   image_gallery_saver: ^2.0.3 # 保存图片到相册
   # jpush_flutter: ^2.5.0 # 激光推送
   connectivity_plus: ^5.0.1 # 网络链接状态
