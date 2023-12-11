@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 // import 'package:fluro/fluro.dart';
 
-import 'views/Home/index.dart';
+import './views/Home/index.dart';
 import './views/About.dart';
-import 'views/Example.dart';
+import './views/Example.dart';
 import './views/LoadingJson.dart';
 import './views/SubRouter.dart';
 import './views/FormTest.dart';

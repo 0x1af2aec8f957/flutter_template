@@ -1,14 +1,10 @@
-import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as image;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:dio/dio.dart' show RequestOptions, ResponseType;
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -18,10 +14,17 @@ import '../setup/config.dart';
 import '../plugins/http.dart';
 import '../utils/common.dart';
 import '../utils/dialog.dart';
+import './QrCode.dart';
+import './FullScreenWebView.dart';
 
 typedef WebViewCreatedCallback = void Function(WebViewController controller); // 创建 WebView 回调
 typedef PageDOMContentChangeCallback = void Function(JavaScriptMessage message); // 页面 DOM 发生变更执行
 typedef PageSystemOverlayStyleChange = void Function(Color color, SystemUiOverlayStyle systemOverlayStyle); // 页面 DOM 主题色发生变更执行
+
+const allowRequestSchemes = [ // 允许 webview 跳转的链接，不允许处理的链接将在外部使用默认打开方式进行打开
+  'HTTP',
+  'HTTPS',
+];
 
 class CustomWebView extends StatefulWidget {
   final String? url;
@@ -42,44 +45,27 @@ class CustomWebView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _CustomWebView();
 }
-class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
+class _CustomWebView extends State<CustomWebView> {
   final WebViewController controller = WebViewController.fromPlatformCreationParams(WebViewPlatform.instance is WebKitWebViewPlatform ? WebKitWebViewControllerCreationParams(mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{}, allowsInlineMediaPlayback: true/* 允许自动及内联播放 */) : const PlatformWebViewControllerCreationParams());
   final _picker = ImagePicker();
   bool isLoading = true; // 是否正在加载中
 
-  Future<List<String>> _androidFilePicker(FileSelectorParams params) async {
-    print('AndroidWebViewController.FileSelectorParams.acceptTypes:  ${params.acceptTypes}');
+  Future<List<String>> _androidFilePicker(FileSelectorParams params) async { // android 选择文件
+    print('AndroidWebView 请求的选择文件 MIME 类型:  ${params.acceptTypes}');
     if (params.acceptTypes.any((type) => type == 'image/*')) {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.gallery,
       );
-      // final picker = _picker.ImagePicker();
-      // final photo = await picker.pickImage(source: image_picker.ImageSource.camera);
 
-      if (photo == null) {
-        return [];
-      }
+      return photo == null ? [] : [Uri.file(photo.path).toString()];
+    }
 
-      print('photo.path: ${photo.path}');
-      if (photo.path != null) {
-        return [Uri.file(photo.path).toString()];
-      }
+    if (params.acceptTypes.any((type) => type == 'video/*')) {
+      final XFile? video = await _picker.pickVideo(
+        source: ImageSource.gallery,
+      );
 
-      final imageData = await photo.readAsBytes();
-      final decodedImage = image.decodeImage(imageData);
-      final scaledImage = image.copyResize(decodedImage!, width: 500);
-      // final jpg = image.encodeJpg(scaledImage, quality: 90);
-      final png = image.encodePng(scaledImage, level: 9);
-
-      final filePath = (await getTemporaryDirectory()).uri.resolve(
-            // './image_${DateTime.now().microsecondsSinceEpoch}.jpg',
-            './image_${DateTime.now().microsecondsSinceEpoch}.png',
-          );
-      final file = await File.fromUri(filePath).create(recursive: true);
-      // await file.writeAsBytes(jpg, flush: true);
-      await file.writeAsBytes(png, flush: true);
-
-      return [file.uri.toString()];
+      return (video == null) ? [] : [Uri.file(video.path).toString()];
     }
 
     return [];
@@ -110,9 +96,9 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
                 window.addEventListener('beforeunload', function(event){ // 用户离开前
                   ___observer.disconnect();
                   // Cancel the event as stated by the standard.
-                  event.preventDefault();
+                  // event.preventDefault(); // 需要弹出离开确认框时，取消注释
                   // Chrome requires returnValue to be set.
-                  event.returnValue = '';
+                  // event.returnValue = ''; // 需要弹出离开确认框时，取消注释
                 });
 
                 /// DOM主题色监听
@@ -127,17 +113,15 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
           onWebResourceError: (WebResourceError error) {
             print('onWebResourceError: ${error.description}');
           },
-          onNavigationRequest: (NavigationRequest request) async {
-            if (request.url.startsWith('weixin') || request.url.startsWith('alipays') || request.url.startsWith('alipay') || request.url.startsWith('tel') || request.url.startsWith('sms')) { // 需要打开第三方schema协议的app链接
-              print('拦截到的url：${request.url}');
-              if (await canLaunchUrl(Uri.parse(request.url))) {
-                await launchUrl(Uri.parse(request.url));
-              }
+          onNavigationRequest: (NavigationRequest request) { // webview 无法打开的链接 在外部尝试打开
+            final uri = Uri.parse(request.url);
+            if (allowRequestSchemes.any(uri.isScheme)) return NavigationDecision.navigate; // 允许请求的协议
+
+            return canLaunchUrl(Uri.parse(request.url)).then((isCanLaunch) { // 外部能处理的协议，尝试使用外部默认打开方式处理，并阻止继续导航
+              if (isCanLaunch) launchUrl(Uri.parse(request.url)).then((isLaunched) => isLaunched ? NavigationDecision.prevent : NavigationDecision.navigate); // 外部处理成功，阻止继续导航；外部处理失败，允许继续导航
 
               return NavigationDecision.prevent;
-            }
-
-            return NavigationDecision.navigate;
+            });
           },
         ),
       )
@@ -170,6 +154,17 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
           contentType: options['contentType'] ?? 'application/json',
           responseType: options['responseType'] ?? ResponseType.json,
         )).then((value) => controller.runJavaScript("window.fetchCallback('${value.data is String ? value.data : jsonEncode(value.data)}')"));
+      })
+      ..addJavaScriptChannel('openUrl', onMessageReceived: (message) async { // 使用外部默认打开方式打开链接
+        if (await canLaunchUrl(Uri.parse(message.message))) launchUrl(Uri.parse(message.message));
+      })
+      ..addJavaScriptChannel('openWebView', onMessageReceived: (message) { // 打开全屏 webview
+        FullScreenWebView.open(context, url: message.message);
+      })
+      ..addJavaScriptChannel('openScan', onMessageReceived: (message) { // 打开 扫码界面
+        QrCodeScanPage.open<String>(context).then((result) {
+          if (result != null) controller.runJavaScript("window.scanCallback('$result')"); // 将扫码结果返回给小程序
+        });
       })
       /* ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
         print('收到 test 的消息：${message.message}');
@@ -213,18 +208,15 @@ class _CustomWebView extends State<CustomWebView> with WidgetsBindingObserver {
             if (shouldPop ?? false) Navigator.of(context).pop();
           });
       }),
-      child: Scaffold(
-        backgroundColor: Colors.white, // CircularProgressIndicator(strokeWidth: 2.5, backgroundColor: color)
-        body: SafeArea(
-          child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : WebViewWidget(
-                controller: controller,
-                gestureRecognizers: [
-                  Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()), // 允许长按复制文本
-                ].toSet(),
-            ),
-        ),
+      child: SafeArea(
+        child: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : WebViewWidget(
+              controller: controller,
+              gestureRecognizers: [
+                Factory<LongPressGestureRecognizer>(() => LongPressGestureRecognizer()), // 允许长按复制文本
+              ].toSet(),
+          ),
       ),
     );
   }

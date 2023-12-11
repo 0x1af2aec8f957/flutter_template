@@ -3,6 +3,7 @@
 *.log
 *.pyc
 *.swp
+.metadata
 .DS_Store
 .atom/
 .buildlog/
@@ -34,6 +35,10 @@
 /build/
 /packages
 android/
+windows/
+linux/
+macos/
+web/
 ios/
 pubspec.lock
 # Web related

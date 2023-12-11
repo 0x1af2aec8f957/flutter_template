@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../components/FullScreenWebView.dart';
+
 class View1 extends StatelessWidget{
   final TabController? tabController;
   final List<dynamic> tabs;
@@ -14,7 +16,10 @@ class View1 extends StatelessWidget{
       children: tabs.map((e) { //创建3个Tab页
         return Container(
           alignment: Alignment.center,
-          child: Text(e, textScaleFactor: 5),
+          child: GestureDetector(
+            onTap: () => FullScreenWebView.open(context, url: 'https://www.baidu.com'),
+            child: Text(e, textScaler: TextScaler.linear(5))
+          ),
         );
       }).toList(),
     );

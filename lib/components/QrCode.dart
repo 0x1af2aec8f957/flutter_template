@@ -102,6 +102,22 @@ class QrCodeScanPage extends StatefulWidget {
 
   @override
   _QrCodeScanPage createState() => _QrCodeScanPage();
+
+  static Future<T?> open<T>(BuildContext context, {String title = '扫码', bool Function(String data)? onValidate}) => Navigator.of(context).push<T>(PageRouteBuilder( // 打开 webview
+    pageBuilder: (context, animation, secondaryAnimation) => QrCodeScanPage(title: title, onValidate: onValidate),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0, 1);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  ));
 }
 
 class _QrCodeScanPage extends State<QrCodeScanPage> with WidgetsBindingObserver {
@@ -126,6 +142,7 @@ class _QrCodeScanPage extends State<QrCodeScanPage> with WidgetsBindingObserver 
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     QrCodeScanView.scanController.pause(); // 暂停扫描
+    if(isFlash) QrCodeScanView.scanController.toggleTorchMode(); // 关闭闪光灯
     super.dispose();
   }
 

@@ -9,7 +9,7 @@ class View3 extends StatelessWidget{
 
     return Container(
         alignment: Alignment.center,
-        child: Text('TAB3', textScaleFactor: 5),
+        child: Text('TAB3', textScaler: TextScaler.linear(5)),
     );
   }
 }
