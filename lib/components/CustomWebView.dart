@@ -12,7 +12,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../setup/config.dart';
 import '../plugins/http.dart';
-import '../utils/common.dart';
+import '../plugins/cssColor.dart';
 import '../utils/dialog.dart';
 import './QrCode.dart';
 import './FullScreenWebView.dart';
@@ -117,7 +117,7 @@ class _CustomWebView extends State<CustomWebView> {
             final uri = Uri.parse(request.url);
             if (allowRequestSchemes.any(uri.isScheme)) return NavigationDecision.navigate; // 允许请求的协议
 
-            return canLaunchUrl(Uri.parse(request.url)).then((isCanLaunch) { // 外部能处理的协议，尝试使用外部默认打开方式处理，并阻止继续导航
+            return canLaunchUrl(Uri.parse(request.url)).then((isCanLaunch) { // 外部能处理的协议，尝试使用外部默认打开方式处理，并阻止继续导航（canLaunchUrl 需要额外的权限描述：https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher#configuration）
               if (isCanLaunch) launchUrl(Uri.parse(request.url)).then((isLaunched) => isLaunched ? NavigationDecision.prevent : NavigationDecision.navigate); // 外部处理成功，阻止继续导航；外部处理失败，允许继续导航
 
               return NavigationDecision.prevent;
@@ -129,7 +129,7 @@ class _CustomWebView extends State<CustomWebView> {
         if (widget.onPageDOMContentChangeCallback != null) widget.onPageDOMContentChangeCallback?.call(message);
       })
       ..addJavaScriptChannel('_SystemOverlayStyleChange', onMessageReceived: (message) { // DOM 主题色变化
-        final Color _themeColor = HexColor(message.message);
+        final Color _themeColor = CssColor(message.message);
         final SystemUiOverlayStyle _systemOverlayStyle = _themeColor.computeLuminance() < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
         if (widget.onPageSystemOverlayStyleChange != null) widget.onPageSystemOverlayStyleChange?.call(_themeColor, _systemOverlayStyle);
       })
@@ -156,7 +156,7 @@ class _CustomWebView extends State<CustomWebView> {
         )).then((value) => controller.runJavaScript("window.fetchCallback('${value.data is String ? value.data : jsonEncode(value.data)}')"));
       })
       ..addJavaScriptChannel('openUrl', onMessageReceived: (message) async { // 使用外部默认打开方式打开链接
-        if (await canLaunchUrl(Uri.parse(message.message))) launchUrl(Uri.parse(message.message));
+        if (await canLaunchUrl(Uri.parse(message.message))) launchUrl(Uri.parse(message.message)); // canLaunchUrl 需要额外的权限描述：https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher#configuration
       })
       ..addJavaScriptChannel('openWebView', onMessageReceived: (message) { // 打开全屏 webview
         FullScreenWebView.open(context, url: message.message);

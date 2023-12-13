@@ -1,5 +1,4 @@
 // 公共方法
-import 'package:flutter/material.dart' show Color;
 import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardData;
 
 import './constant.dart';
@@ -39,19 +38,6 @@ abstract class PrecisionFix {
 
     return _number.toStringAsFixed(digit ?? 0);
 
-  }
-}
-
-class HexColor extends Color {
-  HexColor(final String hexColor) : super(getColorFromHex(hexColor));
-
-  static int getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    hexColor = hexColor.replaceAll('0X', '');
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
   }
 }
 

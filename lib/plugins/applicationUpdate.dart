@@ -144,7 +144,7 @@ abstract class AppUpgrade {
       return;
     }
 
-    if (Platform.isIOS && await canLaunchUrl(Uri.parse(link))) { // ios更新及更新提示
+    if (Platform.isIOS && await canLaunchUrl(Uri.parse(link))) { // ios更新及更新提示，canLaunchUrl 需要额外的权限描述：https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher#configuration
       iosUpdate(version, link: link, isForce: isForce, content: content);
       return;
     }
