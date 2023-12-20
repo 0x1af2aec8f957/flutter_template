@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../setup/config.dart';
@@ -40,12 +41,15 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     // print("REQUEST[${options?.method}] => PATH: ${options?.path}");
     final requestUri = Uri.parse(options.baseUrl);
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final packageInfo = await AppConfig.packageInfo;
+    final deviceInfo = await AppConfig.deviceInfo;
+    final deviceId = md5.convert(utf8.encode((await deviceInfo.deviceInfo).toString())).toString(); // 设备唯一标识
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     options.headers.addAll(<String, dynamic>{ // 需要实时更新的headers
-      'token': prefs.getString('token'), // 访问凭证
+      'device-id': deviceId, // 设备唯一标识
       'version': packageInfo.version, // 版本号
+      'token': prefs.getString('token'), // 访问凭证
     });
 
     options.baseUrl = requestUri.replace(pathSegments: [...requestUri.pathSegments, ...Uri.parse(basePath).pathSegments]).toString(); // 拼接基准路径
