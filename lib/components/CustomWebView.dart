@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/foundation.dart';
+import 'package:crypto/crypto.dart' show md5;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -138,6 +140,16 @@ class _CustomWebView extends State<CustomWebView> {
       })
       ..addJavaScriptChannel('injectPackageInfo', onMessageReceived: (message) { // 包信息 注入
         AppConfig.packageInfo.then((value) => controller.runJavaScript("window._packageInfo='${value.toString()}'"));
+      })
+      ..addJavaScriptChannel('getDeviceId', onMessageReceived: (message) async { // 获取设备 deviceId
+        final deviceInfo = AppConfig.deviceInfo;
+        String? deviceId;
+
+        if (Platform.isAndroid) deviceId ??= (await deviceInfo.androidInfo).id;
+        if (Platform.isIOS) deviceId ??= (await deviceInfo.iosInfo).identifierForVendor;
+
+        deviceId ??= md5.convert(Utf8Encoder().convert((await deviceInfo.deviceInfo).toString())).toString();
+        controller.runJavaScript("window.getDeviceIdCallback('${deviceId}')");
       })
       ..addJavaScriptChannel('fetch', onMessageReceived: (message) { // 跨域请求
         final options = jsonDecode(message.message); // 解析参数

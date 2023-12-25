@@ -142,12 +142,13 @@ class SmallProgram { // isolate 启动参数
     if (isNeedUpdate) await updateLocalZipFile(); // 如果需要更新，则更新资源包
     if (!await isStaticAssetsValid) await handleDecompression(); // 如果静态资源无效（在更新之后仍然无效），则解压资源包
 
+    final _proxyHandler = proxyHandler(serverAddress); // 代理处理器
     final staticDirectory = await staticAssetsDirectory;
     final InternetAddress host = InternetAddress.loopbackIPv4/*'127.0.0.1'*/; // 本机IP地址
 
     final routes = router.Router(notFoundHandler: createStaticHandler(staticDirectory.path, defaultDocument: 'index.html')) // 模拟 connect-history-api-fallback 中间件。
-      ..all('/api/<ignored|.*>', proxyHandler(serverAddress)) // 代理 /api 中间件
-      ..all('/image/<ignored|.*>', proxyHandler(serverAddress)) // 代理 /image 中间件
+      ..all('/api/<ignored|.*>', _proxyHandler) // 代理 /api 中间件
+      ..all('/image/<ignored|.*>', _proxyHandler) // 代理 /image 中间件
       // ..get('/video.mp4', (shelf.Request request) => rootBundle.load('assets/video.mp4').then((value) => shelf.Response(200, body: value.buffer.asUint8List(), headers: {'content-type': 'video/mp4'}))) // 视频文件
     ;
 
