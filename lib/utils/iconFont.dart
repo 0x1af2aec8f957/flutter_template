@@ -6,7 +6,7 @@ class IconFont {
   final Color color;
   final num size;
 
-  const IconFont(this.hexData, {this.color = Colors.black, this.size = 24}): assert(hexData != null);
+  const IconFont(this.hexData, {this.color = Colors.black, this.size = 24});
   Widget call() => Icon(IconData(hexData, fontFamily: 'iconFont'), color: color, size: size.toDouble());
 
   static back({color, size}) => IconFont(0xe66f, color: color, size: size)(); // 返回

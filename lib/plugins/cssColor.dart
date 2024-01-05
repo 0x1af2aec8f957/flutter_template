@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' show Color, Colors;
 import 'package:flutter/painting.dart' show HSLColor;
 
 class CssColor extends Color {
-  CssColor(final String hexColor) : super(getColorFromString(hexColor));
+  CssColor(final String strColor) : super(getColorFromString(strColor));
 
   static int getColorFromString(String str) {
     if (str.startsWith('#')) return getColorFromHex(str);
