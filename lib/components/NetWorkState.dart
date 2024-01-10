@@ -7,7 +7,7 @@ import './SafeInspectStack.dart';
 
 /// 网络状态监听组件。
 
-class NetworkState extends StatefulWidget{
+class NetworkState extends StatefulWidget {
   final Widget child;
 
   const NetworkState({
@@ -18,10 +18,10 @@ class NetworkState extends StatefulWidget{
   State<NetworkState> createState() => _NetworkState();
 }
 
-class _NetworkState extends State<NetworkState>{
+class _NetworkState extends State<NetworkState> {
   final Connectivity connectivity = Connectivity(); // 初始化网络侦听器
   late StreamSubscription<ConnectivityResult> connectSubscription; // 订阅网络状态流
-  ConnectivityResult connectionResult = ConnectivityResult.wifi; // 网络状态链接结果，需要初始化一个状态为 [none] 的变量以避免启动时为空
+  ConnectivityResult connectionResult = ConnectivityResult.none; // 网络状态链接结果，需要初始化一个状态为 [none] 的变量以避免启动时为空
 
   bool get hasNetwork => connectionResult != ConnectivityResult.none; // 网络是否可用 或 是否有网络链接
   bool get isWifi => connectionResult == ConnectivityResult.wifi; // 是否使用WiFi网络
@@ -50,9 +50,8 @@ class _NetworkState extends State<NetworkState>{
 
   @override
   dispose() {
-    super.dispose();
-
     connectSubscription.cancel(); // 销毁时，取消订阅
+    super.dispose();
   }
 
   @override
