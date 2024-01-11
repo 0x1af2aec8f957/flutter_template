@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import '../setup/config.dart';
 import '../components/CustomDivider.dart';
 
-final BuildContext _globalContext = AppConfig.navigatorKey.currentState!.overlay!.context;
-
 abstract class Talk {
   static void toast(String text, {int duration = 2}) {
     final insert = AppConfig.navigatorKey.currentState!.overlay!.insert;
@@ -52,21 +50,21 @@ abstract class Talk {
       ),*/
     );
 
-    // Overlay.of(_globalContext).insert(entry);
+    // Overlay.of(AppConfig.navigatorKey.currentState!.overlay!.context).insert(entry);
     insert(entry);
 
     Future.delayed(Duration(seconds: duration), () => entry.remove());
   }
 
   static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {SnackBarAction? action, Duration duration = const Duration(seconds: 4)}) { // 底部提示信息
-    final instance = ScaffoldMessenger.of(_globalContext)
+    final instance = ScaffoldMessenger.of(AppConfig.navigatorKey.currentState!.overlay!.context)
       ..removeCurrentSnackBar(); // 移除上一次的snackBar
     return instance.showSnackBar(SnackBar(content: content, duration: duration, action: action));
   }
 
   static Future<void> loading([String text = "请稍后..."]) {
     return showDialog<void>(
-      context: _globalContext,
+      context: AppConfig.navigatorKey.currentState!.overlay!.context,
       barrierDismissible: false, //点击遮罩不关闭对话框
       builder: (BuildContext context) {
         return AlertDialog(
@@ -87,7 +85,7 @@ abstract class Talk {
 
   static Future<bool> alert(String text, {bool isCancel = true, String title = '提示'}) {
     return showDialog<bool>(
-      context: _globalContext,
+      context: AppConfig.navigatorKey.currentState!.overlay!.context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -119,7 +117,7 @@ abstract class Talk {
 
   static Future<T?> sheetAction<T>({List<Widget> children = const <Widget>[], bool isCancel = true}) {
     return showModalBottomSheet<T>(
-      context: _globalContext,
+      context: AppConfig.navigatorKey.currentState!.overlay!.context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10))),
@@ -155,7 +153,7 @@ abstract class Talk {
             children: [
               CustomDivider(height: 1, color: Colors.grey.withOpacity(0.2)),
               TextButton(
-                onPressed: () => Navigator.of(_globalContext).pop(true),
+                onPressed: () => Navigator.of(AppConfig.navigatorKey.currentState!.overlay!.context).pop(true),
                 child: Text('确定', style: TextStyle(color: Colors.red)),
               ),
             ],

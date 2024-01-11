@@ -12,7 +12,7 @@ import '../routes.dart';
 // 路由寻找规则：routes -> onGenerateRoute -> onUnknownRoute -> throw error
 
 final _navigatorKey = AppConfig.navigatorKey;
-final router = _Router.of(_navigatorKey.currentState!);
+final router = _Router.of(_navigatorKey);
 
 class RouterObserver extends NavigatorObserver {
   // 对路由的鉴权拦截，可在此处理[官方路由表不可使用onGenerateRoute钩子]
@@ -72,13 +72,13 @@ class RouterObserver extends NavigatorObserver {
 
 /// 在模板1.5版本中的Router已被官方实现，但没有context用于应用外的跳转，这里主要针对应用外的场景进行二次封装
 class _Router { // 外部路由跳转
-  final NavigatorState _state;
+  final GlobalKey<NavigatorState> _navigatorKey;
+  NavigatorState get _state => _navigatorKey.currentState!;
 
-  const _Router(this._state);
+  const _Router(this._navigatorKey);
 
-  static _Router of([NavigatorState? state]) { // 传不同的state进来管理不同的路由组（仅适配 Navigator2.0以上场景）
-    final NavigatorState scope = state ?? _navigatorKey.currentState!;
-    return _Router(scope);
+  static _Router of(GlobalKey<NavigatorState> navigatorKey) { // 传不同的state进来管理不同的路由组（仅适配 Navigator2.0以上场景）
+    return _Router(navigatorKey);
   }
 
   Future<T?> push<T>(String routeName, [Object? arguments]) {
