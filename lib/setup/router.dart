@@ -11,8 +11,7 @@ import '../routes.dart';
 // typedef RedirectMethod = CustomRouteInformation Function (CustomRouteInformation to); // 重定向时目标路由的配置信息
 // 路由寻找规则：routes -> onGenerateRoute -> onUnknownRoute -> throw error
 
-final _navigatorKey = AppConfig.navigatorKey;
-final router = _Router.of(_navigatorKey);
+final router = _Router();
 
 class RouterObserver extends NavigatorObserver {
   // 对路由的鉴权拦截，可在此处理[官方路由表不可使用onGenerateRoute钩子]
@@ -72,14 +71,7 @@ class RouterObserver extends NavigatorObserver {
 
 /// 在模板1.5版本中的Router已被官方实现，但没有context用于应用外的跳转，这里主要针对应用外的场景进行二次封装
 class _Router { // 外部路由跳转
-  final GlobalKey<NavigatorState> _navigatorKey;
-  NavigatorState get _state => _navigatorKey.currentState!;
-
-  const _Router(this._navigatorKey);
-
-  static _Router of(GlobalKey<NavigatorState> navigatorKey) { // 传不同的state进来管理不同的路由组（仅适配 Navigator2.0以上场景）
-    return _Router(navigatorKey);
-  }
+  NavigatorState get _state => AppConfig.navigatorKey.currentState!;
 
   Future<T?> push<T>(String routeName, [Object? arguments]) {
     return _state.pushNamed<T>(routeName, arguments: arguments ?? {});
@@ -192,7 +184,7 @@ class CustomRouteDelegate extends RouterDelegate<String> with PopNavigatorRouter
   }
 
   @override
-  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
+  GlobalKey<NavigatorState> get navigatorKey => AppConfig.navigatorKey;
 
   @override
   String? get currentConfiguration => _stack.isNotEmpty ? _stack.last : null; // 获取当前配置的路由（每个获取路由栈堆的地方都会调用）

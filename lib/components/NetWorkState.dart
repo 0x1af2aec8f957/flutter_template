@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-import './SafeInspectStack.dart';
-
 /// 网络状态监听组件。
 
 class NetworkState extends StatefulWidget {
@@ -56,7 +54,7 @@ class _NetworkState extends State<NetworkState> {
 
   @override
   Widget build(BuildContext context) {
-    return hasNetwork ? SafeInspectStack(child: widget.child) : Scaffold(
+    return hasNetwork ? widget.child : Scaffold(
       body: SafeArea( // 安全区域，针对不规则的屏幕进行适配
         child: Container(
           width: MediaQuery.of(context).size.width,
@@ -82,7 +80,7 @@ class _NetworkState extends State<NetworkState> {
                 ),
               )
             ],
-        ),
+          ),
         ),
       ),
     );

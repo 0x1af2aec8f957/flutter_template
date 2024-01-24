@@ -5,15 +5,16 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
 
-import '../utils/common.dart';
-import '../utils/dialog.dart';
-import './setup/config.dart';
 import './setup/lang.dart';
-import './setup/router.dart';
 import './theme/index.dart';
-import './components/NetWorkState.dart';
-import './setup/providers.dart';
+import './utils/dialog.dart';
+import './setup/router.dart';
+import './setup/config.dart';
 import './models/global.dart';
+import './setup/providers.dart';
+import 'components/NetworkState.dart';
+import './components/SystemCheck.dart';
+import './components/SafeInspectStack.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,7 @@ class _App extends State<App> {
             });
           },
           child: MaterialApp.router(
-            // navigatorKey: navigatorKey, // 应用外部使用路由跳转
+            // navigatorKey: AppConfig.navigatorKey, // 应用外部使用路由跳转
             routeInformationParser: CustomInformationRouteParser(),
             // 路由解析，等价于编码+解码
             routerDelegate: CustomRouteDelegate(),
@@ -86,24 +87,28 @@ class _App extends State<App> {
               print('当前设备语言：$locale');
               return supportedLocales.contains(locale) ? locale : supportedLocales.first;
             },
-            title: 'PHILIPS',
+            title: 'Flutter template',
             onGenerateTitle: (BuildContext context) {
               // 国际化返回的标题
               return MainLocalizations.of(context)!.getValue('common', 'title')!;
             },
             theme: CustomTheme.light,
-            builder: (context, child) => NetworkState(
-              child: Scaffold(
-                // Global GestureDetector that will dismiss the keyboard
-                body: GestureDetector( // 处理安卓键盘收起问题
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    final FocusScopeNode currentFocus = FocusScope.of(context);
-                    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-                      FocusManager.instance.primaryFocus!.unfocus();
-                    }
-                  },
-                  child: child,
+            builder: (context, child) => SystemCheck(
+              child: NetworkState(
+                child: SafeInspectStack(
+                  child: Scaffold(
+                    // Global GestureDetector that will dismiss the keyboard
+                    body: GestureDetector( // 处理安卓键盘收起问题
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        final FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+                          FocusManager.instance.primaryFocus!.unfocus();
+                        }
+                      },
+                      child: child,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -127,6 +132,11 @@ class _App extends State<App> {
 
       // checkSchema(); // 检查是否是由 schema 启动
     });
+
+    AppConfig.deviceInfo.deviceInfo.then((deviceInfo) {
+      // 获取设备信息
+      print('设备信息：${deviceInfo.data}');
+    });
   }
 
   void changeLocale(Locale locale) {
@@ -138,7 +148,7 @@ class _App extends State<App> {
       _locale = locale;
     });
 
-    Provider.of<GlobalModel>(navigatorKey.currentState!.overlay!.context, listen: false).initData(); // 语言改变后拉取数据
+    Provider.of<GlobalModel>(AppConfig.navigatorContext, listen: false).initData(); // 语言改变后拉取数据
   }
 
   /* void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links

@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:pub_semver/pub_semver.dart' show Version;
 
 import '../setup/config.dart';
 import '../utils/dialog.dart';
-import '../components/CustomDivider.dart';
 
 class _AppInfo { // doc: https://raw.githubusercontent.com/xuexiangjys/flutter_xupdate/master/example/lib/app_info.dart
   final bool hasUpdate;
@@ -65,7 +63,6 @@ class _AppInfo { // doc: https://raw.githubusercontent.com/xuexiangjys/flutter_x
   }
 }
 
-final BuildContext globalContext = AppConfig.navigatorKey.currentState!.overlay!.context;
 /// 应用版本更新
 abstract class AppUpgrade {
   static bool _isInit = false; // 是否已经完成初始化
@@ -89,9 +86,8 @@ abstract class AppUpgrade {
           supportSilentInstall: false,
           ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
           enableRetry: false
-      ).catchError((error) {
+      ).catchError((error){
         Talk.toast(error);
-        return Future.error(error);
       });
 
       FlutterXUpdate.setUpdateHandler(
@@ -119,7 +115,7 @@ abstract class AppUpgrade {
   }
 
   static Future<bool> inspectCanUpdate(String version) async { // 检查应用是否需要更新
-    final PackageInfo localeInfo = await AppConfig.packageInfo; // 应用包信息
+    final localeInfo = await AppConfig.packageInfo; // 应用包信息
     final Version remoteVersion = Version.parse(version);
     return Version.prioritize(remoteVersion, Version.parse('${localeInfo.version}+${localeInfo.buildNumber}')) == 1; // 需要升级（远程发布的版本比本地版本高）
   }
@@ -187,7 +183,7 @@ abstract class AppUpgrade {
     final String remoteVersionName = remoteInfo.canonicalizedVersion.replaceAll(RegExp(r'\+\d*'), '');
 
     return showDialog<bool>(
-      context: globalContext,
+      context: AppConfig.navigatorContext,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Dialog(
@@ -234,7 +230,7 @@ abstract class AppUpgrade {
                                   textAlign: TextAlign.left,
                                 )
                             ),
-                            CustomDivider(height: 1, color: Colors.grey[600]?.withOpacity(0.5)),
+                            Divider(height: 1, color: Colors.grey[600]?.withOpacity(0.5)),
                             Container(
                               margin: const EdgeInsets.only(bottom: 6.0),
                               child: IntrinsicHeight( // 使垂直分割线正常展示
@@ -248,10 +244,10 @@ abstract class AppUpgrade {
                                           style: TextStyle(color: Colors.grey[600], fontSize: 18),
                                           textAlign: TextAlign.center,
                                         ),
-                                        onPressed: Navigator.of(globalContext).pop, //关闭对话框
+                                        onPressed: Navigator.of(AppConfig.navigatorContext).pop, //关闭对话框
                                       ),
                                     ),
-                                    if (!isForce) CustomVerticalDivider(color: Colors.grey[600]?.withOpacity(0.5), width: 1, indent: 10),
+                                    if (!isForce) VerticalDivider(color: Colors.grey[600]?.withOpacity(0.5), width: 1, indent: 10, endIndent: 10,),
                                     Expanded(
                                       child: TextButton(
                                         child: Text(
