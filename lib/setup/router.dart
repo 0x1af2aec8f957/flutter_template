@@ -7,6 +7,7 @@ import '../setup/config.dart';
 import '../utils/common.dart' show methodChannel;
 import '../lang/i18n.dart';
 import '../routes.dart';
+import '../../views/NotFound.dart';
 
 // typedef RedirectMethod = CustomRouteInformation Function (CustomRouteInformation to); // 重定向时目标路由的配置信息
 // 路由寻找规则：routes -> onGenerateRoute -> onUnknownRoute -> throw error
@@ -236,7 +237,7 @@ class CustomRouteDelegate extends RouterDelegate<String> with PopNavigatorRouter
 
     if(!routes.containsKey(_name)) return null;
     return MaterialPageRoute(
-        builder: routes[_name]!,
+        builder: routes[_name] ?? (BuildContext context) => NotFound(),
         settings: _settings,
         maintainState: true // 影响路由的push、pop等操作，开启时将在内存中维护路由状态，关闭时将只保留路由中第一个和最后一个页面的状态，这会导致执行pop操作时父级页面会始终刷新(在future的回调中context将不可用会发生变更)
     );
