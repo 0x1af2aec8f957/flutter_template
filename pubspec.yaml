@@ -68,6 +68,7 @@ dependencies:
   shelf_proxy: ^1.0.4
   shelf_router: ^1.1.4
   belatuk_range_header: ^6.1.0
+  stomp_dart_client: ^1.0.2
   # uni_links: ^0.5.1 # schema 协议
 
 dev_dependencies:

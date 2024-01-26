@@ -12,7 +12,7 @@ import './setup/router.dart';
 import './setup/config.dart';
 import './models/global.dart';
 import './setup/providers.dart';
-import 'components/NetworkState.dart';
+import './components/NetworkState.dart';
 import './components/SystemCheck.dart';
 import './components/SafeInspectStack.dart';
 
