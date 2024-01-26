@@ -11,7 +11,7 @@ class CustomStompClient {
   final Map<String, void Function({Map<String, String>? unsubscribeHeaders})> unSubscribeTopicFunctions = Map();
 
   Future<StompConfig> get config {
-    return SharedPreferences.getInstance().then((prefs) =>StompConfig( // 配置文件
+    return SharedPreferences.getInstance().then((prefs) => StompConfig( // 配置文件
       url: _wsUrl.toString(),
       onConnect: onConnect,
       onStompError: onStompError,
