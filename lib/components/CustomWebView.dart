@@ -151,7 +151,7 @@ class _CustomWebView extends State<CustomWebView> {
         deviceId ??= md5.convert(Utf8Encoder().convert((await deviceInfo.deviceInfo).toString())).toString();
         controller.runJavaScript("window.getDeviceIdCallback('${deviceId}')");
       })
-      ..addJavaScriptChannel('fetch', onMessageReceived: (message) { // 跨域请求
+      ..addJavaScriptChannel('request', onMessageReceived: (message) { // 跨域请求
         final options = jsonDecode(message.message); // 解析参数
         if (options is! Map) return; // 必须传入 可解析为 RequestOptions 的 Map 参数
         if (options['path'] == null || options['baseUrl'] == null) return; // 必须传入 path 或 baseUrl
@@ -165,7 +165,7 @@ class _CustomWebView extends State<CustomWebView> {
           headers: options['headers'] ?? {},
           contentType: options['contentType'] ?? 'application/json',
           responseType: options['responseType'] ?? ResponseType.json,
-        )).then((value) => controller.runJavaScript("window.fetchCallback('${value.data is String ? value.data : jsonEncode(value.data)}')"));
+        )).then((value) => controller.runJavaScript("window.requestCallback('${value.data is String ? value.data : jsonEncode(value.data)}')"));
       })
       ..addJavaScriptChannel('openUrl', onMessageReceived: (message) async { // 使用外部默认打开方式打开链接
         if (await canLaunchUrl(Uri.parse(message.message))) launchUrl(Uri.parse(message.message)); // canLaunchUrl 需要额外的权限描述：https://github.com/flutter/packages/tree/main/packages/url_launcher/url_launcher#configuration

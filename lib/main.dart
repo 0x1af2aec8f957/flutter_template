@@ -133,9 +133,12 @@ class _App extends State<App> {
       // checkSchema(); // 检查是否是由 schema 启动
     });
 
-    AppConfig.deviceInfo.deviceInfo.then((deviceInfo) {
-      // 获取设备信息
-      print('设备信息：${deviceInfo.data}');
+    AppConfig.deviceInfo.deviceInfo.then((deviceInfo) { // 获取设备信息
+      print('设备信息：${deviceInfo}');
+    });
+
+    AppConfig.packageInfo.then((packageInfo) { // 获取包信息
+      print('包信息：${packageInfo}');
     });
   }
 
