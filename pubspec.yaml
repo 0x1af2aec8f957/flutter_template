@@ -62,7 +62,7 @@ dependencies:
   pub_semver: ^2.1.4 # 版本约束检查
   google_fonts: ^4.0.4
   image: ^4.1.3
-  lottie: ^2.7.0 # 解析并渲染 Adob​​e After Effects 动画
+  lottie: ^3.0.0 # 解析并渲染 Adob​​e After Effects 动画
   safe_device: ^1.1.4 # 检测设备安全
   share_plus: ^7.2.1 # 分享应用
   shelf_proxy: ^1.0.4
