@@ -4,11 +4,14 @@ import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../setup/config.dart';
+
 final _wsUrl = Uri.parse('wss://example.com');
 
 class CustomStompClient {
-  StompClient? client;
-  final Map<String, void Function({Map<String, String>? unsubscribeHeaders})> unSubscribeTopicFunctions = Map();
+  StompClient? client; // Stomp 客户端
+  bool get isConnected => client?.connected ?? false; // 是否已连接
+  final Map<String, void Function({Map<String, String>? unsubscribeHeaders})> unSubscribeTopicFunctions = Map(); // 取消订阅函数
 
   Future<StompConfig> get config {
     return SharedPreferences.getInstance().then((prefs) => StompConfig( // 配置文件
@@ -17,6 +20,7 @@ class CustomStompClient {
       onStompError: onStompError,
       onDisconnect: onDisconnect,
       beforeConnect: onBeforeConnect,
+      onDebugMessage: onDebugMessage,
       stompConnectHeaders: {
         "username": "username",
         "Authorization": prefs.getString('token') ?? '',
@@ -61,22 +65,24 @@ class CustomStompClient {
     print('Stomp disconnect');
   }
 
-  void Function({Map<String, String>? unsubscribeHeaders})? subscribe(String topic, Function(StompFrame frame) callback, { Map<String, String>? headers }) { // 订阅
-    final unSubscribeFunc = client?.subscribe(
-      destination: topic,
-      callback: callback,
-      headers: headers,
-    );
+  Future<void Function({Map<String, String>? unsubscribeHeaders})?> subscribe(String topic, Function(StompFrame frame) callback, { Map<String, String>? headers }) { // 订阅
+    return Future.doWhile(() => Future.delayed(Duration(seconds: 1), () => !isConnected/* 等待 stomp 连接完成 */)).then((_) { // 等待 stomp 连接完成才能订阅
+      final unSubscribeFunc = client?.subscribe(
+        destination: topic,
+        callback: callback,
+        headers: headers,
+      );
 
-    if(unSubscribeFunc != null) unSubscribeTopicFunctions.update(topic, (value) {
-      value(); // 先取消上一个订阅
-      return unSubscribeFunc;
-    }, ifAbsent: () => unSubscribeFunc);
+      if(unSubscribeFunc != null) unSubscribeTopicFunctions.update(topic, (value) {
+        value(); // 先取消上一个订阅
+        return unSubscribeFunc;
+      }, ifAbsent: () => unSubscribeFunc);
 
-    return ({Map<String, String>? unsubscribeHeaders}){
-      unSubscribeTopicFunctions.remove(topic);
-      return unSubscribeFunc?.call(/* unsubscribeHeaders */);
-    };
+      return ({Map<String, String>? unsubscribeHeaders}) {
+        unSubscribeTopicFunctions.remove(topic);
+        return unSubscribeFunc?.call(/* unsubscribeHeaders */);
+      };
+    });
   }
 
   void sendMessage(String topic, String? body, { Map<String, String>? headers, Uint8List? binaryBody }) { // 发送消息
@@ -99,5 +105,9 @@ class CustomStompClient {
 
   void deactivate() { // 断开连接
     client?.deactivate();
+  }
+
+  void onDebugMessage(String message) { // 调试信息
+    if (!AppConfig.isProduction) print('Stomp debug message: ${message}');
   }
 }
