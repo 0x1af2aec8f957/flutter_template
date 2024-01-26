@@ -14,7 +14,7 @@ import './views/Count.dart';
 
 final routes = <String, WidgetBuilder>{ //
   '/': (BuildContext context) => Home(title: '首页'),
-  'about': (BuildContext context) => About(title: '关于', arg: ModalRoute.of(context)!.settings.arguments as Map<String, String>),
+  'about': (BuildContext context) => About(title: '关于', arg: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
   'example': (BuildContext context) => Example(title: '示例程序'),
   'loadingJson': (BuildContext context) => LoadingJson(title: '加载本地Json文件'),
   'subRouter': (BuildContext context) => SubRouter(title: '子路由示例'),

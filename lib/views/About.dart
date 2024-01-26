@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 
 class About extends StatelessWidget {
   final String title;
-  final Map<String, String>? arg;
+  final Map<String, dynamic> arg;
 
-  const About({Key? key, required this.title, this.arg}) : super(key: key);
+  const About({Key? key, required this.title, required this.arg}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final arg = ModalRoute.of(context)!.settings.arguments as Map<String, String>;
 
     return Scaffold(
       appBar: AppBar(

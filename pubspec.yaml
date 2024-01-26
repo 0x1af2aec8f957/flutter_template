@@ -52,7 +52,7 @@ dependencies:
   scan: ^1.6.0 # 扫描二维码
   image_gallery_saver: ^2.0.3 # 保存图片到相册
   # jpush_flutter: ^2.5.0 # 激光推送
-  connectivity_plus: ^5.0.1 # 网络链接状态
+  connectivity_plus: ^5.0.2 # 网络链接状态
   # wakelock: ^0.6.2 # App常亮显示
   # image_cropper: ^5.0.0 # 图片裁剪
   image_picker: ^1.0.4 # 图库

@@ -382,5 +382,14 @@ def flutter_parse_plugins_file(file, platform)
 end
 ```
 
+##### 最新版的`connectivity_plus-^5.0.2`在执行`pod install`时，抛出异常
+> [connectivity_plus-5.0.0](https://pub.dev/packages/connectivity_plus/changelog#500)需要`iOS`最小的sdk为`12`.
+
+```Podfile
+# @workDir/ios/Podfile
+# Uncomment this line to define a global platform for your project
+platform :ios, '12.0' # 将这里的 11 改为 12，再执行 pod install 即可
+```
+
 ##### 帮助
 [Buy me a coffee](https://www.buymeacoffee.com/0x1af2aec8f957)
