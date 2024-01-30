@@ -1,22 +1,22 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:dio/dio.dart' show RequestOptions, ResponseType;
+import 'package:crypto/crypto.dart' show md5;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/foundation.dart';
-import 'package:crypto/crypto.dart' show md5;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:dio/dio.dart' show RequestOptions, ResponseType;
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
+import './QrCode.dart';
+import '../utils/dialog.dart';
 import '../setup/config.dart';
 import '../plugins/http.dart';
 import '../plugins/cssColor.dart';
-import '../utils/dialog.dart';
-import './QrCode.dart';
 import './FullScreenWebView.dart';
 
 typedef WebViewCreatedCallback = void Function(WebViewController controller); // 创建 WebView 回调

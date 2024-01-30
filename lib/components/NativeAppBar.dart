@@ -44,7 +44,7 @@ class NativeAppBar extends StatelessWidget implements PreferredSizeWidget {
       icon: backButtonIcon,
       color: backButtonColor,
       tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-      onPressed: () => _hasBackButton ? router.navigatorPop() : Navigator.of(context).pop(),
+      onPressed: () => _hasBackButton ? router.pop() : Navigator.of(context).pop(),
     );
 
     if (isRequired) return _iconButton;

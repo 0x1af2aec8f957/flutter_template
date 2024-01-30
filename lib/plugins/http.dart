@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart' show md5;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import './signer.dart';
 import '../setup/config.dart';
 import '../setup/router.dart' show router;
 import '../utils/dialog.dart';
-import './signer.dart';
 
 /// doc: https://github.com/cfug/dio/blob/main/dio/README-ZH.md
 
@@ -66,7 +66,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
     switch (data['code']) {
       case 400000: // 去登录
         prefs.remove('token');
-        router.replace('login');
+        router.replace('/login');
         return handler.reject(DioException(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions), true);
       case 0: // 正常
         response.data = data['data']; // 仅需要业务数据字段

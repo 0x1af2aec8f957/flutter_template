@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'package:flutter/material.dart';
 
 class CustomSliderLess extends StatelessWidget{
   final int value; // 滑动的值

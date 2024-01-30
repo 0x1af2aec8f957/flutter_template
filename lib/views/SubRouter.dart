@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SubRouter extends StatefulWidget {
   final String title;
@@ -56,10 +57,10 @@ class _SubRouter extends State<SubRouter> with SingleTickerProviderStateMixin{
         if(tabController?.index.toDouble() == tabController?.animation?.value){
           switch (tabController?.index) {
             case 0:
-              Navigator.of(context).pushReplacementNamed('subRouter');
+              context.replace('/subRouter');
               break;
             case 1:
-              Navigator.of(context).pushReplacementNamed('subRouter/page_2');
+              context.replace('/subRouter/page_2');
               break;
             default:
               break;

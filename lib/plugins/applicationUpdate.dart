@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_xupdate/flutter_xupdate.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:pub_semver/pub_semver.dart' show Version;
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_xupdate/flutter_xupdate.dart';
 
 import '../setup/config.dart';
 import '../utils/dialog.dart';

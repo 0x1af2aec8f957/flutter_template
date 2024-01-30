@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-// import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './setup/lang.dart';
 import './theme/index.dart';
@@ -12,8 +12,8 @@ import './setup/router.dart';
 import './setup/config.dart';
 import './models/global.dart';
 import './setup/providers.dart';
-import './components/NetworkState.dart';
 import './components/SystemCheck.dart';
+import './components/NetworkState.dart';
 import './components/SafeInspectStack.dart';
 
 void main() async{
@@ -66,30 +66,22 @@ class _App extends State<App> {
             });
           },
           child: MaterialApp.router(
-            // navigatorKey: AppConfig.navigatorKey, // 应用外部使用路由跳转
-            routeInformationParser: CustomInformationRouteParser(),
-            // 路由解析，等价于编码+解码
-            routerDelegate: CustomRouteDelegate(),
-            // 路由代理（鉴权、拦截等）
-            localizationsDelegates: [
-              // 本地化的代理类
+            routerConfig: router,
+            localizationsDelegates: [ // 本地化的代理类
               GlobalMaterialLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
-              // 翻译逻辑
-              _localeOverrideDelegate,
+              _localeOverrideDelegate, // 翻译逻辑
             ],
             supportedLocales: supportedLocales,
             locale: _locale, // 手动指定locale, 后续使用Localizations.localeOf(context)获取设备语言
-            localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) {
-              // 系统语言改变时回调，返回一个新的locale作为应用语言
+            localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) { // 系统语言改变时回调，返回一个新的locale作为应用语言
               // 此处可以设置统一的国家语言
               print('当前设备语言：$locale');
               return supportedLocales.contains(locale) ? locale : supportedLocales.first;
             },
             title: 'Flutter template',
-            onGenerateTitle: (BuildContext context) {
-              // 国际化返回的标题
+            onGenerateTitle: (BuildContext context) { // 国际化返回的标题
               return MainLocalizations.of(context)!.getValue('common', 'title')!;
             },
             theme: CustomTheme.light,

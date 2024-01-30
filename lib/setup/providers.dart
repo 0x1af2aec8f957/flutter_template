@@ -1,8 +1,8 @@
-import 'package:provider/provider.dart';
 import 'package:nested/nested.dart';
+import 'package:provider/provider.dart';
 
-import '../models/global.dart';
 import '../models/count.dart';
+import '../models/global.dart';
 
 final List<SingleChildWidget> providers = [
   ChangeNotifierProvider(create: (context) => GlobalModel()), // 全局的

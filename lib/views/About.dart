@@ -7,9 +7,8 @@ import '../plugins/applicationUpdate.dart';
 
 class About extends StatelessWidget {
   final String title;
-  final Map<String, dynamic> arg;
 
-  const About({Key? key, required this.title, required this.arg}) : super(key: key);
+  const About({Key? key, required this.title}) : super(key: key);
 
   Future<void> handleShare(BuildContext context) { // 分享
     final box = context.findRenderObject() as RenderBox?;

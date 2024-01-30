@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class Example extends StatefulWidget {
   final String title;
@@ -51,8 +52,6 @@ class _Example extends /*StatelessWidget*/ State<Example> {
 
   @override
   Widget build(BuildContext context) {
-    // Map<String, String> arg = ModalRoute.of(context).settings.arguments;
-    final NavigatorState navigator = Navigator.of(context);
 
     return Scaffold(
         // ListTile 需要
@@ -122,7 +121,7 @@ class _Example extends /*StatelessWidget*/ State<Example> {
                         trailing: Icon(Icons.chevron_right),
                         // enabled: true,
                         // selected: true,
-                        onTap: () => navigator.pushNamed('smallProgramTest'),
+                        onTap: () => context.push('/smallProgramTest'),
                       ), ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('打开webview'),
@@ -130,56 +129,56 @@ class _Example extends /*StatelessWidget*/ State<Example> {
                         trailing: Icon(Icons.chevron_right),
                         // enabled: true,
                         // selected: true,
-                        onTap: () => navigator.pushNamed('webview'),
+                        onTap: () => context.push('/webview'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('本地JSON文件加载'),
                         subtitle: Text('本地文件加载示例，含异步widget示例'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('loadingJson'),
+                        onTap: () => context.push('/loadingJson'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('子路由示例'),
                         subtitle: Text('适用于tab共用路由的场景'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('subRouter'),
+                        onTap: () => context.push('/subRouter'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('表单示例'),
                         subtitle: Text('用户输入信息提交示例'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('formTest'),
+                        onTap: () => context.push('/formTest'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('图片缓存'),
                         subtitle: Text('图片加载、缓存示例'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('customCachedNetworkImage'),
+                        onTap: () => context.push('/customCachedNetworkImage'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('应用程序目录'),
                         subtitle: Text('应用程序目录示例'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('applicationDir'),
+                        onTap: () => context.push('/applicationDir'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('全屏应用'),
                         subtitle: Text('全屏示例'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('fullScreen'),
+                        onTap: () => context.push('/fullScreen'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),
                         title: Text('状态管理provider示例'),
                         subtitle: Text('provider示例-计数器'),
                         trailing: Icon(Icons.chevron_right),
-                        onTap: () => navigator.pushNamed('count'),
+                        onTap: () => context.push('/count'),
                       ),
                       ListTile(
                         // leading: Image.network("https://avatars3.githubusercontent.com/u/6915570?s=460&v=4"),

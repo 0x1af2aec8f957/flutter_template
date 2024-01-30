@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import './Drawer.dart';
-import './View1.dart';
-import './View2.dart';
-import './View3.dart';
 import '../../lang/I18n.dart';
 
 class Home extends StatefulWidget {
   final String title;
+  final Widget child;
 
-  Home({Key? key, required this.title}) : super(key: key);
+  Home({Key? key, required this.title, required this.child}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _Home();
@@ -19,26 +18,14 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
 
   late TabController _tabController; //需要定义一个Controller
   final List tabs = ["视图1", "视图2", "视图3"];
-  int _selectedIndex = 1;
 
-  // StatelessWidget displayView = View2();
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-
-    });
+  int get _selectedIndex {
+    final String lastPath = GoRouterState.of(context).uri.pathSegments.last;
+    return (int.tryParse(lastPath) ?? 1) - 1;
   }
 
-  StatelessWidget get displayView {
-    switch(_selectedIndex + 1){
-      case 2:
-        return View2();
-      case 3:
-        return View3();
-      default:
-        return View1(tabController: _tabController, tabs: tabs);
-    }
+  void _onItemTapped(int index) {
+    return context.go('/${index + 1}');
   }
 
   @override
@@ -90,7 +77,7 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
                 tabs: [for (String e in tabs) Tab(text: e)]
             ),
           ),
-        Expanded(child: displayView),
+          Expanded(child: widget.child),
         ],),
       ),
     );

@@ -1,8 +1,8 @@
 import 'package:yaml/yaml.dart';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
-import 'package:flutter/foundation.dart' show SynchronousFuture;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/foundation.dart' show SynchronousFuture;
 
 import './config.dart';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({
@@ -22,7 +23,7 @@ class LeftDrawer extends StatelessWidget {
                     TextButton(
                         child: Text('示例'),
                         style: TextButton.styleFrom(textStyle: const TextStyle(color: Colors.blue)),
-                        onPressed: () => Navigator.of(context).pushNamed("example")
+                        onPressed: () => context.push('/example')
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -37,7 +38,7 @@ class LeftDrawer extends StatelessWidget {
                             onPressed: () {
                               //导航到新路由
                               // Navigator.pushNamed(context, "about", arguments: <String, String>{'info': 'about'});
-                              Navigator.of(context).pushNamed("about", arguments: <String, String>{'info': 'about'});
+                              context.push("about");
                             }),
                       ],
                     ),

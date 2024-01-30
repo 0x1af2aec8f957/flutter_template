@@ -1,41 +1,76 @@
-import 'package:flutter/material.dart';
-// import 'package:fluro/fluro.dart';
+import 'package:flutter/material.dart' show WidgetsBinding, BuildContext, Widget;
+import 'package:go_router/go_router.dart';
 
-import './views/Home/index.dart';
 import './views/About.dart';
-import './views/Example.dart';
-import './views/LoadingJson.dart';
-import './views/SubRouter.dart';
-import './views/FormTest.dart';
-import './views/CustomCachedNetworkImage.dart';
-import './views/ApplicationDir.dart';
-import './views/FullScreen.dart';
 import './views/Count.dart';
+import './views/Example.dart';
+import './views/FormTest.dart';
+import './views/SubRouter.dart';
+import './views/Home/index.dart';
+import './views/Home/View1.dart';
+import './views/Home/View2.dart';
+import './views/Home/View3.dart';
+import './views/FullScreen.dart';
+import './views/LoadingJson.dart';
+import './views/ApplicationDir.dart';
+import './views/CustomCachedNetworkImage.dart';
 
-final routes = <String, WidgetBuilder>{ //
-  '/': (BuildContext context) => Home(title: '首页'),
-  'about': (BuildContext context) => About(title: '关于', arg: ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
-  'example': (BuildContext context) => Example(title: '示例程序'),
-  'loadingJson': (BuildContext context) => LoadingJson(title: '加载本地Json文件'),
-  'subRouter': (BuildContext context) => SubRouter(title: '子路由示例'),
-  'formTest': (BuildContext context) => FormTest(title: '表单示例程序'),
-  'customCachedNetworkImage': (BuildContext context) => CustomCachedNetworkImage(title: '图片缓存示例程序'),
-  'applicationDir': (BuildContext context) => ApplicationDir(title: '应用目录示例'),
-  'fullScreen': (BuildContext context) => FullScreen(title: '全屏应用示例'),
-  'count': (BuildContext context) => Count(title: '计数器应用示例'),
-};
-
-/*class Routes { // fluro路由管理
-
-  static void configureRoutes(Router router) {
-
-    router.notFoundHandler = new Handler(
-        handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-          print("路由地址不存在!!!");
-        });
-    /// handlerFunc: 第一个参数是路由地址，第二个参数是页面跳转和传参（不支持中文），第三个参数是默认的转场动画
-    /// 先不设置默认的转场动画，转场动画可以在另外一个地方设置（可以看NavigatorUtil类）
-
-    routes.forEach((String path, HandlerFunc handlerFunc) => router.define(path, handler: Handler(handlerFunc: handlerFunc)));
-  }
-}*/
+final routes = [
+  /* GoRoute(
+    path: WidgetsBinding.instance.platformDispatcher.defaultRouteName, // 平台默认路由
+    builder: (context, state) => Home(title: '首页'), // state.pathParameters 为动态路径中的 params 参数；state.uri.queryParameters 为路径中的 query 参数
+  ), */
+  ShellRoute( // 嵌套路由
+    builder: (BuildContext context, GoRouterState state, Widget child) => Home(title: '首页', child: child),
+    routes: <RouteBase>[
+      GoRoute(
+        path: '${WidgetsBinding.instance.platformDispatcher.defaultRouteName}1',
+        builder: (BuildContext context, GoRouterState state) => View1(),
+      ),
+      GoRoute(
+        path: '${WidgetsBinding.instance.platformDispatcher.defaultRouteName}2',
+        builder: (BuildContext context, GoRouterState state) => View2(),
+      ),
+      GoRoute(
+        path: '${WidgetsBinding.instance.platformDispatcher.defaultRouteName}3',
+        builder: (BuildContext context, GoRouterState state) => View3(),
+      ),
+    ],
+  ),
+  GoRoute(
+    path: '/about',
+    builder: (context, state) => About(title: '关于'),
+  ),
+  GoRoute(
+    path: '/example',
+    builder: (context, state) => Example(title: '示例程序'),
+  ),
+  GoRoute(
+    path: '/loadingJson',
+    builder: (context, state) => LoadingJson(title: '加载本地Json文件'),
+  ),
+  GoRoute(
+    path: '/subRouter',
+    builder: (context, state) => SubRouter(title: '子路由示例'),
+  ),
+  GoRoute(
+    path: '/formTest',
+    builder: (context, state) => FormTest(title: '表单示例程序'),
+  ),
+  GoRoute(
+    path: '/customCachedNetworkImage',
+    builder: (context, state) => CustomCachedNetworkImage(title: '图片缓存示例程序'),
+  ),
+  GoRoute(
+    path: '/applicationDir',
+    builder: (context, state) => ApplicationDir(title: '应用目录示例'),
+  ),
+  GoRoute(
+    path: '/fullScreen',
+    builder: (context, state) => FullScreen(title: '全屏应用示例'),
+  ),
+  GoRoute(
+    path: '/count',
+    builder: (context, state) => Count(title: '计数器应用示例'),
+  ),
+];
