@@ -20,6 +20,7 @@ import '../plugins/cssColor.dart';
 import './FullScreenWebView.dart';
 
 typedef WebViewCreatedCallback = void Function(WebViewController controller); // 创建 WebView 回调
+typedef AppLifecycleStateChange = Future<void> Function(AppLifecycleState state); // WebView 生命周期变更执行
 typedef PageDOMContentChangeCallback = void Function(JavaScriptMessage message); // 页面 DOM 发生变更执行
 typedef PageSystemOverlayStyleChange = void Function(Color color, SystemUiOverlayStyle systemOverlayStyle); // 页面 DOM 主题色发生变更执行
 
@@ -33,6 +34,7 @@ class CustomWebView extends StatefulWidget {
   final WebViewCreatedCallback? onWebViewCreated;
 
   // 自定义扩展事件，不需要依赖对接WEB才能完成的操作
+  final AppLifecycleStateChange? onLifecycleStateChange; // webview 生命周期变更执行
   final PageDOMContentChangeCallback? onPageDOMContentChangeCallback; // 页面DOM发生变更执行
   final PageSystemOverlayStyleChange? onPageSystemOverlayStyleChange; // DOM主题色发生变更执行
 
@@ -40,6 +42,7 @@ class CustomWebView extends StatefulWidget {
     Key? key,
     this.url,
     this.onWebViewCreated,
+    this.onLifecycleStateChange,
     this.onPageDOMContentChangeCallback,
     this.onPageSystemOverlayStyleChange,
   }) : super(key: key);
@@ -55,10 +58,12 @@ class _CustomWebView extends State<CustomWebView> {
   Future<List<String>> _androidFilePicker(FileSelectorParams params) async { // android 选择文件
     print('AndroidWebView 请求的选择文件 MIME 类型:  ${params.acceptTypes}');
     if (params.acceptTypes.any((type) => type == 'image/*')) {
+      await widget.onLifecycleStateChange?.call(AppLifecycleState.paused); // 应用即将进入后台
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.gallery,
       );
 
+      await widget.onLifecycleStateChange?.call(AppLifecycleState.resumed); // 应用已经进入前台
       return photo == null ? [] : [Uri.file(photo.path).toString()];
     }
 
@@ -217,7 +222,7 @@ class _CustomWebView extends State<CustomWebView> {
           }
 
           Talk.alert("确认退出？").then((bool? shouldPop) { // 都无法返回，弹窗确认是否退出应用
-            if (shouldPop ?? false) Navigator.of(context).pop();
+            if (shouldPop ?? false) exit(0);
           });
       }),
       child: SafeArea(

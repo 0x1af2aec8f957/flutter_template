@@ -24,7 +24,7 @@ final routes = [
     builder: (BuildContext context, GoRouterState state, Widget child) => Home(title: '首页', child: child),
     routes: <RouteBase>[
       GoRoute(
-        path: '${WidgetsBinding.instance.platformDispatcher.defaultRouteName}1',
+        path: WidgetsBinding.instance.platformDispatcher.defaultRouteName,
         builder: (BuildContext context, GoRouterState state) => View1(),
       ),
       GoRoute(

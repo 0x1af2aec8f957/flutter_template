@@ -20,12 +20,12 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
   final List tabs = ["视图1", "视图2", "视图3"];
 
   int get _selectedIndex {
-    final String lastPath = GoRouterState.of(context).uri.pathSegments.last;
+    final String lastPath = GoRouterState.of(context).uri.pathSegments.lastOrNull ?? '';
     return (int.tryParse(lastPath) ?? 1) - 1;
   }
 
   void _onItemTapped(int index) {
-    return context.go('/${index + 1}');
+    return context.go('/${index == 0 ? '' : index + 1}');
   }
 
   @override
@@ -105,8 +105,9 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
 
   @override
   void dispose() { // 当State对象从树中被永久移除时调用；通常在此回调中释放资源
-    super.dispose();
     print("dispose");
+    _tabController.dispose(); // 资源释放
+    super.dispose();
   }
 
   /*@override

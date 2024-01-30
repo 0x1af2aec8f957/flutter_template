@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
@@ -16,7 +18,7 @@ import './components/SystemCheck.dart';
 import './components/NetworkState.dart';
 import './components/SafeInspectStack.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // if(Platform.isIOS) DartPingIOS.register(); // 注册ping插件
 
@@ -34,6 +36,7 @@ class App extends StatefulWidget {
 
 class _App extends State<App> {
   // DateTime lastTime;
+  // StreamSubscription<Uri?>? schemaStream; // schema 监听
   Locale _locale = AppConfig.locales.first; // 默认语言
 
   final GlobalKey<NavigatorState> navigatorKey = AppConfig.navigatorKey;
@@ -56,13 +59,13 @@ class _App extends State<App> {
           onPopInvoked: (bool didPop) {
             if (didPop) return; // 已经返回
 
-            if (Navigator.of(context).canPop()) { // 主程序 可以返回
-              Navigator.of(context).pop();
+            if (context.canPop()) { // 主程序 可以返回
+              context.pop();
               return;
             }
 
             Talk.alert("确认退出？").then((bool? shouldPop) { // 都无法返回，弹窗确认是否退出应用
-              if (shouldPop ?? false) Navigator.of(context).pop();
+              if (shouldPop ?? false) exit(0);
             });
           },
           child: MaterialApp.router(
@@ -133,6 +136,12 @@ class _App extends State<App> {
       print('包信息：${packageInfo}');
     });
   }
+
+  /* @override
+  void dispose() {
+    schemaStream?.cancel(); // 取消 schema 监听
+    super.dispose();
+  } */
 
   void changeLocale(Locale locale) {
     SharedPreferences.getInstance().then((prefs){
