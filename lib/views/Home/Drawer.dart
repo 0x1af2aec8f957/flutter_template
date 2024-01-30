@@ -38,7 +38,7 @@ class LeftDrawer extends StatelessWidget {
                             onPressed: () {
                               //导航到新路由
                               // Navigator.pushNamed(context, "about", arguments: <String, String>{'info': 'about'});
-                              context.push("about");
+                              context.push("/about");
                             }),
                       ],
                     ),
