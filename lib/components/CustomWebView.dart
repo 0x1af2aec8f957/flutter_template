@@ -188,7 +188,7 @@ class _CustomWebView extends State<CustomWebView> {
       }) */;
 
     if (controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true); // android debug
+      AndroidWebViewController.enableDebugging(!AppConfig.isProduction); // android debug
       // (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
       (controller.platform as AndroidWebViewController)
         ..setTextZoom(100) // 字体大小不跟随系统变化
@@ -198,7 +198,7 @@ class _CustomWebView extends State<CustomWebView> {
 
     if (controller.platform is WebKitWebViewController) {
       (controller.platform as WebKitWebViewController)
-        ..setInspectable(true) // ios debug
+        ..setInspectable(!AppConfig.isProduction) // ios debug
         ..setAllowsBackForwardNavigationGestures(true); // 允许手势返回
     }
 
