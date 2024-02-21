@@ -7,6 +7,7 @@ import 'package:mime/mime.dart';
 import 'package:path/path.dart' as path;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:crypto/crypto.dart';
+import 'package:http/io_client.dart' show IOClient;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:shelf_static/shelf_static.dart'; // shelf 静态文件中间件
 import 'package:path_provider/path_provider.dart';
 import 'package:belatuk_range_header/belatuk_range_header.dart'; // RangeHeader 解析
 
+import '../../setup/config.dart';
 import '../../utils/dialog.dart';
 import '../../plugins/http.dart';
 
@@ -142,7 +144,8 @@ class SmallProgram { // isolate 启动参数
     if (isNeedUpdate) await updateLocalZipFile(); // 如果需要更新，则更新资源包
     if (!await isStaticAssetsValid) await handleDecompression(); // 如果静态资源无效（在更新之后仍然无效），则解压资源包
 
-    final _proxyHandler = proxyHandler(serverAddress); // 代理处理器
+    final HttpClient httpClient = HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true; // 忽略证书错误
+    final _proxyHandler = proxyHandler(serverAddress, client: AppConfig.isProduction ? null : IOClient(httpClient)); // 代理处理器
     final staticDirectory = await staticAssetsDirectory;
     final InternetAddress host = InternetAddress.loopbackIPv4/*'127.0.0.1'*/; // 本机IP地址
 

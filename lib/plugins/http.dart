@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'dart:convert';
+import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart' show md5;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -158,11 +160,11 @@ class MainTransformer extends BackgroundTransformer { // 主要的转换器,在�
 }
 
 class Http {
-  static late final original = Dio(); // 原始的 dio 实例
+  static late final original = Dio()..httpClientAdapter = IOHttpClientAdapter(createHttpClient: AppConfig.isProduction ? () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true/* 忽略证书错误 */: null); // 原始的 dio 实例
   late final Dio _dio = Dio(options);
   late String basePath; // 基准路径
 
-  Http({ required String basePath }){
+  Http({ required String basePath }) {
     this.basePath = basePath;
 
     _dio.transformer = MainTransformer(); // 数据转换处理
@@ -170,9 +172,11 @@ class Http {
       ..add(MainInterceptors(basePath: basePath)) // 主要的拦截器
       ..add(CacheInterceptor()); // 接口缓存
 
-    if (!AppConfig.isProduction) _dio.interceptors.add( // debug 模式下运行
+    if (!AppConfig.isProduction) _dio // debug 模式下运行
+      ..httpClientAdapter = IOHttpClientAdapter(createHttpClient: () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true/* Verify the certificate */) // 忽略证书错误
+      ..interceptors.add(
         LogInterceptor(responseBody: true, requestHeader: false, responseHeader: false, requestBody: true) // debug模式下打印log
-    );
+      );
   }
 
   Dio call() => _dio;
