@@ -18,9 +18,9 @@ import 'package:shelf_static/shelf_static.dart'; // shelf 静态文件中间件
 import 'package:path_provider/path_provider.dart';
 import 'package:belatuk_range_header/belatuk_range_header.dart'; // RangeHeader 解析
 
-import '../../setup/config.dart';
-import '../../utils/dialog.dart';
-import '../../plugins/http.dart';
+import '../setup/config.dart';
+import '../utils/dialog.dart';
+import '../plugins/http.dart';
 
 typedef CheckCache = bool Function(shelf.Request request); // Type: 检查是否需要缓存
 
