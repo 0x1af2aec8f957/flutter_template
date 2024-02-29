@@ -70,7 +70,7 @@ abstract class Talk {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              CircularProgressIndicator(),
+              CircularProgressIndicator(), // CupertinoActivityIndicator(),
               Padding(
                 padding: const EdgeInsets.only(top: 26.0),
                 child: Text(text),
