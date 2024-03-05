@@ -152,7 +152,7 @@ class _App extends State<App> {
       _locale = locale;
     });
 
-    Provider.of<GlobalModel>(AppConfig.navigatorContext, listen: false).initData(); // 语言改变后拉取数据
+    context.read<GlobalModel>().initData(); // 语言改变后拉取数据
   }
 
   /* void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links
