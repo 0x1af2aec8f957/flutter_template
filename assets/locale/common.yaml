@@ -21,6 +21,7 @@ zh_CN:
     - 不支持的方法调用
   dialogStatusText:
     - 请稍后...
+  noPermission: 根据当地法律法规，您所在地区无法提供服务
 en_US:
   title: 测试demo
   scrollStatus:
@@ -44,6 +45,7 @@ en_US:
     - 不支持的方法调用
   dialogStatusText:
     - 请稍后...
+  noPermission: 根据当地法律法规，您所在地区无法提供服务
 zh_TW:
   title: 测试demo
   scrollStatus:
@@ -67,6 +69,7 @@ zh_TW:
     - 不支持的方法调用
   dialogStatusText:
     - 请稍后...
+  noPermission: 根据当地法律法规，您所在地区无法提供服务
 ko_KR:
   title: 测试demo
   scrollStatus:
@@ -90,3 +93,4 @@ ko_KR:
     - 不支持的方法调用
   dialogStatusText:
     - 请稍后...
+  noPermission: 根据当地法律法规，您所在地区无法提供服务

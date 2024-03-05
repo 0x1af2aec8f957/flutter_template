@@ -9,6 +9,7 @@ import './signer.dart';
 import '../setup/config.dart';
 import '../setup/router.dart' show router;
 import '../utils/dialog.dart';
+import '../components/NoPermission.dart';
 
 /// doc: https://github.com/cfug/dio/blob/main/dio/README-ZH.md
 
@@ -83,7 +84,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     // print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
-    Talk.toast(err.error?.toString() ?? err.message ?? '未知的网络错误');
+    err.response?.statusCode == 403 ? NoPermission.open(AppConfig.navigatorKey.currentState!.context) : Talk.toast(err.error?.toString() ?? err.message ?? '未知的网络错误');
     return handler.reject(err);
   }
 }
