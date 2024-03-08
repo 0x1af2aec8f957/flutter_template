@@ -35,6 +35,8 @@ class App extends StatefulWidget {
 }
 
 class _App extends State<App> {
+  late final GlobalModel globalModel = context.read<GlobalModel>(); // 按需初始化全局 model
+
   // DateTime lastTime;
   // StreamSubscription<Uri?>? schemaStream; // schema 监听
   Locale _locale = AppConfig.locales.first; // 默认语言
@@ -152,7 +154,7 @@ class _App extends State<App> {
       _locale = locale;
     });
 
-    context.read<GlobalModel>().initData(); // 语言改变后拉取数据
+    globalModel.initData(); // 语言改变后拉取数据
   }
 
   /* void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links
