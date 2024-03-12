@@ -91,9 +91,9 @@ class QrCodeScanView extends MobileScanner { // 二维码扫描
       // detectionTimeoutMs: 1000,
       returnImage: true,
     ),
-    errorBuilder: (context, error, child) {
+    /* errorBuilder: (context, error, child) {
       return Text('scan-error: ${error}');
-    },
+    }, */
     // fit: BoxFit.contain,
     onDetect: (capture) {
       final List<Barcode> barcodes = capture.barcodes;
