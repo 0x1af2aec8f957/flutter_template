@@ -12,7 +12,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
-import './QrCode.dart';
+import './QrCode/Index.dart';
 import '../utils/dialog.dart';
 import '../setup/config.dart';
 import '../plugins/http.dart';

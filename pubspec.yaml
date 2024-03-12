@@ -47,7 +47,6 @@ dependencies:
   device_info_plus: ^9.1.0 # 设备信息
   url_launcher: ^6.2.1 # 吊起外部资源[支持电话、短信等]
   qr_flutter: ^4.1.0 # 生成二维码
-  scan: ^1.6.0 # 扫描二维码
   image_gallery_saver: ^2.0.3 # 保存图片到相册
   # jpush_flutter: ^2.5.0 # 激光推送
   connectivity_plus: ^5.0.2 # 网络链接状态
@@ -69,6 +68,7 @@ dependencies:
   stomp_dart_client: ^1.0.2
   go_router: ^13.1.0 # 路由管理: https://pub.dev/documentation/go_router/latest/topics/Get%20started-topic.html
   random_string: ^2.3.1
+  mobile_scanner: ^4.0.1 # 扫描二维码
   # uni_links: ^0.5.1 # schema 协议
 
 dev_dependencies:
