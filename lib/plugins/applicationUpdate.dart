@@ -244,7 +244,7 @@ abstract class AppUpgrade {
                                           style: TextStyle(color: Colors.grey[600], fontSize: 18),
                                           textAlign: TextAlign.center,
                                         ),
-                                        onPressed: Navigator.of(AppConfig.navigatorContext).pop, //关闭对话框
+                                        onPressed: ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop : null, //关闭对话框
                                       ),
                                     ),
                                     if (!isForce) VerticalDivider(color: Colors.grey[600]?.withOpacity(0.5), width: 1, indent: 10, endIndent: 10,),

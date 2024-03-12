@@ -94,19 +94,16 @@ abstract class Talk {
               offstage: isCancel,
               child: TextButton(
                 child: Text("取消"),
-                onPressed: () => Navigator.of(context).pop(false),
+                onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(false) : null,
               ),
             ),*/
             if (isCancel) TextButton(
               child: Text("取消"),
-              onPressed: () => Navigator.of(context).pop(false),
+              onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(false) : null,
             ),
             TextButton(
               child: Text("确认"),
-              onPressed: () {
-                // 执行删除操作
-                Navigator.of(context).pop(true);
-              },
+              onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(true) : null,
             ),
           ],
         );
@@ -128,7 +125,7 @@ abstract class Talk {
             if (isCancel) CustomDivider(height: 5, color: Colors.grey),
             if (isCancel) SafeArea(
               child: TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop() : null,
                 child: Text('取消', style: TextStyle(color: Colors.black)),
               ),
             ),
@@ -151,9 +148,11 @@ abstract class Talk {
           subtitle: Column(
             children: [
               CustomDivider(height: 1, color: Colors.grey.withOpacity(0.2)),
-              TextButton(
-                onPressed: () => Navigator.of(AppConfig.navigatorContext).pop(true),
-                child: Text('确定', style: TextStyle(color: Colors.red)),
+              Builder(
+                builder: (context) => TextButton(
+                  onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(true) : null,
+                  child: Text('确定', style: TextStyle(color: Colors.red)),
+                )
               ),
             ],
           ),

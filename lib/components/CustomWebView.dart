@@ -216,7 +216,7 @@ class _CustomWebView extends State<CustomWebView> {
             return;
           }
 
-          if (Navigator.of(context).canPop()) { // 主程序 可以返回
+          if (Navigator.of(context).canPop() && ModalRoute.of(context)!.isCurrent) { // 主程序 可以返回
             Navigator.of(context).pop();
             return;
           }

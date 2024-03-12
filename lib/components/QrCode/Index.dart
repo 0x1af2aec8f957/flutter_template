@@ -98,7 +98,7 @@ class QrCodeScanView extends MobileScanner { // 二维码扫描
     onDetect: (capture) {
       final List<Barcode> barcodes = capture.barcodes;
       final String? result = barcodes.firstOrNull?.rawValue;
-      if (result == null || ModalRoute.of(context)!.isCurrent) return;
+      if (result == null || !ModalRoute.of(context)!.isCurrent) return;
       if (onValidate == null) return Navigator.of(context).pop(result);
 
       return onValidate(result) ? Navigator.of(context).pop<String>(result) : null;

@@ -61,7 +61,7 @@ class _App extends State<App> {
           onPopInvoked: (bool didPop) {
             if (didPop) return; // 已经返回
 
-            if (context.canPop()) { // 主程序 可以返回
+            if (context.canPop() && ModalRoute.of(context)!.isCurrent) { // 主程序 可以返回
               context.pop();
               return;
             }

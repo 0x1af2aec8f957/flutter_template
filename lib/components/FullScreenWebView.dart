@@ -92,7 +92,7 @@ class _FullScreenWebView extends State<FullScreenWebView> {
                     icon: CloseIcon,
                     style: iconButtonStyle,
                     visualDensity: VisualDensity.compact,
-                    onPressed: () => Navigator.pop(context)
+                    onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.pop(context) : null,
                   ),
                 ],
               ),

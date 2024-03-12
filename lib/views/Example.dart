@@ -35,13 +35,13 @@ class _Example extends /*StatelessWidget*/ State<Example> {
             actions: <Widget>[
               new TextButton(
                 onPressed: () {
-                  context.pop();
+                  if (ModalRoute.of(context)!.isCurrent) context.pop();
                 },
                 child: new Text("确认"),
               ),
               new TextButton(
                 onPressed: () {
-                  context.pop();
+                  if (ModalRoute.of(context)!.isCurrent) context.pop();
                 },
                 child: new Text("取消"),
               ),

@@ -72,15 +72,15 @@ class CustomImageActionButton extends StatelessWidget {
     return Talk.sheetAction<ActionType>(
       children: [
         if (!isOnlyShowSave) TextButton(
-          onPressed: () => Navigator.of(context).pop(ActionType.Photograph),
+          onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(ActionType.Photograph) : null,
           child: Text('拍照')
         ),
         if (!isOnlyShowSave) TextButton(
-          onPressed: () => Navigator.of(context).pop(ActionType.Album),
+          onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(ActionType.Album) : null,
           child: Text('从手机相册选择')
         ),
         if (repaintBoundaryKey != null) TextButton(
-          onPressed: () => Navigator.of(context).pop(ActionType.Save),
+          onPressed: () => ModalRoute.of(context)!.isCurrent ? Navigator.of(context).pop(ActionType.Save) : null,
           child: Text('保存图片')
         ),
       ],
