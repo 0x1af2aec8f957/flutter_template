@@ -55,10 +55,16 @@ abstract class Talk {
     Future.delayed(Duration(seconds: duration), () => entry.remove());
   }
 
-  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {SnackBarAction? action, Duration duration = const Duration(seconds: 4)}) { // 底部提示信息
-    final instance = ScaffoldMessenger.of(AppConfig.navigatorContext)
-      ..removeCurrentSnackBar(); // 移除上一次的snackBar
+  static ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar(Widget content, {BuildContext? context, SnackBarAction? action, Duration duration = const Duration(seconds: 4)}) { // 底部提示信息
+    final instance = ScaffoldMessenger.of(context ?? AppConfig.navigatorContext)
+      ..removeCurrentSnackBar(); // 移除上一次的 snackBar
     return instance.showSnackBar(SnackBar(content: content, duration: duration, action: action));
+  }
+
+  static ScaffoldFeatureController<MaterialBanner, MaterialBannerClosedReason> materialBanner(Widget content, {BuildContext? context, List<Widget> actions = const []}) { // 顶部提示信息（会一直展示，除非主动关闭）
+    final instance = ScaffoldMessenger.of(context ?? AppConfig.navigatorContext)
+      ..removeCurrentMaterialBanner(); // 移除上一次的 materialBanner
+    return instance.showMaterialBanner(MaterialBanner(content: content, actions: actions));
   }
 
   static Future<void> loading([String text = "请稍后..."]) {

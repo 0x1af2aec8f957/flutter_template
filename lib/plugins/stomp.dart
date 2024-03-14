@@ -1,4 +1,5 @@
 import 'dart:typed_data' show Uint8List;
+import 'package:flutter/material.dart' show ValueNotifier;
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
@@ -10,7 +11,7 @@ final _wsUrl = Uri.parse('wss://example.com');
 
 class CustomStompClient {
   StompClient? client; // Stomp 客户端
-  bool get isConnected => client?.connected ?? false; // 是否已连接
+  ValueNotifier<bool> isConnected = ValueNotifier(false); // 是否已连接（UI 更新可以使用 ValueListenableBuilder 构建）
   final Map<String, void Function({Map<String, String>? unsubscribeHeaders})> unSubscribeTopicFunctions = Map(); // 取消订阅函数
 
   Future<StompConfig> get config {
@@ -44,6 +45,7 @@ class CustomStompClient {
   static late final CustomStompClient _instance = CustomStompClient._internal();
 
   void onConnect(StompFrame connectFrame) { // 连接
+    isConnected.value = client?.connected ?? false;
     print('Stomp connected');
     /* subscribe('/topic/greetings', (StompFrame frame) {
       print('/topic/greetings - Received: ${frame.body}');
@@ -52,21 +54,24 @@ class CustomStompClient {
   }
 
   Future<void> onBeforeConnect() async { // 连接前
+    isConnected.value = client?.connected ?? false;
     print('Waiting to stomp connect...');
     await Future.delayed(const Duration(milliseconds: 200));
     print('Stomp connecting...');
   }
 
   void onStompError(StompFrame frame) { // 错误
+    isConnected.value = client?.connected ?? false;
     print('Stomp error');
   }
 
   void onDisconnect(StompFrame frame) { // 断开连接
+    isConnected.value = client?.connected ?? false;
     print('Stomp disconnect');
   }
 
   Future<void Function({Map<String, String>? unsubscribeHeaders})?> subscribe(String topic, Function(StompFrame frame) callback, { Map<String, String>? headers }) { // 订阅
-    return Future.doWhile(() => Future.delayed(Duration(seconds: 1), () => !isConnected/* 等待 stomp 连接完成 */)).then((_) { // 等待 stomp 连接完成才能订阅
+    return Future.doWhile(() => Future.delayed(Duration(seconds: 1), () => !isConnected.value/* 等待 stomp 连接完成 */)).then((_) { // 等待 stomp 连接完成才能订阅
       final unSubscribeFunc = client?.subscribe(
         destination: topic,
         callback: callback,
@@ -100,14 +105,17 @@ class CustomStompClient {
   }
 
   void activate() { // 连接
+    isConnected.value = client?.connected ?? false;
     client?.activate();
   }
 
   void deactivate() { // 断开连接
+    isConnected.value = client?.connected ?? false;
     client?.deactivate();
   }
 
   void onDebugMessage(String message) { // 调试信息
+    // isConnected = client?.connected ?? false;
     if (!AppConfig.isProduction) print('Stomp debug message: ${message}');
   }
 }
