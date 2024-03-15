@@ -1,11 +1,16 @@
+import 'dart:async';
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../setup/config.dart';
 import '../components/CustomDivider.dart';
 
+typedef _LogType = void Function(String, {Object? error, int level, String name, int? sequenceNumber, StackTrace? stackTrace, DateTime? time, Zone? zone});
+
 abstract class Talk {
   static void toast(String text, {int duration = 2}) {
-    final insert = AppConfig.navigatorKey.currentState!.overlay!.insert;
+    final insert = AppConfig.navigatorOverlay.insert;
     final OverlayEntry entry = OverlayEntry( // OverlayEntry本身使用Stack布局将自身放置在视图最顶层，应当避免再次使用Stack
       builder: /* Widget */(_) => Positioned(
         bottom: 50.0,
@@ -166,4 +171,6 @@ abstract class Talk {
       ]
     ).then((bool? isConfirm) => isConfirm ?? false);
   }
+
+  static _LogType get log => developer.log;
 }

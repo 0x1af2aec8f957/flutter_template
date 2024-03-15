@@ -17,7 +17,7 @@ final router = GoRouter(
     child: Text('An unknown fatal error occurred')
   ), */
   /* onException: (BuildContext _context, GoRouterState _state, GoRouter _router) { // 处理所有错误，提供该方法会覆盖 errorBuilder
-    print('路由异常：${_state.error}');
+    Talk.log('路由异常：${_state.error}', name: 'GoRouter.onException');
   }, */
   /* redirect: (BuildContext context, GoRouterState state) { // 鉴权或其它需要重定向的逻辑
     if (AuthState.of(context).isSignedIn) {
@@ -98,6 +98,5 @@ class RouterObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) { // 对应的pop方法
     super.didPop(route, previousRoute);
-    print('this is pop method, ${route.settings.name}');
   }
 }

@@ -81,8 +81,7 @@ class _App extends State<App> {
             supportedLocales: supportedLocales,
             locale: _locale, // 手动指定locale, 后续使用Localizations.localeOf(context)获取设备语言
             localeResolutionCallback: (Locale? locale, Iterable<Locale> supportedLocales) { // 系统语言改变时回调，返回一个新的locale作为应用语言
-              // 此处可以设置统一的国家语言
-              print('当前设备语言：$locale');
+              Talk.log(locale.toString(), name: '设备语言'); // 此处可以设置统一的国家语言
               return supportedLocales.contains(locale) ? locale : supportedLocales.first;
             },
             title: 'Flutter template',
@@ -131,11 +130,11 @@ class _App extends State<App> {
     });
 
     AppConfig.deviceInfo.deviceInfo.then((deviceInfo) { // 获取设备信息
-      print('设备信息：${deviceInfo}');
+      Talk.log(deviceInfo.toString(), name: '设备信息');
     });
 
     AppConfig.packageInfo.then((packageInfo) { // 获取包信息
-      print('包信息：${packageInfo}');
+      Talk.log(packageInfo.toString(), name: '包信息');
     });
   }
 
@@ -167,7 +166,7 @@ class _App extends State<App> {
         });
       } on FormatException {
         // Talk.toast(I18n.$t('common', 'parseError'));
-        print('schema 协议解析错误');
+        Talk.log('解析错误', name: 'Schema 协议');
       }
   } */
 }

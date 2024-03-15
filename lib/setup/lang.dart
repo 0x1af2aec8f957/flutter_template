@@ -5,6 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 
 import './config.dart';
+import '../utils/dialog.dart';
 
 final Map<String, YamlMap> _languages = Map(); // 语言包
 
@@ -43,8 +44,8 @@ class MainLocalizations {
   static Map<String, YamlMap> get _localizedValues => _languages;
 
   /*String get title {
-    print(_localizedValues.runtimeType);
-    print(_localizedValues[locale.toString()]);
+    Talk.log(_localizedValues.runtimeType, name: 'MainLocalizations');
+    Talk.log('${locale.toString()}: ${_localizedValues[locale.toString()]}', name: 'MainLocalizations');
     return _localizedValues[locale.toString()]['title'];
   }*/
 
@@ -99,7 +100,7 @@ class MainLocalizationsDelegate extends LocalizationsDelegate<MainLocalizations>
   Future<MainLocalizations> load(Locale locale) { // 语言包初始化
 //  final savedLocale = prefs.getString('locale')?.split('_');
 //  final _locale = overriddenLocale ?? savedLocale != null ? Locale(savedLocale.first, savedLocale.last) : locale; // 初始化传入的语言 - 用户保存的语言 - 设备语言
-    print("设备即将加载语言包：$locale");
+    Talk.log('设备即将加载语言包：$locale', name: 'MainLocalizationsDelegate');
     return SynchronousFuture<MainLocalizations>(MainLocalizations(locale));
   }
 

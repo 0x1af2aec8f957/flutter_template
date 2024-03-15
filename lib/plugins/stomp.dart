@@ -6,6 +6,7 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../setup/config.dart';
+import '../utils/dialog.dart';
 
 final _wsUrl = Uri.parse('wss://example.com');
 
@@ -35,7 +36,7 @@ class CustomStompClient {
 
   CustomStompClient._internal() {
     config.then((_config) {
-      print('Stomp 正在使用的凭证：${_config.stompConnectHeaders?['Authorization']})');
+      Talk.log('正在使用的凭证：${_config.stompConnectHeaders?['Authorization']}', name: 'Stomp');
       client ??= StompClient(config: _config); // 初始化
       activate(); // 自动连接
     });
@@ -46,28 +47,28 @@ class CustomStompClient {
 
   void onConnect(StompFrame connectFrame) { // 连接
     isConnected.value = client?.connected ?? false;
-    print('Stomp connected');
+    Talk.log('connected', name: 'Stomp');
     /* subscribe('/topic/greetings', (StompFrame frame) {
-      print('/topic/greetings - Received: ${frame.body}');
+      Talk.log('/topic/greetings - Received: ${frame.body}', name: 'Stomp');
     });
     sendMessage('/app/hello', 'Hello, STOMP'); */
   }
 
   Future<void> onBeforeConnect() async { // 连接前
     isConnected.value = client?.connected ?? false;
-    print('Waiting to stomp connect...');
+    Talk.log('Waiting connect...', name: 'Stomp');
     await Future.delayed(const Duration(milliseconds: 200));
-    print('Stomp connecting...');
+    Talk.log('connecting...', name: 'Stomp');
   }
 
   void onStompError(StompFrame frame) { // 错误
     isConnected.value = client?.connected ?? false;
-    print('Stomp error');
+    Talk.log('error: ${frame.body}', name: 'Stomp');
   }
 
   void onDisconnect(StompFrame frame) { // 断开连接
     isConnected.value = client?.connected ?? false;
-    print('Stomp disconnect');
+    Talk.log('disconnect', name: 'Stomp');
   }
 
   Future<void Function({Map<String, String>? unsubscribeHeaders})?> subscribe(String topic, Function(StompFrame frame) callback, { Map<String, String>? headers }) { // 订阅
@@ -115,7 +116,6 @@ class CustomStompClient {
   }
 
   void onDebugMessage(String message) { // 调试信息
-    // isConnected = client?.connected ?? false;
-    if (!AppConfig.isProduction) print('Stomp debug message: ${message}');
+    if (!AppConfig.isProduction) Talk.log('Debug message: $message', name: 'Stomp');
   }
 }

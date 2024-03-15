@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/dialog.dart';
+
 class FormTest extends StatefulWidget{
   final String title;
 
@@ -73,20 +75,15 @@ class _FormTest extends State<FormTest>{
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme
-                            .of(context)
-                            .primaryColor,
+                          backgroundColor: Theme.of(context).primaryColor,
                           minimumSize: Size(88, 36),
                           padding: EdgeInsets.all(15.0),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(2)),
-                          ),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2))),
                           textStyle: TextStyle(color: Colors.white),
                         ),
                         child: Text("登录"),
                         onPressed: () {
-                          //在这里不能通过此方式获取FormState，context不对
-                          //print(Form.of(context));
+                          //在这里不能通过 Form.of(context) 获取 FormState, context 不对
 
                           // 通过_formKey.currentState 获取FormState后，
                           // 调用validate()方法校验用户名密码是否合法，校验
@@ -95,8 +92,8 @@ class _FormTest extends State<FormTest>{
                           FormState _form = _formKey.currentState as FormState;
                           if(/*(_form as FormState)*/_form.validate()){
                             _form.save();
-                            print(_nameController.value.text); // 用户名
-                            print(_pwdController.value.text); // 密码
+                            Talk.log('_nameController.value.text: ${_nameController.text}', name: 'View.FormTest'); // 用户名
+                            Talk.log('_pwdController.value.text: ${_pwdController.text}', name: 'View.FormTest'); // 密码
                             //验证通过提交数据
                           }
                         },

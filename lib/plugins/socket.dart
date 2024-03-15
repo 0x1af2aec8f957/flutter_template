@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../utils/dialog.dart';
+
 final _wsUrl = Uri.parse('wss://example.com');
 
 class Socket {
@@ -11,7 +13,7 @@ class Socket {
       "username": "username",
       "Authorization": prefs.getString('token'),
     }).then((_socket) {
-      print('Socket 正在使用的凭证：${prefs.getString('token')})');
+      Talk.log('正在使用的凭证：${prefs.getString('token')})', name: 'Socket');
       socket = _socket..listen(onMessage, onDone: onDone, onError: onError);
     }));
   }
@@ -21,24 +23,24 @@ class Socket {
   static late final Socket _instance = Socket._internal();
 
   onMessage(dynamic message) {
-    print("Socket message: $message");
+    Talk.log('收到 message : $message', name: 'Socket');
   }
 
   onDone() {
-    print("Socket done");
+    Talk.log('Socket done', name: 'Socket');
   }
 
   onError(error) {
-    print("Socket error: $error");
+    Talk.log('Socket error: $error', name: 'Socket');
   }
 
   void sendMessage(String message) {
-    print('Socket sendMessage: $message');
+    Talk.log('发送消息: $message', name: 'Socket');
     socket?.add(message);
   }
 
   Future<dynamic> close() async {
-    print('Socket close');
+    Talk.log('Socket close', name: 'Socket');
     return await socket?.close();
   }
 }

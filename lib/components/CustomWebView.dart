@@ -56,7 +56,7 @@ class _CustomWebView extends State<CustomWebView> {
   bool isLoading = true; // 是否正在加载中
 
   Future<List<String>> _androidFilePicker(FileSelectorParams params) async { // android 选择文件
-    print('AndroidWebView 请求的选择文件 MIME 类型:  ${params.acceptTypes}');
+    Talk.log(params.acceptTypes.toString(), name: 'AndroidWebView 请求的选择文件 MIME 类型');
     if (params.acceptTypes.any((type) => type == 'image/*')) {
       await widget.onLifecycleStateChange?.call(AppLifecycleState.paused); // 应用即将进入后台
       final XFile? photo = await _picker.pickImage(
@@ -88,9 +88,8 @@ class _CustomWebView extends State<CustomWebView> {
       ..setBackgroundColor(const Color(0x00000000))
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
-            // Update loading bar.
-            print('加载进度: $progress'); 
+          onProgress: (int progress) { // Update loading bar.
+            Talk.log(progress.toString(), name: 'webview 加载进度');
           },
           onPageStarted: (String url) {},
           onPageFinished: (String url) {
@@ -118,7 +117,7 @@ class _CustomWebView extends State<CustomWebView> {
             });
           },
           onWebResourceError: (WebResourceError error) {
-            print('onWebResourceError: ${error.description}');
+            Talk.log(error.description, name: 'webview 加载错误');
           },
           onNavigationRequest: (NavigationRequest request) { // webview 无法打开的链接 在外部尝试打开
             final uri = Uri.parse(request.url);
@@ -184,7 +183,7 @@ class _CustomWebView extends State<CustomWebView> {
         });
       })
       /* ..addJavaScriptChannel('test', onMessageReceived: (message) { // 保存域名
-        print('收到 test 的消息：${message.message}');
+        Talk.log(message.message, name: 'JavaScriptChannel-test');
       }) */;
 
     if (controller.platform is AndroidWebViewController) {

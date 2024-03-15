@@ -6,6 +6,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import '../setup/config.dart';
+import '../utils/dialog.dart';
 
 typedef Callback = void Function(String topic, dynamic payload);
 final _cacheQueue = Map<String, Callback>(); // 缓存队列
@@ -36,50 +37,50 @@ class _MQTTService {
 
   // 连接成功
   void onConnected() {
-    print('MQTT-client已成功连接');
+    Talk.log('已成功连接', name: 'MQTT-client');
   }
 
   // 重新连接
   void onAutoReconnect() {
-    print('MQTT-client正在重新连接');
+    Talk.log('正在重新连接', name: 'MQTT-client');
   }
 
   // 重新连接成功
   void onAutoReconnected() {
-    print('MQTT-client重连成功');
+    Talk.log('重连成功', name: 'MQTT-client');
   }
 
   // 连接断开
   void onDisconnected() {
-    print('MQTT-client连接断开');
+    Talk.log('连接断开', name: 'MQTT-client');
   }
 
   // 订阅主题成功
   void onSubscribed(String topic) {
-    print('订阅成功: $topic');
+    Talk.log('订阅成功: $topic', name: 'MQTT-client');
   }
 
   // 订阅主题失败
   void onSubscribeFail(String topic) {
     _cacheQueue.remove(topic);
-    print('订阅失败: $topic');
+    Talk.log('订阅失败: $topic', name: 'MQTT-client');
   }
 
   // 成功取消订阅
   void onUnsubscribed(String? topic) {
     _cacheQueue.remove(topic);
-    print('取消订阅: $topic');
+    Talk.log('取消订阅: $topic', name: 'MQTT-client');
   }
 
   // 收到 PING 响应
   void pong() {
-    print('收到心跳唤醒');
+    Talk.log('收到心跳唤醒', name: 'MQTT-client');
   }
 
   /// 业务定制功能
   // 手动连接
   Future<void> get connect async{
-    print('MQTT-client正准备尝试连接');
+    Talk.log('正准备尝试连接', name: 'MQTT-client');
     if (client != null) return; // 已实例化则不再执行实例化
     // 未实例化才开始执行实例化
     final DeviceInfoPlugin deviceInfoPlugin = AppConfig.deviceInfo; // 获取设备信息
@@ -126,10 +127,9 @@ class _MQTTService {
     await client
         ?.connect() // 异步函数(开始连接)
         .then((value){
-      print('mqtt-client连接成功: ${value?.state}');
-    })
-        .catchError((err){
-      print('mqtt-client连接失败: $err');
+      Talk.log('连接成功: ${value?.state}', name: 'MQTT-client');
+    }).catchError((err){
+      Talk.log('连接失败: $err', name: 'MQTT-client');
       client?.disconnect();
     });
 
@@ -145,21 +145,21 @@ class _MQTTService {
           final Callback? callback = _cacheQueue[topic];
           // final String payload = MqttPublishPayload.bytesToStringAsString(_message.payload.message); // 使用自带的解析器会导致中文乱码，可用Utf8Decoder代替
           final String payload = MqttPublishPayload.bytesToStringAsString(_message.payload.message);
-          print("收到订阅:$topic");
-          print("消息推送:$payload");
+          Talk.log('收到订阅:$topic', name: 'MQTT-client');
+          Talk.log('消息推送:$payload', name: 'MQTT-client');
           if (callback != null) callback(topic, json.decode(payload));
         });
   }
 
   // 手动再次连接
   Future<void> get reconnect async{
-    print('MQTT-client正准备尝试重连');
+    Talk.log('正准备尝试重连', name: 'MQTT-client');
     if (isDisconnected) await client?.connect();
   }
 
   // 手动关闭连接
   void get close{
-    print('MQTT-client正准备尝试关闭连接');
+    Talk.log('正准备尝试关闭连接', name: 'MQTT-client');
     return client?.disconnect();
   }
 
@@ -177,7 +177,7 @@ class _MQTTService {
   // 添加订阅
   void subscribe(String topic, Callback callback){
     _cacheQueue.putIfAbsent(topic, () => callback); // TODO 插入或替换队列中的回调函数
-    print('正在订阅: $topic');
+    Talk.log('正在订阅: $topic', name: 'MQTT-client');
     if (topic.isNotEmpty && topic != null && isConnected) {
       client?.subscribe(topic, MqttQos.exactlyOnce);
     }
@@ -186,7 +186,7 @@ class _MQTTService {
   // 取消订阅
   void unsubscribe(String topic){
     _cacheQueue.remove(topic);
-    print('正在取消订阅: $topic');
+    Talk.log('正在取消订阅: $topic', name: 'MQTT-client');
     if (topic.isNotEmpty && topic != null && isConnected) {
       client?.unsubscribe(topic);
     }

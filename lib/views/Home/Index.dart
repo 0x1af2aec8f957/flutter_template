@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import './Drawer.dart';
 import '../../lang/I18n.dart';
+import '../../utils/dialog.dart';
 
 class Home extends StatefulWidget {
   final String title;
@@ -86,26 +87,25 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
   @override
   void initState() { // 当Widget第一次插入到Widget树时会被调用，对于每一个State对象，Flutter framework只会调用一次该回调
     super.initState();
-    // 创建Controller
-    _tabController = TabController(length: tabs.length, vsync: this);
-    print('initState');
+    _tabController = TabController(length: tabs.length, vsync: this); // 创建Controller
+    Talk.log('initState', name: 'View.Home');
   }
 
   @override
   void didUpdateWidget(Home oldWidget) { // 在widget重新构建时调用，Flutter framework会调用Widget.canUpdate来检测Widget树中同一位置的新旧节点，然后决定是否需要更新
     super.didUpdateWidget(oldWidget);
-    print("didUpdateWidget");
+    Talk.log('didUpdateWidget', name: 'View.Home');
   }
 
   @override
   void deactivate() { // 当State对象从树中被移除时，会调用此回调
     super.deactivate();
-    print("deactive");
+    Talk.log('deactive', name: 'View.Home');
   }
 
   @override
   void dispose() { // 当State对象从树中被永久移除时调用；通常在此回调中释放资源
-    print("dispose");
+    Talk.log('dispose', name: 'View.Home');
     _tabController.dispose(); // 资源释放
     super.dispose();
   }
@@ -114,17 +114,17 @@ class _Home extends State<Home> with SingleTickerProviderStateMixin{
   void reassemble() { // 此回调是专门为了开发调试而提供的，在热重载(hot reload)时会被调用，此回调在Release模式下永远不会被调用
     super.reassemble();
     Test.test.then((r){
-      print('api--------\n');
-      print(r.runtimeType);
-      print(r);
+      debugPrint('api--------\n');
+      debugPrint(r.runtimeType);
+      debugPrint(r);
     });
     Talk.toast('Toast测试');
-    print("reassemble");
+    Talk.log('reassemble', name: 'View.Home');
   }*/
 
   @override
   void didChangeDependencies() { // 当State对象的依赖发生变化时会被调用
     super.didChangeDependencies();
-    print("didChangeDependencies");
+    Talk.log('didChangeDependencies', name: 'View.Home');
   }
 }

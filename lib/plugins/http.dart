@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/io.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart' show md5;
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './signer.dart';
@@ -42,7 +43,6 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
 
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
-    // print("REQUEST[${options?.method}] => PATH: ${options?.path}");
     final requestUri = Uri.parse(options.baseUrl);
     final packageInfo = await AppConfig.packageInfo;
     final deviceInfo = await AppConfig.deviceInfo;
@@ -62,20 +62,20 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
 
   @override
   Future<void> onResponse(Response response, ResponseInterceptorHandler handler) async {
-    // print("RESPONSE[${response?.statusCode}] => PATH: ${response?.request?.path}");
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final data = response.data;
 
     switch (data['code']) {
-      case 400000: // 去登录
+      case 401: // 去登录
         prefs.remove('token');
         router.replace('/login');
         return handler.reject(DioException(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions), true);
-      case 0: // 正常
+      case 200: // 正常
+      case 201: // 正常（创建新资源）
         response.data = data['data']; // 仅需要业务数据字段
         return handler.next(response);
-    /* case '100007': // 账户已经存在
-        return super.onError(data['msg'] ?? '账户已经存在'); */
+    /* case 409: // 记录已经存在
+        return super.onError(data['msg'] ?? '记录已经存在'); */
       default:
         return handler.reject(DioException(error: data['msg'] ?? '未知的服务器错误', type: DioExceptionType.badResponse, requestOptions: response.requestOptions), true);
     }
@@ -83,8 +83,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    // print("ERROR[${err?.response?.statusCode}] => PATH: ${err?.request?.path}");
-    err.response?.statusCode == 403 ? NoPermission.open(AppConfig.navigatorKey.currentState!.context) : Talk.toast(err.error?.toString() ?? err.message ?? '未知的网络错误');
+    err.response?.statusCode == 403 ? NoPermission.open(AppConfig.navigatorContext) : Talk.toast(err.error?.toString() ?? err.message ?? '未知的网络错误');
     return handler.reject(err);
   }
 }
@@ -118,7 +117,6 @@ class CacheInterceptor extends Interceptor { // 接口缓存拦截器
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('onError: $err');
     return handler.reject(err);
   }
 }
@@ -163,21 +161,28 @@ class MainTransformer extends BackgroundTransformer { // 主要的转换器,在�
 class Http {
   static late final original = Dio()..httpClientAdapter = IOHttpClientAdapter(createHttpClient: AppConfig.isProduction ? () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true/* 忽略证书错误 */: null); // 原始的 dio 实例
   late final Dio _dio = Dio(options);
-  late String basePath; // 基准路径
+  final String basePath; // 基准路径
 
-  Http({ required String basePath }) {
-    this.basePath = basePath;
-
+  Http({ required this.basePath }) {
     _dio.transformer = MainTransformer(); // 数据转换处理
     _dio.interceptors // 拦截器：执行顺序 -> FIFO
       ..add(MainInterceptors(basePath: basePath)) // 主要的拦截器
       ..add(CacheInterceptor()); // 接口缓存
 
-    if (!AppConfig.isProduction) _dio // debug 模式下运行
-      ..httpClientAdapter = IOHttpClientAdapter(createHttpClient: () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true/* Verify the certificate */) // 忽略证书错误
-      ..interceptors.add(
-        LogInterceptor(responseBody: true, requestHeader: false, responseHeader: false, requestBody: true) // debug模式下打印log
-      );
+    assert(() { // debug 模式下运行, doc: https://api.flutter.dev/flutter/foundation/kDebugMode-constant.html
+      _dio
+        ..httpClientAdapter = IOHttpClientAdapter(createHttpClient: () => HttpClient()..badCertificateCallback = (X509Certificate cert, String host, int port) => true/* Verify the certificate */) // 忽略证书错误
+        ..interceptors.add(PrettyDioLogger(
+            compact: false,
+            requestBody: true,
+            responseBody: true,
+            requestHeader: true,
+            responseHeader: false,
+            logPrint: (log) => Talk.log(log.toString(), name: 'HTTP'),
+          ) // debug模式下打印log
+        );
+      return true;
+    }());
   }
 
   Dio call() => _dio;

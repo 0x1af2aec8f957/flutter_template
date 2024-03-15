@@ -36,13 +36,13 @@ class SmallProgram { // isolate 启动参数
   Future<Directory> get applicationDirectory => getApplicationDocumentsDirectory(); // 应用程序包目录(沙盒目录，读写无需单独的权限申请)，该文件夹一定存在
   Future<Directory> get downloadsDirectory => applicationDirectory.then((_dir) { // 小程序下载目录
     final dir = Directory(path.join(_dir.path, 'downloads')); // 下载目录
-    print('远程ZIP资源包下载目录：${dir.path}');
+    Talk.log('远程ZIP资源包下载目录：${dir.path}', name: 'SmallProgram');
     if (!dir.existsSync()) dir.createSync(recursive: true); // 如果下载目录不存在，则创建
     return dir;
   });
   Future<Directory> get cachesDirectory => applicationDirectory.then((_dir) { // 小程序资源缓存目录
     final dir = Directory(path.join(_dir.path, 'caches')); // 缓存目录
-    print('小程序资源缓存目录：${dir.path}');
+    Talk.log('小程序资源缓存目录：${dir.path}', name: 'SmallProgram');
     if (!dir.existsSync()) dir.createSync(recursive: true); // 如果缓存目录不存在，则创建
     return dir;
   });
@@ -50,12 +50,12 @@ class SmallProgram { // isolate 启动参数
   Future<File> get localZipFile async { // 小程序压缩包文件(如果本地文件不存在，指定目录文件也不存在，该文件也会不存在)
     final dir = await downloadsDirectory;
     final file = File(path.join(dir.path, '${name}.zip')); // 本地存储的下载文件
-    print('小程序ZIP资源包存放路径：${file.path}');
+    Talk.log('小程序ZIP资源包存放路径：${file.path}', name: 'SmallProgram');
     if (file.existsSync()) return file; // 如果文件存在，则直接返回
 
     if (hasLocalBundle) { // 如果有本地资源包，则将资源包写入小程序下载目录指定文件
       final _file = await rootBundle.load('assets/${name}.zip'); // 本地资源包
-      print('未找到资源包，正在将本地资源包写入到：${file.path}');
+      Talk.log('未找到资源包，正在将本地资源包写入到：${file.path}', name: 'SmallProgram');
       file
         ..create(recursive: true) // 如果文件不存在，则创建
         ..writeAsBytesSync(_file.buffer.asUint8List()); // 将资源包写入文件
@@ -66,7 +66,7 @@ class SmallProgram { // isolate 启动参数
 
   Future<Directory> get staticAssetsDirectory => applicationDirectory.then((_dir) { // 小程序静态资源目录
     final dir = Directory(path.join(_dir.path, 'www', name)); // 静态资源目录
-    print('小程序资源存放目录：${dir.path}');
+    Talk.log('小程序资源存放目录：${dir.path}', name: 'SmallProgram');
     if (!dir.existsSync()) dir.createSync(recursive: true); // 如果静态资源目录不存在，则创建
     return dir;
   });
@@ -88,9 +88,9 @@ class SmallProgram { // isolate 启动参数
 
     if (isRemoveOldDir && targetDir.existsSync()) targetDir.deleteSync(recursive: true); // 如果需要删除原有的目录，则删除
 
-    print('解压资源存放路径: ${targetDir.path}');
+    Talk.log('解压资源存放路径：${targetDir.path}', name: 'SmallProgram');
     return archive.forEach((ArchiveFile _file) { // 将Zip存档的内容解压到磁盘。
-      print('解压文件详细信息: $_file');
+      Talk.log('解压文件详细信息：${_file}', name: 'SmallProgram');
       if (_file.isFile) { // 如果是文件
         File(path.join(targetDir.path, '..', _file.name))
           ..createSync(recursive: true)
@@ -119,21 +119,21 @@ class SmallProgram { // isolate 启动参数
     },), duration: Duration(days: 1));
 
     await Http.original.downloadUri(_remoteZipFileAddress!, tmpFile.path, onReceiveProgress: (int _count, int _total) { // 下载更新资源包
-      print('正在下载更新包：$_count/$_total');
+      Talk.log('正在下载更新包：$_count/$_total', name: 'SmallProgram');
       updateSnackBar((){ // 更新 UI
         _progress = _total > 0 ? (_count / _total * 100).toInt() : 0;
       });
     })
     .whenComplete(snackToast.close) // 下载完成后关闭提示信息
     .catchError((error) {
-      print('下载更新包失败：$error');
+      Talk.log('下载更新包失败：$error', name: 'SmallProgram');
       Talk.alert('下载更新包失败');
     });
 
-    print('下载完成，下载资源包保存在：${tmpFile.path}');
-    print('正在将 ${tmpFile.path} 的内容 写入到 ${file.path}');
+    Talk.log('下载完成，下载资源包保存在：${tmpFile.path}', name: 'SmallProgram');
+    Talk.log('正在将 ${tmpFile.path} 的内容 写入到 ${file.path}', name: 'SmallProgram');
     file.writeAsBytesSync(tmpFile.readAsBytesSync());
-    print('正在删除临时下载文件：${tmpFile.path}');
+    Talk.log('正在删除临时下载文件：${tmpFile.path}', name: 'SmallProgram');
     tmpFile.delete(recursive: true); // 重命名临时文件
 
     if (isDecompress) await handleDecompression(); // 解压资源包
@@ -164,7 +164,7 @@ class SmallProgram { // isolate 启动参数
 
     return await io.serve(handler, host, port, shared: true /* 在需要销毁上一个服务，马上创建下一个相同的服务时必须要开启 */).then((HttpServer _server){
       _server.idleTimeout = null; // 服务空闲超时时间：https://api.dart.dev/stable/3.0.6/dart-io/HttpServer/idleTimeout.html
-      print('小程序服务运行在：${_server.address.address}:${_server.port}');
+      Talk.log('小程序服务运行在：${_server.address.address}:${_server.port}', name: 'SmallProgram');
       if (isNeedUpdate && onUpdated != null) onUpdated!(Uri(scheme: 'http', host: _server.address.host, port: _server.port));
       return _server;
     });
@@ -191,16 +191,16 @@ class SmallProgram { // isolate 启动参数
           request.requestedUri.replace(scheme: serverAddress.scheme, host: serverAddress.host, port: serverAddress.port),
           file.path,
         ).then((value) {
-          print('缓存主体文件下载完成[midea-size -> ${file.readAsBytesSync().length}]：${file.path}');
+          Talk.log('缓存主体文件下载完成[midea-size -> ${file.readAsBytesSync().length}]：${file.path}', name: 'SmallProgram');
         });
       }
 
       if (file.existsSync() && isAgentCache) { // 如果缓存文件存在，则直接返回
         final headers = header.existsSync() ? Map<String, Object>.from(jsonDecode(header.readAsStringSync())) : Map<String, Object>();
         final body = file.readAsBytesSync();
-        print('缓存url地址：${request.url}');
-        print('找到需要返回的缓存主体文件：${file.path}');
-        print('关联的缓存头文件路径：${header.path}');
+        Talk.log('缓存url地址：${request.url}', name: 'SmallProgram');
+        Talk.log('找到需要返回的缓存主体文件：${file.path}', name: 'SmallProgram');
+        Talk.log('关联的缓存头文件路径：${header.path}', name: 'SmallProgram');
         final rangeHeader = RangeHeader.parse(requestHeaders['range'] ?? 'bytes=0-');
         final rangeHeaderStart = rangeHeader.items.last.start;
         final rangeHeaderEnd = rangeHeader.items.last.end == -1 ? body.length : rangeHeader.items.last.end;
@@ -232,16 +232,16 @@ class SmallProgram { // isolate 启动参数
         final resultBytes = <int>[]; // 响应主体内容
 
         headers['server'] = 'shelf'; // 添加 server 响应头
-        print('正在创建缓存头文件：${header.path}');
+        Talk.log('正在创建缓存头文件：${header.path}', name: 'SmallProgram');
         header.writeAsStringSync(jsonEncode(headers)); // 将响应头写入缓存头文件(jsonString)
 
         final controller = response.read().listen(
           (newBytes) {
-            print('正在接收缓存数据：${file.path}');
+            Talk.log('正在接收缓存数据：${file.path}', name: 'SmallProgram');
             resultBytes.addAll(newBytes);
             if (resultBytes.length != response.contentLength) return;
 
-            print('接收缓存数据完成：${request.url}}-${resultBytes.length}');
+            Talk.log('接收缓存数据完成：${request.url}}-${resultBytes.length}', name: 'SmallProgram');
             _completer.complete(resultBytes); // 手动完成，否则视频文件会一直等待
           },
           onDone: () => _completer.complete(resultBytes),
@@ -251,17 +251,17 @@ class SmallProgram { // isolate 启动参数
 
         return _completer.future.then((result) {
          
-          print('正在创建缓存主体文件：${file.path}');
+          Talk.log('正在创建缓存主体文件：${file.path}', name: 'SmallProgram');
           file.writeAsBytesSync(resultBytes);
-          print('创建缓存主体文件写入完成：${file.path}');
+          Talk.log('创建缓存主体文件写入完成：${file.path}', name: 'SmallProgram');
           controller.cancel(); // 取消订阅
           return shelf.Response.ok(result, headers: headers, encoding: response.encoding, context: response.context);
         });
 
         // return response.read().reduce((previous, element) => [...previous, ...element]).then((result) { // TODO: 视频文件不会调用 reduce 方法，reduce 方法依赖 listen 中的 onDone 方法
-        //   print('正在创建缓存主体文件：${file.path}');
+        //   Talk.log('正在创建缓存主体文件：${file.path}', name: 'SmallProgram');
         //   file.writeAsBytesSync(result); // 将响应内容写入缓存文件(bytes)
-        //   print('创建缓存主体文件写入完成：${file.path}');
+        //   Talk.log('创建缓存主体文件写入完成：${file.path}', name: 'SmallProgram');
         //   return shelf.Response.ok(result, headers: response.headers, encoding: response.encoding, context: response.context);
         // });
       });
