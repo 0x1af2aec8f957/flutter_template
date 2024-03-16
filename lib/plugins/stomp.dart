@@ -47,7 +47,7 @@ class CustomStompClient {
 
   void onConnect(StompFrame connectFrame) { // 连接
     isConnected.value = client?.connected ?? false;
-    Talk.log('connected', name: 'Stomp');
+    Talk.log('Connected', name: 'Stomp');
     /* subscribe('/topic/greetings', (StompFrame frame) {
       Talk.log('/topic/greetings - Received: ${frame.body}', name: 'Stomp');
     });
@@ -58,17 +58,17 @@ class CustomStompClient {
     isConnected.value = client?.connected ?? false;
     Talk.log('Waiting connect...', name: 'Stomp');
     await Future.delayed(const Duration(milliseconds: 200));
-    Talk.log('connecting...', name: 'Stomp');
+    Talk.log('Connecting...', name: 'Stomp');
   }
 
   void onStompError(StompFrame frame) { // 错误
     isConnected.value = client?.connected ?? false;
-    Talk.log('error: ${frame.body}', name: 'Stomp');
+    Talk.log('Error: ${frame.body}', name: 'Stomp');
   }
 
   void onDisconnect(StompFrame frame) { // 断开连接
     isConnected.value = client?.connected ?? false;
-    Talk.log('disconnect', name: 'Stomp');
+    Talk.log('Disconnect', name: 'Stomp');
   }
 
   Future<void Function({Map<String, String>? unsubscribeHeaders})?> subscribe(String topic, Function(StompFrame frame) callback, { Map<String, String>? headers }) { // 订阅
@@ -116,6 +116,6 @@ class CustomStompClient {
   }
 
   void onDebugMessage(String message) { // 调试信息
-    if (!AppConfig.isProduction) Talk.log('Debug message: $message', name: 'Stomp');
+    if (!AppConfig.isProduction) Talk.log(message, name: 'Stomp');
   }
 }
