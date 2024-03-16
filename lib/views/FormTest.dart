@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 class FormTest extends StatefulWidget{
   final String title;

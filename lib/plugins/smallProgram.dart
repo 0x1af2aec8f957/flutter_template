@@ -19,8 +19,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:belatuk_range_header/belatuk_range_header.dart'; // RangeHeader 解析
 
 import '../setup/config.dart';
-import '../utils/dialog.dart';
 import '../plugins/http.dart';
+import '../plugins/dialog.dart';
 
 typedef CheckCache = bool Function(shelf.Request request); // Type: 检查是否需要缓存
 

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import './Drawer.dart';
 import '../../lang/I18n.dart';
-import '../../utils/dialog.dart';
+import '../../plugins/dialog.dart';
 
 class Home extends StatefulWidget {
   final String title;

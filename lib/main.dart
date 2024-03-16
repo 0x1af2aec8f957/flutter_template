@@ -9,10 +9,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import './setup/lang.dart';
 import './theme/index.dart';
-import './utils/dialog.dart';
 import './setup/router.dart';
 import './setup/config.dart';
 import './models/global.dart';
+import './plugins/dialog.dart';
 import './setup/providers.dart';
 import './components/SystemCheck.dart';
 import './components/NetworkState.dart';

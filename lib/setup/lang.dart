@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 
 import './config.dart';
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 final Map<String, YamlMap> _languages = Map(); // 语言包
 

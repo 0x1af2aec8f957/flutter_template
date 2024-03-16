@@ -1,4 +1,4 @@
-enum StatusType{
-  success, // 成功
-  fail, // 失败
+enum StatusType {
+  Success, // 成功
+  Fail, // 失败
 }

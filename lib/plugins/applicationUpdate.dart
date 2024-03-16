@@ -6,7 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 
 import '../setup/config.dart';
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 class _AppInfo { // doc: https://raw.githubusercontent.com/xuexiangjys/flutter_xupdate/master/example/lib/app_info.dart
   final bool hasUpdate;

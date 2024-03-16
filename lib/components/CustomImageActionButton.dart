@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 /// 选择或保存图片组件
 /// 选择图片需要权限：https://pub.dev/packages/image_picker

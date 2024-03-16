@@ -3,7 +3,7 @@ import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardD
 
 import './constant.dart';
 import '../setup/router.dart';
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 final methodChannel = MethodChannel('com.template.flutter');
 

@@ -6,7 +6,7 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../setup/config.dart';
-import '../utils/dialog.dart';
+import 'dialog.dart';
 
 final _wsUrl = Uri.parse('wss://example.com');
 

@@ -6,7 +6,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import '../setup/config.dart';
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 typedef Callback = void Function(String topic, dynamic payload);
 final _cacheQueue = Map<String, Callback>(); // 缓存队列

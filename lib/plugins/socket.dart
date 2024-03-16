@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../utils/dialog.dart';
+import '../plugins/dialog.dart';
 
 final _wsUrl = Uri.parse('wss://example.com');
 

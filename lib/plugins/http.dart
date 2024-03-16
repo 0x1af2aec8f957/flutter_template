@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import './signer.dart';
 import '../setup/config.dart';
 import '../setup/router.dart' show router;
-import '../utils/dialog.dart';
+import 'dialog.dart';
 import '../components/NoPermission.dart';
 
 /// doc: https://github.com/cfug/dio/blob/main/dio/README-ZH.md

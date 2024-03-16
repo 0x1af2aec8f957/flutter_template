@@ -13,9 +13,9 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import './QrCode/Index.dart';
-import '../utils/dialog.dart';
 import '../setup/config.dart';
 import '../plugins/http.dart';
+import '../plugins/dialog.dart';
 import '../plugins/cssColor.dart';
 import './FullScreenWebView.dart';
 
