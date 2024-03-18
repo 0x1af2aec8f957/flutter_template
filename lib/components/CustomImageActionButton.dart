@@ -116,10 +116,18 @@ class CustomImageActionButton extends StatelessWidget {
         onPageChanged: onPageChanged,
         builder: (BuildContext context, int index) {
           final Uri imageSrc = images[index];
+          Offset pointPosition = Offset.zero;
+
           return PhotoViewGalleryPageOptions(
             imageProvider: (imageSrc.isScheme('FILE') ? AssetImage(imageSrc.path) : CachedNetworkImageProvider(imageSrc.toString())) as ImageProvider<Object>,
             initialScale: PhotoViewComputedScale.contained * 0.8,
             heroAttributes: PhotoViewHeroAttributes(tag: imageSrc),
+            onTapUp: (context, details, controllerValue) { // 手指移除
+             if (ModalRoute.of(context)!.isCurrent && pointPosition == details.globalPosition/* 与按下的位置相同 */) Navigator.of(context).pop(); // 关闭预览
+            },
+            onTapDown: (context, details, controllerValue) { // 手指按下
+              pointPosition = details.globalPosition; // 记录按下的位置
+            },
           );
         },
         loadingBuilder: (context, event) => Center(
