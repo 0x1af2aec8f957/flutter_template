@@ -115,7 +115,7 @@ class QrCodeScanPage extends StatefulWidget {
   @override
   _QrCodeScanPage createState() => _QrCodeScanPage();
 
-  static Future<T?> open<T>(BuildContext context, {String title = '扫码', bool Function(String data)? onValidate}) => Navigator.of(context).push<T>(PageRouteBuilder( // 打开 webview
+    static Future<T?> open<T>(BuildContext context, {String title = '扫码', bool Function(String data)? onValidate}) => Navigator.of(context).push<T>(PageRouteBuilder( // 打开 扫码 界面
     pageBuilder: (context, animation, secondaryAnimation) => QrCodeScanPage(title: title, onValidate: onValidate),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       const begin = Offset(0, 1);

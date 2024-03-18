@@ -23,54 +23,55 @@ dependencies:
   flutter_localizations: # flutter国际化
     sdk: flutter
   cupertino_icons: ^1.0.6 # cupertinoIcons
-  webview_flutter: ^4.4.1 # webView
+  webview_flutter: ^4.7.0 # webView
   # decimal: ^2.3.3 # double类计算支持
-  cached_network_image: ^3.3.0 #图片缓存
-  path_provider: ^2.1.1 # 获取应用程序目录
-  dio: ^5.3.3 # http支持
+  cached_network_image: ^3.3.1 #图片缓存
+  path_provider: ^2.1.2 # 获取应用程序目录
+  dio: ^5.4.1 # http支持
   shared_preferences: ^2.2.2 # 数据持久化存储
   package_info_plus: ^3.1.2 # 应用程序包描述信息
   yaml: ^3.1.2 # yml文件内容解析器
   file: ^7.0.0 # 内存文件系统
-  # cipher2: ^0.3.5 # aes-128-cbc加密[由于版本关系在Android X设备无法使用]
-  # pointycastle: ^3.7.3 # 加密基础库
+  # pointycastle: ^3.7.4 # 加密基础库
   encrypt: ^5.0.3 # aes-128-cbc加密
-  archive: ^3.4.6 # 解压缩
-  permission_handler: ^11.0.1 # 动态权限申请[android]
+  archive: ^3.4.10 # 解压缩
+  permission_handler: ^11.3.0 # 动态权限申请[android]
   shelf: ^1.4.1 # Web服务器
   shelf_static: ^1.1.2 # shelf静态资源中间件
   # overlay_support: ^2.1.0 # 顶部通知
-  provider: ^6.0.5 # 状态管理[实现基类: InheritedWidget]
+  provider: ^6.1.2 # 状态管理[实现基类: InheritedWidget]
   # rxdart: ^0.27.7 # 状态管理[实现基类: Stream]
-  # pinput: ^3.0.1 # 自动填充短信验证码（自带输入框）
-  # mqtt_client: ^10.0.0 # mqtt推送
-  device_info_plus: ^9.1.0 # 设备信息
-  url_launcher: ^6.2.1 # 吊起外部资源[支持电话、短信等]
+  # pinput: ^4.0.0 # 自动填充短信验证码（自带输入框）
+  # mqtt_client: ^10.2.0 # mqtt推送
+  device_info_plus: ^9.1.2 # 设备信息
+  url_launcher: ^6.2.5 # 吊起外部资源[支持电话、短信等]
   qr_flutter: ^4.1.0 # 生成二维码
   image_gallery_saver: ^2.0.3 # 保存图片到相册
-  # jpush_flutter: ^2.5.0 # 激光推送
+  # jpush_flutter: ^2.5.1 # 激光推送
   connectivity_plus: ^5.0.2 # 网络链接状态
   # wakelock: ^0.6.2 # App常亮显示
-  # image_cropper: ^5.0.0 # 图片裁剪
-  image_picker: ^1.0.4 # 图库
+  # image_cropper: ^5.0.1 # 图片裁剪
+  image_picker: ^1.0.7 # 图库
   flutter_xupdate: ^3.0.0 # Android应用内升级
   flutter_html: 3.0.0-beta.2 # html渲染成widget
-  # local_auth: ^2.1.7 #指紋/面部
+  # local_auth: ^2.2.0 #指紋/面部
   pub_semver: ^2.1.4 # 版本约束检查
   google_fonts: ^4.0.4
-  image: ^4.1.3
-  lottie: ^3.0.0 # 解析并渲染 Adob​​e After Effects 动画
-  safe_device: ^1.1.4 # 检测设备安全
-  share_plus: ^7.2.1 # 分享应用
+  image: ^4.1.7 # 图像基础库
+  # lottie: ^3.1.0 # 解析并渲染 Adob​​e After Effects 动画
+  safe_device: ^1.1.6 # 检测设备安全
+  share_plus: ^7.2.2 # 分享应用
   shelf_proxy: ^1.0.4
   shelf_router: ^1.1.4
-  belatuk_range_header: ^6.1.0
-  stomp_dart_client: ^1.0.2
-  go_router: ^13.1.0 # 路由管理: https://pub.dev/documentation/go_router/latest/topics/Get%20started-topic.html
-  random_string: ^2.3.1
+  belatuk_range_header: ^6.2.0
+  stomp_dart_client: ^1.0.3 # stomp 客户端
+  go_router: ^13.2.1 # 路由管理: https://pub.dev/documentation/go_router/latest/topics/Get%20started-topic.html
+  random_string: ^2.3.1 # 随机 ascii 字符串生成
+  flutter_local_notifications: ^17.0.0 # 本地通知栏推送: https://github.com/MaikuB/flutter_local_notifications/tree/master/flutter_local_notifications
   mobile_scanner: ^4.0.1 # 扫描二维码
   pretty_dio_logger: ^1.3.1 # dio 日志
   # uni_links: ^0.5.1 # schema 协议
+  photo_view: ^0.14.0 # 图片预览
 
 dev_dependencies:
   flutter_test:

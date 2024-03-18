@@ -6,7 +6,7 @@ class Avatar extends StatelessWidget {
   final String? url;
   final double width;
   final double? radius;
-  final Animation<double>? opacity;
+  final double opacity;
   final Map<String, String>? headers;
   final Widget errorWidget;
 
@@ -16,7 +16,7 @@ class Avatar extends StatelessWidget {
     this.width = 50,
     this.radius,
     this.headers,
-    this.opacity,
+    this.opacity = 1,
     this.errorWidget = const Icon(Icons.person),
   }) : super(key: key);
 
@@ -25,7 +25,7 @@ class Avatar extends StatelessWidget {
     double width = 50,
     double radius = 0,
     Map<String, String>? headers,
-    Animation<double>? opacity,
+    double opacity = 1,
     Widget errorWidget = const Icon(Icons.person),
   }) {
     return Container(

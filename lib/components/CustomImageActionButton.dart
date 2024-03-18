@@ -1,8 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../plugins/dialog.dart';
 
@@ -64,7 +67,7 @@ class CustomImageActionButton extends StatelessWidget {
       });
   }
 
-  static Future<ActionResult> handleOpenMoreSheet(BuildContext context, {
+  static Future<ActionResult> handleOpenMoreSheet(BuildContext context, { // 显示所有可操作按钮
     GlobalKey? repaintBoundaryKey, // 保存图 需要传入的 repaintBoundaryKey 为 `RepaintBoundary(key: key)` 中的 key
     bool isOnlyShowSave = false, // 是否仅显示保存图片
   }) {
@@ -94,6 +97,55 @@ class CustomImageActionButton extends StatelessWidget {
       return Future.error('无法识别当前操作类型');
     });
   }
+
+  static Future<T?> preview<T>(BuildContext context, { // 预览图片
+    Axis scrollDirection = Axis.horizontal,
+    ScrollPhysics scrollPhysics = const BouncingScrollPhysics(),
+    List<Uri> images = const <Uri>[],
+    BoxDecoration? backgroundDecoration,
+    PageController? pageController,
+    void Function(int)? onPageChanged,
+  }) => Navigator.of(context).push<T>(PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => Container(
+      child: PhotoViewGallery.builder(
+        scrollPhysics: scrollPhysics,
+        scrollDirection: scrollDirection,
+        itemCount: images.length,
+        backgroundDecoration: backgroundDecoration,
+        pageController: pageController,
+        onPageChanged: onPageChanged,
+        builder: (BuildContext context, int index) {
+          final Uri imageSrc = images[index];
+          return PhotoViewGalleryPageOptions(
+            imageProvider: (imageSrc.isScheme('FILE') ? AssetImage(imageSrc.path) : CachedNetworkImageProvider(imageSrc.toString())) as ImageProvider<Object>,
+            initialScale: PhotoViewComputedScale.contained * 0.8,
+            heroAttributes: PhotoViewHeroAttributes(tag: imageSrc),
+          );
+        },
+        loadingBuilder: (context, event) => Center(
+          child: Container(
+            width: 20.0,
+            height: 20.0,
+            child: CircularProgressIndicator(
+              value: event == null ? 0 : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
+            ),
+          ),
+        ),
+      )
+    ),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(0, 1);
+      const end = Offset.zero;
+      const curve = Curves.ease;
+
+      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: child,
+      );
+    },
+  ));
 
   @override
   Widget build(BuildContext context) {
