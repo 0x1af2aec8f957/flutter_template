@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// 自定义 Divider 组件
 class CustomDivider extends Divider {
   const CustomDivider({
-    Key? super.key,
+    super.key,
     super.color = Colors.transparent,
     super.height,
     super.indent,
@@ -17,7 +17,7 @@ class CustomDivider extends Divider {
 
 class CustomVerticalDivider extends VerticalDivider {
   const CustomVerticalDivider({
-    Key? super.key,
+    super.key,
     super.color = Colors.transparent,
     super.width,
     super.indent,

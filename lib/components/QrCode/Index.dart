@@ -13,66 +13,27 @@ Widget _defaultQrErrorBuilder (BuildContext context, Object? error) => Container
 );
 
 class QrCodeView extends QrImageView { // 二维码渲染
-  final String data;
-  final double? size;
-  final EdgeInsets padding;
-  final Color backgroundColor;
-  final int version;
-  final int errorCorrectionLevel;
-  final QrErrorBuilder? errorStateBuilder;
-  final bool constrainErrorBounds;
-  final bool gapless;
-  final ImageProvider? embeddedImage;
-  final QrEmbeddedImageStyle? embeddedImageStyle;
-  final bool embeddedImageEmitsError;
-  final String semanticsLabel;
-  final QrEyeStyle eyeStyle;
-  final QrDataModuleStyle dataModuleStyle;
-
   QrCodeView({
-    Key? key,
-    required this.data,
-    this.size,
-    this.padding = const EdgeInsets.all(10),
-    this.backgroundColor = Colors.white,
-    this.version = QrVersions.auto,
-    this.errorCorrectionLevel = QrErrorCorrectLevel.H,
-    this.errorStateBuilder,
-    this.constrainErrorBounds = true,
-    this.gapless = true,
-    this.embeddedImage = const AssetImage('assets/images/logo.png'),
-    this.embeddedImageStyle/*  = const QrEmbeddedImageStyle( // 二维码中间的 logo, 在不设置大小的情况下，会根据二维码的大小自动缩放
+    super.key,
+    required super.data,
+    super.size,
+    super.padding,
+    super.backgroundColor,
+    super.version,
+    super.errorCorrectionLevel,
+    super.errorStateBuilder = _defaultQrErrorBuilder,
+    super.constrainErrorBounds,
+    super.gapless = true,
+    super.embeddedImage = const AssetImage('assets/images/logo.png'),
+    super.embeddedImageStyle/*  = const QrEmbeddedImageStyle( // 二维码中间的 logo, 在不设置大小的情况下，会根据二维码的大小自动缩放
       size: Size.square(50),
       color: Colors.transparent,
     ) */,
-    this.embeddedImageEmitsError = false,
-    this.semanticsLabel = '二维码',
-    this.eyeStyle = const QrEyeStyle(
-      eyeShape: QrEyeShape.square,
-      color: Colors.black,
-    ),
-    this.dataModuleStyle = const QrDataModuleStyle(
-      dataModuleShape: QrDataModuleShape.square,
-      color: Colors.black,
-    ),
-  }) : super(
-    key: key,
-    data: data,
-    size: size,
-    padding: padding,
-    backgroundColor: backgroundColor,
-    version: version,
-    errorCorrectionLevel: errorCorrectionLevel,
-    errorStateBuilder: errorStateBuilder ?? _defaultQrErrorBuilder,
-    constrainErrorBounds: constrainErrorBounds,
-    gapless: gapless,
-    embeddedImage: embeddedImage,
-    embeddedImageStyle: embeddedImageStyle,
-    embeddedImageEmitsError: embeddedImageEmitsError,
-    semanticsLabel: semanticsLabel,
-    eyeStyle: eyeStyle,
-    dataModuleStyle: dataModuleStyle,
-  );
+    super.embeddedImageEmitsError = false,
+    super.semanticsLabel = '二维码',
+    super.eyeStyle,
+    super.dataModuleStyle,
+  });
 }
 
 class QrCodeScanView extends MobileScanner { // 二维码扫描
@@ -110,7 +71,7 @@ class QrCodeScanPage extends StatefulWidget {
   final String? title;
   final bool Function(String data)? onValidate;
 
-  const QrCodeScanPage({Key? super.key, this.title, this.onValidate});
+  const QrCodeScanPage({super.key, this.title, this.onValidate});
 
   @override
   _QrCodeScanPage createState() => _QrCodeScanPage();

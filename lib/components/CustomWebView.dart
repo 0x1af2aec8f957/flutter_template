@@ -39,7 +39,7 @@ class CustomWebView extends StatefulWidget {
   final PageSystemOverlayStyleChange? onPageSystemOverlayStyleChange; // DOM主题色发生变更执行
 
   CustomWebView({
-    Key? super.key,
+    super.key,
     this.url,
     this.onWebViewCreated,
     this.onLifecycleStateChange,

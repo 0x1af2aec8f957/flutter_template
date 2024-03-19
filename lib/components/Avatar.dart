@@ -12,7 +12,7 @@ class Avatar extends StatelessWidget {
   final Widget errorWidget;
 
   const Avatar({
-    Key? super.key,
+    super.key,
     this.url,
     this.width = 50,
     this.radius,

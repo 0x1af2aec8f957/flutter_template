@@ -51,7 +51,7 @@ class CustomScrollBar extends StatefulWidget {
   final DragStartBehavior? dragStartBehavior;
 
   const CustomScrollBar({
-    Key? super.key,
+    super.key,
     this.onLoadMore,
     this.onRefresh,
     required this.children,

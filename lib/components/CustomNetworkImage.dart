@@ -23,7 +23,7 @@ class CustomNetworkImage extends StatelessWidget {
   ); */
 
   const CustomNetworkImage({
-    Key? super.key,
+    super.key,
     this.url,
     this.width,
     this.radius,
