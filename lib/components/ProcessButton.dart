@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+import '../utils/common.dart';
 
 // extension ProcessButton on RawMaterialButton {}
-class ProcessButton extends ElevatedButton {
+class ProcessButton extends StatelessWidget {
+  final Future<void> Function()? onPressed;
+  final ButtonStyle? style;
+  final Widget? child;
+
   ProcessButton({
     super.key,
-    super.onPressed,
-    this.onTap,
-    super.onLongPress,
-    super.onHover,
-    super.onFocusChange,
-    super.style,
-    super.focusNode,
-    super.autofocus = false,
-    super.clipBehavior = Clip.none,
-    super.statesController,
-    required super.child,
+    this.style,
+    this.onPressed,
+    this.child = const SizedBox.shrink(),
   });
 
-  final Future<void> Function()? onTap;
-  bool isLoading = false;
+  ValueNotifier<bool> isLoading = ValueNotifier(false);
 
-  @override
-  VoidCallback? get onPressed {
-    if (super.onPressed != null) return super.onPressed!;
-    if (onTap == null || isLoading) return null;
+  handleClick() {
+    if (onPressed == null || isLoading.value) return null;
 
-    return () {
-      // markNeedsBuild();
-      isLoading = true;
-      onTap?.call().whenComplete(() => WidgetsBinding.instance.addPostFrameCallback((_){
-        isLoading = false;
-      }));
-    };
+    isLoading.value = true;
+    onPressed?.call().whenComplete(() => isLoading.value = false);
   }
 
   @override
-  Widget? get child => /* ValueListenableBuilder(valueListenable: isLoading, builder: (_, _isLoading, __) =>  */isLoading ? const CircularProgressIndicator(color: Colors.white, strokeWidth: 3) : (super.child ?? const SizedBox.shrink())/* ) */;
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: isLoading,
+      builder: (_, bool _isLoading, __) {
+        return ElevatedButton(
+          onPressed: _isLoading ? null : handleClick,
+          style: style,
+          // 去按钮背景颜色的反色
+          child: _isLoading ? CircularProgressIndicator(color: style?.backgroundColor?.resolve({MaterialState.pressed})?.invert, strokeWidth: 3) : child,
+        );
+      }
+    );
+  }
 }

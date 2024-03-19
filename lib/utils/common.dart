@@ -1,4 +1,5 @@
 // 公共方法
+import 'dart:ui' show Color;
 import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardData;
 
 import './constant.dart';
@@ -6,6 +7,10 @@ import '../setup/router.dart';
 import '../plugins/dialog.dart';
 
 final methodChannel = MethodChannel('com.template.flutter');
+
+extension ColorHelper on Color {
+  Color get invert => Color.fromARGB(alpha, 255 - red, 255 - green, 255 - blue); // 反色
+}
 
 abstract class PrecisionFix {
   static bool _isNumber(String _number) => num.tryParse(_number) != null;

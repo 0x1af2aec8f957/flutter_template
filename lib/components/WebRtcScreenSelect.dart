@@ -6,11 +6,11 @@ import '../plugins/dialog.dart';
 
 class ThumbnailWidget extends StatefulWidget {
   const ThumbnailWidget({
-    Key? key,
+    super.key,
     required this.source,
     required this.selected,
     required this.onTap
-  }) : super(key: key);
+  });
   final DesktopCapturerSource source;
   final bool selected;
   final Function(DesktopCapturerSource) onTap;
