@@ -10,7 +10,7 @@ class Skeleton<T> extends StatelessWidget {
   final Widget Function(BuildContext, T?) builder;
 
   const Skeleton({
-    Key? super.key,
+    super.key,
     required this.future,
     required this.baseColor,
     required this.highlightColor,

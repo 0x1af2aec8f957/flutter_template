@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-class NoData extends StatelessWidget{
+class NoData extends StatelessWidget {
   final bool isImage;
   const NoData({
+    super.key,
     this.isImage = false,
   });
 

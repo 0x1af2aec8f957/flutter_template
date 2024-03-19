@@ -18,7 +18,7 @@ class NoPermission extends StatelessWidget {
         child: child,
       );
     },
-  ), ModalRoute.withName('/'));
+  ), ModalRoute.withName(WidgetsBinding.instance.platformDispatcher.defaultRouteName));
 
   @override
   Widget build(BuildContext context) {

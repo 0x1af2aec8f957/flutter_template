@@ -23,7 +23,7 @@ class CustomNetworkImage extends StatelessWidget {
   ); */
 
   const CustomNetworkImage({
-    Key? key,
+    Key? super.key,
     this.url,
     this.width,
     this.radius,
@@ -32,7 +32,7 @@ class CustomNetworkImage extends StatelessWidget {
     this.errorWidget,
     this.fit = BoxFit.contain,
     this.hasPlaceholder = true,
-  }) : super(key: key);
+  });
 
   get random => Random().nextDouble() * 100;
   get isValidAbsoluteUrl => url != null && Uri.parse(url!).isAbsolute;

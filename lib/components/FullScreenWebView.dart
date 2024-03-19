@@ -10,7 +10,7 @@ class FullScreenWebView extends StatefulWidget {
   final String url;
   final double iconSize = 18;
   final double marginSize = 10;
-  const FullScreenWebView(this.url, {Key? key}) : super(key: key);
+  const FullScreenWebView(this.url, {Key? super.key});
 
   @override
   _FullScreenWebView createState() => _FullScreenWebView();

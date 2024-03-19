@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './CustomNetworkImage.dart';
 
+/// 自定义头像
 class Avatar extends StatelessWidget {
   final String? url;
   final double width;
@@ -11,14 +12,14 @@ class Avatar extends StatelessWidget {
   final Widget errorWidget;
 
   const Avatar({
-    Key? key,
+    Key? super.key,
     this.url,
     this.width = 50,
     this.radius,
     this.headers,
     this.opacity = 1,
     this.errorWidget = const Icon(Icons.person),
-  }) : super(key: key);
+  });
 
   static Group({
     required List<String> urls,

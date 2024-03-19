@@ -4,13 +4,14 @@ import '../setup/config.dart';
 
 /// 受支持的系统检测
 
-class SystemCheck extends StatelessWidget{
+class SystemCheck extends StatelessWidget {
   final Widget child;
 
   final List<String> supportSystems = const ['android', 'ios']; // 当前应用受支持的操作系统
   bool get isSupportCurrentSystem => supportSystems.contains(AppConfig.system); // 当前应用是否支持当前操作系统
 
   SystemCheck({
+    super.key,
     required this.child // 有网络时展示的小部件
   });
 

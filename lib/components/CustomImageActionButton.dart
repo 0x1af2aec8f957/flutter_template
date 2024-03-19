@@ -29,7 +29,7 @@ class CustomImageActionButton extends StatelessWidget {
   final Widget? actionWidget;
   final GlobalKey? repaintBoundaryKey;
   final void Function(ActionResult imageActionResult)? onCompleted;
-  const CustomImageActionButton({Key? key, this.actionWidget = const Icon(Icons.more_horiz), this.repaintBoundaryKey, this.onCompleted}) : super(key: key);
+  const CustomImageActionButton({Key? super.key, this.actionWidget = const Icon(Icons.more_horiz), this.repaintBoundaryKey, this.onCompleted});
 
   static Future<String> pickImageByCamera() { // 拍照并选择
     final ImagePicker picker = ImagePicker();

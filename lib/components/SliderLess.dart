@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
-class CustomSliderLess extends StatelessWidget{
+class CustomSliderLess extends StatelessWidget {
   final int value; // 滑动的值
   final Size thumbRect; // 滑块大小
   final BorderRadius thumbRadius; // 滑块圆角
@@ -13,6 +13,7 @@ class CustomSliderLess extends StatelessWidget{
   final Widget? child; // 滑块上展示的元素
 
   const CustomSliderLess({
+    super.key,
     this.value = 0,
     required this.thumbRect,
     this.thumbRadius = BorderRadius.zero,

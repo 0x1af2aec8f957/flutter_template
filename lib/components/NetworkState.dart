@@ -9,6 +9,7 @@ class NetworkState extends StatefulWidget {
   final Widget child;
 
   const NetworkState({
+    super.key,
     required this.child // 有网络时展示的小部件
   });
 

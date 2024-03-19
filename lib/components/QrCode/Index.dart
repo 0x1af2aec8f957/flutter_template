@@ -110,7 +110,7 @@ class QrCodeScanPage extends StatefulWidget {
   final String? title;
   final bool Function(String data)? onValidate;
 
-  const QrCodeScanPage({Key? key, this.title, this.onValidate}) : super(key: key);
+  const QrCodeScanPage({Key? super.key, this.title, this.onValidate});
 
   @override
   _QrCodeScanPage createState() => _QrCodeScanPage();

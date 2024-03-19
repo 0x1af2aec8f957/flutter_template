@@ -30,7 +30,7 @@ mixin _LoadingState<_CustomScrollBar>{
   }
 }
 
-class CustomScrollBar extends StatefulWidget{
+class CustomScrollBar extends StatefulWidget {
   final LoadMoreCallback? onLoadMore;
   final RefreshCallback? onRefresh;
   final List<Widget> children;
@@ -51,7 +51,7 @@ class CustomScrollBar extends StatefulWidget{
   final DragStartBehavior? dragStartBehavior;
 
   const CustomScrollBar({
-    Key? key,
+    Key? super.key,
     this.onLoadMore,
     this.onRefresh,
     required this.children,
@@ -70,7 +70,7 @@ class CustomScrollBar extends StatefulWidget{
     this.cacheExtent,
     this.semanticChildCount,
     this.dragStartBehavior,
-  }) : super(key: key);
+  });
   
   bool get hasRefresh => onRefresh != null;
   bool get hasLoadMore => onLoadMore != null;
@@ -79,7 +79,7 @@ class CustomScrollBar extends StatefulWidget{
   State<StatefulWidget> createState() => _CustomScrollBar();
 }
 
-class _CustomScrollBar extends State<CustomScrollBar> with _LoadingState{
+class _CustomScrollBar extends State<CustomScrollBar> with _LoadingState {
 
   final ScrollController controller = new ScrollController();
   _LoadingMoreState loadingStatus = _LoadingMoreState.complete;
