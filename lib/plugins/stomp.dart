@@ -6,6 +6,7 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../setup/config.dart';
+import '../utils/common.dart';
 import '../plugins/dialog.dart';
 
 final _wsUrl = Uri.https('example.com').replace(scheme: 'wss');
@@ -88,7 +89,7 @@ class CustomStompClient {
     final record = (key: UniqueKey(), callback: callback); // 本次生成的订阅记录
     subscribeRecords.update(topic, (_records) => [..._records, record], ifAbsent: () => [record]); // 订阅记录更新
 
-    return Future.doWhile(() => Future.delayed(Duration(seconds: 1), () => !isConnected.value/* 等待 stomp 连接完成 */)).then((_) { // 等待 stomp 连接完成才能订阅
+    return FutureHelper.doWhileByDuration(() => !isConnected.value).then((_) { // 等待 stomp 连接完成才能订阅
       unSubscribe(topic, clearRecords: false); // 取消上一次订阅
       final unSubscribeTopicFunction = client?.subscribe(
         destination: topic,

@@ -1,4 +1,4 @@
-// 常量
+/// 模板常量
 const String i18nSeparator = '\^'; // 用于分割国际化一段文字
 const String stringPlaceholder = '- -'; // 空占位符
 const String numberPlaceholder = '-·-'; // 空占位符
@@ -8,3 +8,5 @@ final Map<String, int> pagination = const {
   'pageIndex': 1,
   'pageSize': 15,
 };
+
+/// 项目内部的常量
