@@ -59,5 +59,5 @@ extension NullHelper on Null {
 /// 项目内部的通用方法
 Future<void> openSchemaUri(Uri? uri) {
   if (uri == null) return Future.error('不是从schema协议启动的，停止跳转');
-  return router.push('/example');
+  return router.push('${uri.path}?${uri.query}');
 }

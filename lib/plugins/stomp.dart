@@ -49,10 +49,7 @@ class CustomStompClient {
   Future<void> _init([bool isReset = false]) {
     return config.then((_config) {
       Talk.log('正在使用的凭证：${_config.stompConnectHeaders?['Authorization']}', name: 'Stomp');
-      if (client != null && isReset) { // 已经创建过连接，需要重置
-        client?.deactivate(); // 断开连接
-        client = null; // 释放资源
-      }
+      if (client != null && isReset) deactivate(); // 已经创建过连接，需要重置
 
       client ??= StompClient(config: _config); // 初始化
       activate(); // 自动连接
@@ -132,6 +129,7 @@ class CustomStompClient {
   void deactivate() { // 断开连接
     isConnected.value = client?.connected ?? false;
     client?.deactivate();
+    client = null; // 释放资源
   }
 
   void onDebugMessage(String message) { // 调试信息

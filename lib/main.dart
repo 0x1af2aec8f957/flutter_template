@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:uni_links/uni_links.dart';
 // import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart'; // https://github.com/OpenFlutter/flutter_screenutil
@@ -11,6 +13,7 @@ import './setup/lang.dart';
 import './theme/index.dart';
 import './setup/router.dart';
 import './setup/config.dart';
+import './utils/common.dart';
 import './models/global.dart';
 import './plugins/dialog.dart';
 import './setup/providers.dart';
@@ -40,7 +43,7 @@ class _App extends State<App> {
   late final GlobalModel globalModel = context.read<GlobalModel>(); // 按需初始化全局 model
 
   // DateTime lastTime;
-  // StreamSubscription<Uri?>? schemaStream; // schema 监听
+  StreamSubscription<Uri?>? schemaStream; // schema 监听
   Locale _locale = AppConfig.locales.first; // 默认语言
 
   final GlobalKey<NavigatorState> navigatorKey = AppConfig.navigatorKey;
@@ -53,8 +56,7 @@ class _App extends State<App> {
     // final double dpr = View.of(buildContext).devicePixelRatio; // 获取当前设备的像素比
 
     return NotificationListener<ChangeLocale>(
-        onNotification: (notification) {
-          // 语言改变
+        onNotification: (notification) { // 语言改变
           changeLocale(notification.locale);
           return true;
         },
@@ -122,13 +124,13 @@ class _App extends State<App> {
     SharedPreferences.getInstance().then((SharedPreferences prefs) {
       final savedLocale = prefs.getString('locale');
 
-      if (savedLocale != null && savedLocale != _locale.toString()) {
-        // 加载用户上次选择的语言
+      if (savedLocale != null && savedLocale != _locale.toString()) { // 加载用户上次选择的语言
         final _savedLocale = savedLocale.split('_');
         changeLocale(Locale(_savedLocale.first, _savedLocale.last));
       }
 
-      // checkSchema(); // 检查是否是由 schema 启动
+      checkSchema(); // 检查是否是由 schema 启动
+      Talk.log(globalModel.isInitLoading.toString(), name: 'GlobalModel 初始化状态');
     });
 
     AppConfig.deviceInfo.deviceInfo.then((deviceInfo) { // 获取设备信息
@@ -140,11 +142,11 @@ class _App extends State<App> {
     });
   }
 
-  /* @override
+  @override
   void dispose() {
     schemaStream?.cancel(); // 取消 schema 监听
     super.dispose();
-  } */
+  }
 
   void changeLocale(Locale locale) {
     SharedPreferences.getInstance().then((prefs){
@@ -158,17 +160,18 @@ class _App extends State<App> {
     globalModel.initData(); // 语言改变后拉取数据
   }
 
-  /* void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links
+  void checkSchema () { /// 检查是否是由 schema 启动，需要根据 uni_links 配置原生工程: https://pub.dev/packages/uni_links
     // schema example: example://example?userId=123
       try {
         getInitialUri().then(openSchemaUri); // 打开启动时的 uri
 
         schemaStream ??= uriLinkStream.listen(openSchemaUri,  onError: (err) { // 监听 schema-uri 并 打开热启动的 schema-uri
           // Handle exception by warning the user their action did not succeed
+          Talk.log(err.toString(), name: 'Schema 解析错误');
         });
       } on FormatException {
         // Talk.toast(I18n.$t('common', 'parseError'));
         Talk.log('解析错误', name: 'Schema 协议');
       }
-  } */
+  }
 }
