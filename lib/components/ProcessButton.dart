@@ -15,7 +15,7 @@ class ProcessButton extends StatelessWidget {
     this.child = const SizedBox.shrink(),
   });
 
-  ValueNotifier<bool> isLoading = ValueNotifier(false);
+  final ValueNotifier<bool> isLoading = ValueNotifier(false);
 
   handleClick() {
     if (onPressed == null || isLoading.value) return null;

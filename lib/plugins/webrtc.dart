@@ -58,16 +58,16 @@ class Webrtc {
   final List<RTCRtpSender> _senders = <RTCRtpSender>[];
   VideoSource _videoSource = VideoSource.Camera;
 
-  Function(SignalingState state)? onSignalingStateChange;
-  Function(Session session, CallState state)? onCallStateChange;
-  Function(MediaStream stream)? onLocalStream;
-  Function(Session session, MediaStream stream)? onAddRemoteStream;
-  Function(Session session, MediaStream stream)? onRemoveRemoteStream;
-  Function(dynamic event)? onPeersUpdate;
-  Function(Session session, RTCDataChannel dc, RTCDataChannelMessage data)? onDataChannelMessage;
-  Function(Session session, RTCDataChannel dc)? onDataChannel;
+  final Function(SignalingState state)? onSignalingStateChange;
+  final Function(Session session, CallState state)? onCallStateChange;
+  final Function(MediaStream stream)? onLocalStream;
+  final Function(Session session, MediaStream stream)? onAddRemoteStream;
+  final Function(Session session, MediaStream stream)? onRemoveRemoteStream;
+  final Function(dynamic event)? onPeersUpdate;
+  final Function(Session session, RTCDataChannel dc, RTCDataChannelMessage data)? onDataChannelMessage;
+  final Function(Session session, RTCDataChannel dc)? onDataChannel;
 
-  Map<String, dynamic>? _turnCredential; // turn 服务器配置
+  final Map<String, dynamic> _turnCredential = Map(); // turn 服务器配置
 
   final Map<String, dynamic> _config = {
     'mandatory': {},
@@ -148,9 +148,9 @@ class Webrtc {
         },
       */
       {
-        'urls': _turnCredential?['uris'][0],
-        'username': _turnCredential?['username'],
-        'credential': _turnCredential?['password'],
+        'urls': _turnCredential['uris'][0],
+        'username': _turnCredential['username'],
+        'credential': _turnCredential['password'],
       },
     ],
     // iceTransportPolicy: "relay",
@@ -195,7 +195,7 @@ class Webrtc {
         }
       */
       if (!AppConfig.isProduction) Talk.log('turn 服务器配置:\n${response.data}', name: 'Webrtc');
-      _turnCredential = response.data;
+      _turnCredential..clear()..addAll(response.data);
     });
   }
 

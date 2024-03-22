@@ -13,8 +13,8 @@ final _wsUrl = Uri.https('example.com').replace(scheme: 'wss');
 
 class CustomStompClient {
   StompClient? client; // Stomp 客户端
-  ValueNotifier<bool> isConnected = ValueNotifier(false); // 是否已连接（UI 更新可以使用 ValueListenableBuilder 构建）
-  Map<String, List<({ // 订阅记录
+  final ValueNotifier<bool> isConnected = ValueNotifier(false); // 是否已连接（UI 更新可以使用 ValueListenableBuilder 构建）
+  final Map<String, List<({ // 订阅记录
     LocalKey key,
     void Function(StompFrame) callback,
   })>> subscribeRecords = Map();
