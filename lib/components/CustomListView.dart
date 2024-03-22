@@ -13,7 +13,7 @@ class CustomListView<T> extends StatelessWidget {
   final Color? backgroundColor;
   final Widget loadingWidget;
   final bool hasRefresh; // 是否有下拉刷新功能
-  final LoadMoreCallback<T> onLoadMoreData;
+  final LoadMoreCallback<T>? onLoadMoreData;
   final ItemPositionsListener itemPositionsListener;
   final ItemScrollController itemScrollController;
   final ScrollOffsetController scrollOffsetController;
@@ -35,7 +35,7 @@ class CustomListView<T> extends StatelessWidget {
 
   final ValueNotifier<List<T>> data = ValueNotifier(<T>[]);
   final ValueNotifier<bool> isLoading = ValueNotifier(false);
-  late final ValueNotifier<bool> hasMoreData = ValueNotifier(true);
+  late final ValueNotifier<bool> hasMoreData = ValueNotifier(onLoadMoreData != null);
 
   CustomListView({
     super.key,
@@ -46,7 +46,7 @@ class CustomListView<T> extends StatelessWidget {
     this.backgroundColor,
     this.loadingWidget = const CupertinoActivityIndicator()/* ios */, // CircularProgressIndicator()/* android */
     this.hasRefresh = true,
-    required this.onLoadMoreData,
+    this.onLoadMoreData,
     this.shrinkWrap = false,
     required this.itemBuilder,
     this.minCacheExtent,
@@ -57,20 +57,25 @@ class CustomListView<T> extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.addRepaintBoundaries = true,
     this.addAutomaticKeepAlives = true,
+    List<T> data = const [], // 提供初始化数据（不提供初始化数据会自动执行一次 onLoadMoreData）
     IndexedWidgetBuilder? separatorBuilder,
     ItemScrollController? itemScrollController,
     ScrollOffsetListener? scrollOffsetListener,
     ItemPositionsListener? itemPositionsListener,
     ScrollOffsetController? scrollOffsetController,
-  }): assert(!hasRefresh || (color == null && backgroundColor == null), 'hasRefresh 为 true 时，color 和 backgroundColor 无效'),
+  }):
+  assert(onLoadMoreData != null || data.isNotEmpty, 'onLoadMoreData 和 data 不能同时为空'),
+  assert(hasRefresh || (color == null && backgroundColor == null), 'hasRefresh 为 false 时，color 和 backgroundColor 无效'),
+  assert(!hasRefresh || onLoadMoreData != null, 'hasRefresh 为 true 时，onLoadMoreData 不能为空'),
   separatorBuilder = separatorBuilder ?? ((BuildContext context, int index) => SizedBox.shrink()),
   itemScrollController = itemScrollController ?? ItemScrollController(),
   scrollOffsetController = scrollOffsetController ?? ScrollOffsetController(),
   scrollOffsetListener = scrollOffsetListener ?? ScrollOffsetListener.create(),
   itemPositionsListener = itemPositionsListener ?? ItemPositionsListener.create() {
+    this.data.value.addAll(data); // 初始化数据
     this.itemPositionsListener.itemPositions.addListener(() { // 监听列表项位置，上拉加载更多
       final Iterable<ItemPosition> positions = this.itemPositionsListener.itemPositions.value;
-      final bool isLoadMore = positions.any((position) => position.index == data.value.length - 1 && position.itemTrailingEdge > 0); // 判断是否需要加载更多
+      final bool isLoadMore = positions.any((position) => position.index == this.data.value.length - 1 && position.itemTrailingEdge > 0); // 判断是否需要加载更多
       if (!isLoadMore) return;
       handleLoadMoreData(); // 加载更多
     });
@@ -84,7 +89,7 @@ class CustomListView<T> extends StatelessWidget {
   Future<void> handleLoadMoreData() { // 上拉加载更多
     if (isLoading.value || !hasMoreData.value) return Future.value();
     isLoading.value = true;
-    return onLoadMoreData(data.value.length, data.value.lastOrNull).then((response) {
+    return onLoadMoreData!(data.value.length, data.value.lastOrNull).then((response) {
       data.value = [...data.value, ...response];
       hasMoreData.value == response.isNotEmpty;
     }).whenComplete(() => isLoading.value = false);
@@ -98,7 +103,7 @@ class CustomListView<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final widget = FutureBuilder(
-      future: handleLoadMoreData(), // 初始化加载数据
+      future: data.value.isEmpty ? handleLoadMoreData() : Future.value(), // 初始化加载数据（仅在没有提供初始 data 时执行）
       builder: (_, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) return Center(child: CircularProgressIndicator());
 
