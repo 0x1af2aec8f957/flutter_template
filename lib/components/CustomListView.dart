@@ -64,7 +64,7 @@ class CustomListView<T> extends StatelessWidget {
     ItemPositionsListener? itemPositionsListener,
     ScrollOffsetController? scrollOffsetController,
   }):
-  assert(onLoadMoreData != null || data.isNotEmpty, 'onLoadMoreData 和 data 不能同时为空'),
+  // assert(onLoadMoreData != null || data.isNotEmpty, 'onLoadMoreData 和 data 不能同时为空'),
   assert(hasRefresh || (color == null && backgroundColor == null), 'hasRefresh 为 false 时，color 和 backgroundColor 无效'),
   assert(!hasRefresh || onLoadMoreData != null, 'hasRefresh 为 true 时，onLoadMoreData 不能为空'),
   separatorBuilder = separatorBuilder ?? ((BuildContext context, int index) => SizedBox.shrink()),
