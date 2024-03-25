@@ -5,7 +5,7 @@ import '../utils/common.dart';
 // extension ProcessButton on RawMaterialButton {}
 class ProcessButton extends StatelessWidget {
   final Future<void> Function()? onPressed;
-  final ButtonStyle? style;
+  final ButtonStyle? style; // default: ElevatedButton.styleFrom(shape: StadiumBorder()/* CircleBorder() | RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)) |  BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)*/)
   final Widget? child;
 
   ProcessButton({
