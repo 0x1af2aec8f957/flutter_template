@@ -75,6 +75,7 @@ dependencies:
   shimmer: ^3.0.0 # 骨架渲染
   flutter_webrtc: ^0.9.48 # WebRTC: https://github.com/flutter-webrtc/flutter-webrtc
   scrollable_positioned_list: ^0.3.8 # 支持滚动定位的 ListView: https://github.com/google/flutter.widgets/tree/master/packages/scrollable_positioned_list
+  lpinyin: ^2.0.3 # 汉子转拼音
 
 dev_dependencies:
   flutter_test:

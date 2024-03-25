@@ -1,5 +1,6 @@
 // 公共方法
 import 'dart:async' show FutureOr;
+import 'package:lpinyin/lpinyin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show MethodChannel, Clipboard, ClipboardData;
 
@@ -34,7 +35,8 @@ extension ClipboardHelper on Clipboard {
 extension StringHelper on String {
   static String get placeholder => stringPlaceholder; // 字符串占位符
 
-  Future<void> get copyWithClipboard => ClipboardHelper.copy(this); // 复制到粘贴板
+  String get pinyin => PinyinHelper.getPinyinE(this, separator: " ", defPinyin: '#'); // 获取汉字拼音，不支持转换的会使用 # 返回
+  Future<void> copyWithClipboard() => ClipboardHelper.copy(this); // 复制到粘贴板
 
   bool get isNumber => num.tryParse(this) != null; // 是否是数字
   num get parseWithNumber => num.tryParse(this) ?? 0; // 转换为数字
@@ -52,8 +54,8 @@ extension NumberHelper on num {
 }
 
 extension NullHelper on Null {
-  String get fillWithString => this ?? StringHelper.placeholder;
-  String get fillWithNumber => this ?? NumberHelper.placeholder;
+  String get fillWithString => StringHelper.placeholder;
+  String get fillWithNumber => NumberHelper.placeholder;
 }
 
 /// 项目内部的通用方法
