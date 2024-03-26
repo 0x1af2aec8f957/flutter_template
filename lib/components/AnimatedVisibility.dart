@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class AnimatedVisibility extends StatefulWidget {
+class AnimatedVisibility extends StatelessWidget {
+  bool isNotBuild = true;
+
   final bool visible;
   final Widget child;
   final Curve curve;
@@ -8,7 +10,7 @@ class AnimatedVisibility extends StatefulWidget {
   final alwaysIncludeSemantics;
 
   AnimatedVisibility({
-    Key? super.key,
+    super.key,
     this.visible = true,
     required this.child,
     this.curve = Curves.linear,
@@ -17,27 +19,18 @@ class AnimatedVisibility extends StatefulWidget {
   });
 
   @override
-  _AnimatedVisibility createState() => _AnimatedVisibility();
-}
-
-class _AnimatedVisibility extends State<AnimatedVisibility> {
-  bool isShow = false;
-
-  @override
   Widget build(BuildContext context) {
+    isNotBuild = false;
+
     return AnimatedOpacity(
-      key: ValueKey(isShow),
-      opacity: widget.visible ? 1 : 0,
-      duration: widget.duration,
-      curve: widget.curve,
-      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
-      child: Visibility(child: widget.child, visible: widget.visible || isShow),
-      onEnd: () {
-        if (widget.visible) return;
-        setState(() {
-          isShow = widget.visible;
-        });
-      },
+      opacity: visible ? 1 : 0,
+      duration: duration,
+      curve: curve,
+      alwaysIncludeSemantics: alwaysIncludeSemantics,
+      child: FutureBuilder(
+        future: Future.delayed(isNotBuild ? Duration.zero : duration),
+        builder: (_, snapshot) => Visibility(child: child, visible: snapshot.connectionState != ConnectionState.done || visible),
+      ),
     );
   }
 }

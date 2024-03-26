@@ -254,7 +254,7 @@ class Webrtc {
     _videoSource = VideoSource.Screen;
   }
 
-  void muteMic() { // 关闭｜打开 马克风
+  void muteMic() { // 关闭｜打开 麦克风
     if (_localStream == null) return;
 
     final bool enabled = _localStream!.getAudioTracks()[0].enabled;

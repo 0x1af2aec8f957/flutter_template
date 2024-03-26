@@ -62,6 +62,7 @@ class Avatar extends StatelessWidget {
       headers: headers,
       opacity: opacity,
       errorWidget: errorWidget,
+      hasPlaceholder: false,
     );
   }
 }
