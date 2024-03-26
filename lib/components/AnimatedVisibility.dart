@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-class AnimatedVisibility extends StatelessWidget {
-  bool isNotBuild = true;
-
+class AnimatedVisibility extends StatefulWidget {
   final bool visible;
   final Widget child;
   final Curve curve;
@@ -10,7 +8,7 @@ class AnimatedVisibility extends StatelessWidget {
   final alwaysIncludeSemantics;
 
   AnimatedVisibility({
-    super.key,
+    Key? super.key,
     this.visible = true,
     required this.child,
     this.curve = Curves.linear,
@@ -19,17 +17,29 @@ class AnimatedVisibility extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    isNotBuild = false;
+  _AnimatedVisibility createState() => _AnimatedVisibility();
+}
 
+class _AnimatedVisibility extends State<AnimatedVisibility> {
+  bool isNotBuild = true;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedOpacity(
-      opacity: visible ? 1 : 0,
-      duration: duration,
-      curve: curve,
-      alwaysIncludeSemantics: alwaysIncludeSemantics,
+      opacity: widget.visible ? 1 : 0,
+      duration: widget.duration,
+      curve: widget.curve,
+      alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
+      onEnd: () {
+        if (!isNotBuild) return;
+
+        setState(() {
+          isNotBuild = false;
+        });
+      },
       child: FutureBuilder(
-        future: Future.delayed(isNotBuild ? Duration.zero : duration),
-        builder: (_, snapshot) => Visibility(child: child, visible: snapshot.connectionState != ConnectionState.done || visible),
+        future: Future.delayed(isNotBuild ? Duration.zero: widget.duration),
+        builder: (_, snapshot) => Visibility(child: widget.child, visible: snapshot.connectionState != ConnectionState.done || widget.visible),
       ),
     );
   }
