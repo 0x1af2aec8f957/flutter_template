@@ -4,20 +4,21 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import './NoData.dart';
 
-typedef Future<List<T>> LoadMoreCallback<T>(int start/* 起始位置从 1 开始，0 表示首次或刷新数据 */, T? startItem/* 起始项, null 表示首次或刷新数据 */); // 加载更多方法回调
+typedef Future<bool> LoadMoreCallback<T>(bool isReset/* 是否是刷新 */); // 加载更多方法回调
 typedef Widget _IndexedWidgetBuilder<T>(BuildContext context, T item, int index); // 列表项构建器
 
 /// 上拉加载更多，下拉刷新
-class CustomListView<T> extends StatelessWidget {
+class CustomListView<T> extends StatefulWidget {
+  final List<T> data;
   final Color? color;
   final Color? backgroundColor;
   final Widget loadingWidget;
   final bool hasRefresh; // 是否有下拉刷新功能
   final LoadMoreCallback<T>? onLoadMoreData;
-  final ItemPositionsListener itemPositionsListener;
-  final ItemScrollController itemScrollController;
-  final ScrollOffsetController scrollOffsetController;
-  final ScrollOffsetListener scrollOffsetListener;
+  final ItemScrollController? itemScrollController;
+  // final ItemPositionsListener itemPositionsListener;
+  final ScrollOffsetController? scrollOffsetController;
+  // final ScrollOffsetListener scrollOffsetListener;
   final IndexedWidgetBuilder separatorBuilder;
   final _IndexedWidgetBuilder<T> itemBuilder;
   final int initialScrollIndex;
@@ -33,12 +34,9 @@ class CustomListView<T> extends StatelessWidget {
   final bool addRepaintBoundaries;
   final double? minCacheExtent;
 
-  final ValueNotifier<List<T>> data = ValueNotifier(<T>[]);
-  final ValueNotifier<bool> isLoading = ValueNotifier(false);
-  late final ValueNotifier<bool> hasMoreData = ValueNotifier(onLoadMoreData != null);
-
   CustomListView({
     super.key,
+    this.data = const [],
     this.reverse = false,
     this.physics = const AlwaysScrollableScrollPhysics()/* 回弹动效（保持任何时候都能滚动 */,
     this.padding,
@@ -57,107 +55,122 @@ class CustomListView<T> extends StatelessWidget {
     this.addSemanticIndexes = true,
     this.addRepaintBoundaries = true,
     this.addAutomaticKeepAlives = true,
-    List<T> data = const [], // 提供初始化数据（不提供初始化数据会自动执行一次 onLoadMoreData）
     IndexedWidgetBuilder? separatorBuilder,
-    ItemScrollController? itemScrollController,
-    ScrollOffsetListener? scrollOffsetListener,
-    ItemPositionsListener? itemPositionsListener,
-    ScrollOffsetController? scrollOffsetController,
+    this.itemScrollController,
+    // ScrollOffsetListener? scrollOffsetListener,
+    this.scrollOffsetController,
+    // ItemPositionsListener? itemPositionsListener,
   }):
-  // assert(onLoadMoreData != null || data.isNotEmpty, 'onLoadMoreData 和 data 不能同时为空'),
   assert(hasRefresh || (color == null && backgroundColor == null), 'hasRefresh 为 false 时，color 和 backgroundColor 无效'),
   assert(!hasRefresh || onLoadMoreData != null, 'hasRefresh 为 true 时，onLoadMoreData 不能为空'),
-  separatorBuilder = separatorBuilder ?? ((BuildContext context, int index) => SizedBox.shrink()),
-  itemScrollController = itemScrollController ?? ItemScrollController(),
-  scrollOffsetController = scrollOffsetController ?? ScrollOffsetController(),
-  scrollOffsetListener = scrollOffsetListener ?? ScrollOffsetListener.create(),
-  itemPositionsListener = itemPositionsListener ?? ItemPositionsListener.create() {
-    this.data.value.addAll(data); // 初始化数据
-    this.itemPositionsListener.itemPositions.addListener(() { // 监听列表项位置，上拉加载更多
-      final Iterable<ItemPosition> positions = this.itemPositionsListener.itemPositions.value;
-      final bool isLoadMore = positions.any((position) => position.index == this.data.value.length - 1 && position.itemTrailingEdge > 0); // 判断是否需要加载更多
-      if (!isLoadMore) return;
-      handleLoadMoreData(); // 加载更多
-    });
-    /* this.scrollOffsetListener.changes.listen((offset) {
-      if (offset == 0) return;
-    }); */
-    // this.itemScrollController.jumpTo(index: 1);
-    // this.scrollOffsetController.animateScroll(offset: 1, duration: Durations.short1);
-  }
+  separatorBuilder = separatorBuilder ?? ((BuildContext context, int index) => SizedBox.shrink());
+  // itemScrollController = itemScrollController ?? ItemScrollController(),
+  // scrollOffsetController = scrollOffsetController ?? ScrollOffsetController(),
+  // scrollOffsetListener = scrollOffsetListener ?? ScrollOffsetListener.create(),
+  // itemPositionsListener = itemPositionsListener ?? ItemPositionsListener.create();
 
-  Future<void> handleLoadMoreData() { // 上拉加载更多
-    if (isLoading.value || !hasMoreData.value) return Future.value();
-    isLoading.value = true;
-    return onLoadMoreData!(data.value.length, data.value.lastOrNull).then((response) {
-      data.value = [...data.value, ...response];
-      hasMoreData.value == response.isNotEmpty;
-    }).whenComplete(() => isLoading.value = false);
+  @override
+  _CustomListView<T> createState() => _CustomListView<T>();
+}
+
+class _CustomListView<T> extends State<CustomListView<T>> {
+  final itemPositionsListener = ItemPositionsListener.create();
+  final scrollOffsetListener = ScrollOffsetListener.create();
+
+  bool isLoading = false;
+  late bool hasMoreData = widget.onLoadMoreData != null;
+
+   Future<void> handleLoadMoreData() { // 上拉加载更多
+    if (isLoading || !hasMoreData) return Future.value();
+
+    setState(() {
+      isLoading = true;
+    });
+
+    return widget.onLoadMoreData!(false).then((_hasMoreData) {
+      setState(() {
+        hasMoreData = _hasMoreData;
+      });
+    }).whenComplete((){
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   Future<void> handleRefresh() { // 下拉刷新
-    data.value.clear(); // 清空数据，但不通知 UI 更新
-    return handleLoadMoreData();
+    return widget.onLoadMoreData!(false).then((_hasMoreData) {
+      setState(() {
+        hasMoreData = _hasMoreData;
+      });
+    });
+  }
+
+  void _itemPositionsListener() {
+    final Iterable<ItemPosition> positions = itemPositionsListener.itemPositions.value;
+    final bool isLoadMore = positions.any((position) => position.index == widget.data.length - 1 && position.itemTrailingEdge > 0); // 判断是否需要加载更多
+    if (!isLoadMore) return;
+    handleLoadMoreData(); // 加载更多
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    itemPositionsListener.itemPositions.addListener(_itemPositionsListener); // 监听列表项位置，上拉加载更多
+    /* scrollOffsetListener.changes.listen((offset) {
+      if (offset == 0) return;
+    }); */
+    // widget.itemScrollController.jumpTo(index: 1);
+    // widget.scrollOffsetController.animateScroll(offset: 1, duration: Durations.short1);
+  }
+
+  @override
+  void dispose() {
+    itemPositionsListener.itemPositions.removeListener(_itemPositionsListener);
+    // widget.itemScrollController.dispose();
+    // widget.scrollOffsetController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final widget = FutureBuilder(
-      future: data.value.isEmpty ? handleLoadMoreData() : Future.value(), // 初始化加载数据（仅在没有提供初始 data 时执行）
-      builder: (_, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) return Center(child: CircularProgressIndicator());
+    if (widget.data.isEmpty/*  && isLoading */) return Center(child: CircularProgressIndicator()); // 加载中
+    if (widget.data.isEmpty && !hasMoreData) return NoData(); // 暂无数据
 
-        return ValueListenableBuilder(
-          valueListenable: data,
-          builder: (_, _data, __) {
-            return ValueListenableBuilder<bool>(
-              valueListenable: hasMoreData,
-              builder: (_, _hasMoreData, __) {
-                if (_data.isEmpty && !_hasMoreData) return NoData(); // 暂无数据
-            
-                return ScrollablePositionedList.separated(
-                  reverse: reverse,
-                  physics: physics,
-                  padding: padding,
-                  itemCount: _data.length + 1/* loadingWidget 占位 */,
-                  shrinkWrap: shrinkWrap,
-                  itemBuilder: (BuildContext _context, int index) => index == _data.length ? LoadingWidget : itemBuilder(_context, _data.elementAt(index), index),
-                  minCacheExtent: minCacheExtent,
-                  scrollDirection: scrollDirection,
-                  separatorBuilder: separatorBuilder,
-                  initialAlignment: initialAlignment,
-                  initialScrollIndex: initialScrollIndex,
-                  semanticChildCount: semanticChildCount,
-                  addSemanticIndexes: addSemanticIndexes,
-                  itemScrollController: itemScrollController,
-                  scrollOffsetListener: scrollOffsetListener,
-                  addRepaintBoundaries: addRepaintBoundaries,
-                  itemPositionsListener: itemPositionsListener,
-                  scrollOffsetController: scrollOffsetController,
-                  addAutomaticKeepAlives: addAutomaticKeepAlives,
-                );
-              }
-            );
-          }
-        );
-      }
-    );
-
-    if (hasRefresh) return RefreshIndicator(
-      color: color,
-      backgroundColor: backgroundColor,
+    if (widget.hasRefresh) return RefreshIndicator( // 下拉刷新
+      color: widget.color,
+      backgroundColor: widget.backgroundColor,
       onRefresh: handleRefresh, // 下拉刷新
-      child: widget,
+      child: _ListView,
     );
 
-    return widget;
+    return _ListView; // 不支持下拉刷新
   }
 
-  Widget get LoadingWidget => ValueListenableBuilder<bool>(
-    valueListenable: isLoading,
-    builder: (_, _isLoading, __) => _isLoading ? Padding(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      child: loadingWidget,
-    ) : SizedBox.shrink(),
+  Widget get _ListView => ScrollablePositionedList.separated(
+    reverse: widget.reverse,
+    physics: widget.physics,
+    padding: widget.padding,
+    itemCount: widget.data.length + 1/* LoadingWidget 占位 */,
+    shrinkWrap: widget.shrinkWrap,
+    itemBuilder: (BuildContext _context, int index) => index == widget.data.length ? _LoadingWidget : widget.itemBuilder(_context, widget.data.elementAt(index), index),
+    minCacheExtent: widget.minCacheExtent,
+    scrollDirection: widget.scrollDirection,
+    separatorBuilder: widget.separatorBuilder,
+    initialAlignment: widget.initialAlignment,
+    initialScrollIndex: widget.initialScrollIndex,
+    semanticChildCount: widget.semanticChildCount,
+    addSemanticIndexes: widget.addSemanticIndexes,
+    itemScrollController: widget.itemScrollController,
+    scrollOffsetListener: scrollOffsetListener,
+    addRepaintBoundaries: widget.addRepaintBoundaries,
+    itemPositionsListener: itemPositionsListener,
+    scrollOffsetController: widget.scrollOffsetController,
+    addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
   );
+
+  Widget get _LoadingWidget => isLoading ? Padding(
+    padding: EdgeInsets.symmetric(vertical: 10),
+    child: widget.loadingWidget,
+  ) : SizedBox.shrink();
 }

@@ -3,39 +3,49 @@ import 'package:flutter/material.dart';
 import '../utils/common.dart';
 
 // extension ProcessButton on RawMaterialButton {}
-class ProcessButton extends StatelessWidget {
+class ProcessButton extends StatefulWidget {
   final Future<void> Function()? onPressed;
-  final ButtonStyle? style; // default: ElevatedButton.styleFrom(shape: StadiumBorder()/* CircleBorder() | RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)) |  BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)*/)
-  final Widget? child;
+  final ButtonStyle style; // default: ElevatedButton.styleFrom(shape: StadiumBorder()/* CircleBorder() | RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)) |  BeveledRectangleBorder(borderRadius: BorderRadius.circular(12)*/)
+  final Widget child;
 
   ProcessButton({
     super.key,
-    this.style,
+    ButtonStyle? style,
     this.onPressed,
     this.child = const SizedBox.shrink(),
-  });
+  }): style = style ?? ElevatedButton.styleFrom();
 
-  final ValueNotifier<bool> isLoading = ValueNotifier(false);
+  @override
+  State<ProcessButton> createState() => _ProcessButton();
+}
 
-  handleClick() {
-    if (onPressed == null || isLoading.value) return null;
+class _ProcessButton extends State<ProcessButton> {
+  bool isLoading = false;
 
-    isLoading.value = true;
-    onPressed?.call().whenComplete(() => isLoading.value = false);
+  void handleClick() {
+    if (widget.onPressed == null || isLoading) return null;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    widget.onPressed?.call().whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: isLoading,
-      builder: (_, bool _isLoading, __) {
-        return ElevatedButton(
-          onPressed: _isLoading ? null : handleClick,
-          style: style,
-          // 去按钮背景颜色的反色
-          child: _isLoading ? CircularProgressIndicator(color: style?.backgroundColor?.resolve({MaterialState.pressed})?.invert, strokeWidth: 3) : child,
-        );
-      }
+    return ElevatedButton(
+      onPressed: () => isLoading ? null : handleClick(), // 为 null 时，按钮的样式为 MaterialState.disabled
+      style: widget.style,
+      // 去按钮背景颜色的反色
+      child: isLoading ? CircularProgressIndicator(
+        color: widget.style.backgroundColor?.resolve({MaterialState.disabled})?.invert,
+        strokeWidth: 3
+      ): widget.child
     );
   }
 }

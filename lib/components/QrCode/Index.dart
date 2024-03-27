@@ -77,27 +77,34 @@ class QrCodeScanPage extends StatefulWidget {
   _QrCodeScanPage createState() => _QrCodeScanPage();
 
     static Future<T?> open<T>(BuildContext context, {String title = '扫码', bool Function(String data)? onValidate}) => Navigator.of(context).push<T>(PageRouteBuilder( // 打开 扫码 界面
-    pageBuilder: (context, animation, secondaryAnimation) => QrCodeScanPage(title: title, onValidate: onValidate),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(0, 1);
-      const end = Offset.zero;
-      const curve = Curves.ease;
+      pageBuilder: (context, animation, secondaryAnimation) => QrCodeScanPage(title: title, onValidate: onValidate),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(0, 1);
+        const end = Offset.zero;
+        const curve = Curves.ease;
 
-      final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        final tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: child,
-      );
-    },
-  ));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    )
+  );
 }
 
 class _QrCodeScanPage extends State<QrCodeScanPage> {
+  late final QrCodeScanView qrCodeScanView = QrCodeScanView(context);
+
+  @override
+  void dispose() {
+    qrCodeScanView.controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final QrCodeScanView qrCodeScanView = QrCodeScanView(context);
 
     return Scaffold(
       appBar: AppBar(

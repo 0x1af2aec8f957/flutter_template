@@ -139,4 +139,9 @@ class CustomStompClient {
   Future<void> reconnect() { // 重新连接（某些配置凭证更新后，将使用新的凭证进行连接，仅仅是断开重连无需执行该方法，StompClient 本身携带断开重连机制）
     return _init(true);
   }
+
+  void dispose() { // 销毁（会释放 isConnected ，不可再次直接使用）
+    deactivate();
+    isConnected.dispose();
+  }
 }
