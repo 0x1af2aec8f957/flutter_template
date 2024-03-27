@@ -68,7 +68,7 @@ class MainInterceptors extends InterceptorsWrapper { // 主要的处理拦截器
     switch (data['code']) {
       case 401: // 去登录
         prefs.remove('token');
-        router.replace('/login');
+        router.go('/login');
         return handler.reject(DioException(error : data['msg'] ?? '请登录', requestOptions: response.requestOptions), true);
       case 200: // 正常
       case 201: // 正常（创建新资源）
